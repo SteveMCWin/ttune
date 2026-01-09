@@ -2,8 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"math/cmplx"
+
+	tea "charm.land/bubbletea/v2"
+	"github.com/gordonklaus/portaudio"
 
 	"github.com/mjibson/go-dsp/fft"
 )
@@ -13,11 +17,13 @@ const SAMPLE_RATE = 44100 // NOTE: should be loaded through settings
 
 var noteNames = []string{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"}
 
-func (m *Model) calcHannWindow() {
+func (m *Model) calcHannWindow() tea.Cmd {
 	m.Window = make([]float64, m.BlockLength)
 	for n := range BL {
 		m.Window[n] = 0.5 * (1.0 - math.Cos(2.0*math.Pi*float64(n)/float64(BL-1)))
 	}
+
+	return nil
 }
 
 func (m *Model) applyWindowToBuffer() {
@@ -32,7 +38,7 @@ func (m *Model) buffTo64() {
 	}
 }
 
-func (m *Model) getFrequency() float64 {
+func (m *Model) calculateFrequency() {
 	comp := fft.FFTReal(m.Buffer64)
 	var max_mag float64 = 0
 	var max_mag_idx int = 0
@@ -44,26 +50,42 @@ func (m *Model) getFrequency() float64 {
 		}
 	}
 
-	frequency := float64(max_mag_idx) * SAMPLE_RATE / BL
-	return frequency
+	m.Frequency = float64(max_mag_idx) * SAMPLE_RATE / BL
 }
 
 func (m *Model) GetNote() {
 	if m.Frequency < 20 {
-		return "---", 0
+		m.Note = "---"
+		m.CentsOff = 0
 	}
 
-	semitone := 12*math.Log2(freq/440.0) + 58.0
+	semitone := 12*math.Log2(m.Frequency/440.0) + 58.0
 	nearestSemitone := math.Round(semitone)
 
-	centsOff := (semitone - nearestSemitone) * 100
+	m.CentsOff = (semitone - nearestSemitone) * 100
 
 	noteIndex := int(nearestSemitone-1) % 12
 	octave := int(nearestSemitone-1) / 12
 
-	noteName := fmt.Sprintf("%s%d", noteNames[noteIndex], octave)
+	m.Note = fmt.Sprintf("%s%d", noteNames[noteIndex], octave)
+}
 
-	return noteName, centsOff
+func (m *Model) DoTheThing() {
+	m.AudioStream.Read()
+	m.buffTo64()
+	m.applyWindowToBuffer()
+	m.calculateFrequency()
+	m.GetNote()
+}
+
+func (m *Model) openAudioStream() tea.Cmd {
+	var err error
+	m.AudioStream, err = portaudio.OpenDefaultStream(1, 0, SAMPLE_RATE, BL, m.Buffer)
+	if err != nil {
+		log.Println("ERROR opening audio stream")
+	}
+
+	return nil
 }
 
 // func old_main() {
