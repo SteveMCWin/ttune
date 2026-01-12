@@ -1,36 +1,974 @@
-debug 2026/01/12 19:46:47 
-debug 2026/01/12 19:46:47 ~~~~~~~~~PROGRAM START~~~~~~~~~
-debug 2026/01/12 19:46:47 
-debug 2026/01/12 19:46:47 Terminal width: 212
-debug 2026/01/12 19:46:47 Terminal height: 51
-debug 2026/01/12 19:46:47 Audio stream is nil as it should be
-debug 2026/01/12 19:46:47 Opened audio stream!!
-debug 2026/01/12 19:46:47 Opened stream
-debug 2026/01/12 19:46:47 Unable to run tui:program was killed: program experienced a panic
-debug 2026/01/12 19:47:37 
-debug 2026/01/12 19:47:37 ~~~~~~~~~PROGRAM START~~~~~~~~~
-debug 2026/01/12 19:47:37 
-debug 2026/01/12 19:47:37 Terminal width: 212
-debug 2026/01/12 19:47:37 Terminal height: 51
-debug 2026/01/12 19:47:37 Audio stream is nil as it should be
-debug 2026/01/12 19:47:37 Opened audio stream!!
-debug 2026/01/12 19:47:37 Opened stream
-debug 2026/01/12 19:47:37 Unable to run tui:program was killed: program experienced a panic
-debug 2026/01/12 19:48:11 
-debug 2026/01/12 19:48:11 ~~~~~~~~~PROGRAM START~~~~~~~~~
-debug 2026/01/12 19:48:11 
-debug 2026/01/12 19:48:11 Terminal width: 212
-debug 2026/01/12 19:48:11 Terminal height: 51
-debug 2026/01/12 19:48:11 Audio stream is nil as it should be
-debug 2026/01/12 19:48:11 Opened audio stream!!
-debug 2026/01/12 19:48:11 Opened stream
-debug 2026/01/12 19:48:11 Unable to run tui:program was killed: program experienced a panic
-debug 2026/01/12 19:50:36 
-debug 2026/01/12 19:50:36 ~~~~~~~~~PROGRAM START~~~~~~~~~
-debug 2026/01/12 19:50:36 
-debug 2026/01/12 19:50:36 Terminal width: 212
-debug 2026/01/12 19:50:36 Terminal height: 51
-debug 2026/01/12 19:50:36 Audio stream is nil as it should be
-debug 2026/01/12 19:50:36 Opened audio stream!!
-debug 2026/01/12 19:50:36 Opened stream
-debug 2026/01/12 19:50:40 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:03:04 
+debug 2026/01/12 22:03:04 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:03:04 
+debug 2026/01/12 22:03:04 tuning width: -1
+debug 2026/01/12 22:03:04 meter width: -11
+debug 2026/01/12 22:03:04 together: 0
+debug 2026/01/12 22:03:04 together: -12
+debug 2026/01/12 22:03:04 tuning width: -1
+debug 2026/01/12 22:03:04 meter width: -11
+debug 2026/01/12 22:03:04 together: 0
+debug 2026/01/12 22:03:04 together: -12
+debug 2026/01/12 22:03:04 Terminal width: 155
+debug 2026/01/12 22:03:04 Terminal height: 35
+debug 2026/01/12 22:03:04 tuning width: 17
+debug 2026/01/12 22:03:04 meter width: 126
+debug 2026/01/12 22:03:04 together: 155
+debug 2026/01/12 22:03:04 together: 143
+debug 2026/01/12 22:03:04 tuning width: 17
+debug 2026/01/12 22:03:04 meter width: 126
+debug 2026/01/12 22:03:04 together: 155
+debug 2026/01/12 22:03:04 together: 143
+debug 2026/01/12 22:03:04 Audio stream is nil as it should be
+debug 2026/01/12 22:03:04 Opened audio stream!!
+debug 2026/01/12 22:03:04 Opened stream
+debug 2026/01/12 22:03:04 tuning width: 17
+debug 2026/01/12 22:03:04 meter width: 126
+debug 2026/01/12 22:03:04 together: 155
+debug 2026/01/12 22:03:04 together: 143
+debug 2026/01/12 22:03:04 tuning width: 17
+debug 2026/01/12 22:03:04 meter width: 126
+debug 2026/01/12 22:03:04 together: 155
+debug 2026/01/12 22:03:04 together: 143
+debug 2026/01/12 22:06:29 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:06:29 tuning width: 17
+debug 2026/01/12 22:06:29 meter width: 126
+debug 2026/01/12 22:06:29 together: 155
+debug 2026/01/12 22:06:29 together: 143
+debug 2026/01/12 22:06:29 tuning width: 17
+debug 2026/01/12 22:06:29 meter width: 126
+debug 2026/01/12 22:06:29 together: 155
+debug 2026/01/12 22:06:29 together: 143
+debug 2026/01/12 22:06:32 
+debug 2026/01/12 22:06:32 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:06:32 
+debug 2026/01/12 22:06:32 tuning width: -1
+debug 2026/01/12 22:06:32 meter width: -11
+debug 2026/01/12 22:06:32 together: 0
+debug 2026/01/12 22:06:32 together: -12
+debug 2026/01/12 22:06:32 tuning width: -1
+debug 2026/01/12 22:06:32 meter width: -11
+debug 2026/01/12 22:06:32 together: 0
+debug 2026/01/12 22:06:32 together: -12
+debug 2026/01/12 22:06:32 Terminal width: 155
+debug 2026/01/12 22:06:32 Terminal height: 35
+debug 2026/01/12 22:06:32 tuning width: 17
+debug 2026/01/12 22:06:32 meter width: 126
+debug 2026/01/12 22:06:32 together: 155
+debug 2026/01/12 22:06:32 together: 143
+debug 2026/01/12 22:06:32 tuning width: 17
+debug 2026/01/12 22:06:32 meter width: 126
+debug 2026/01/12 22:06:32 together: 155
+debug 2026/01/12 22:06:32 together: 143
+debug 2026/01/12 22:06:32 Audio stream is nil as it should be
+debug 2026/01/12 22:06:32 Opened audio stream!!
+debug 2026/01/12 22:06:32 Opened stream
+debug 2026/01/12 22:06:32 tuning width: 17
+debug 2026/01/12 22:06:32 meter width: 126
+debug 2026/01/12 22:06:32 together: 155
+debug 2026/01/12 22:06:32 together: 143
+debug 2026/01/12 22:06:32 tuning width: 17
+debug 2026/01/12 22:06:32 meter width: 126
+debug 2026/01/12 22:06:32 together: 155
+debug 2026/01/12 22:06:32 together: 143
+debug 2026/01/12 22:06:35 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:06:35 tuning width: 17
+debug 2026/01/12 22:06:35 meter width: 126
+debug 2026/01/12 22:06:35 together: 155
+debug 2026/01/12 22:06:35 together: 143
+debug 2026/01/12 22:06:35 tuning width: 17
+debug 2026/01/12 22:06:35 meter width: 126
+debug 2026/01/12 22:06:35 together: 155
+debug 2026/01/12 22:06:35 together: 143
+debug 2026/01/12 22:07:21 
+debug 2026/01/12 22:07:21 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:07:21 
+debug 2026/01/12 22:07:21 tuning width: -1
+debug 2026/01/12 22:07:21 meter width: -11
+debug 2026/01/12 22:07:21 together: 0
+debug 2026/01/12 22:07:21 together: -12
+debug 2026/01/12 22:07:21 tuning width: -1
+debug 2026/01/12 22:07:21 meter width: -11
+debug 2026/01/12 22:07:21 together: 0
+debug 2026/01/12 22:07:21 together: -12
+debug 2026/01/12 22:07:21 Terminal width: 155
+debug 2026/01/12 22:07:21 Terminal height: 35
+debug 2026/01/12 22:07:21 tuning width: 17
+debug 2026/01/12 22:07:21 meter width: 126
+debug 2026/01/12 22:07:21 together: 155
+debug 2026/01/12 22:07:21 together: 143
+debug 2026/01/12 22:07:21 tuning width: 17
+debug 2026/01/12 22:07:21 meter width: 126
+debug 2026/01/12 22:07:21 together: 155
+debug 2026/01/12 22:07:21 together: 143
+debug 2026/01/12 22:07:21 Audio stream is nil as it should be
+debug 2026/01/12 22:07:21 Opened audio stream!!
+debug 2026/01/12 22:07:21 Opened stream
+debug 2026/01/12 22:07:21 tuning width: 17
+debug 2026/01/12 22:07:21 meter width: 126
+debug 2026/01/12 22:07:21 together: 155
+debug 2026/01/12 22:07:21 together: 143
+debug 2026/01/12 22:07:21 tuning width: 17
+debug 2026/01/12 22:07:21 meter width: 126
+debug 2026/01/12 22:07:21 together: 155
+debug 2026/01/12 22:07:21 together: 143
+debug 2026/01/12 22:07:37 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:07:37 tuning width: 17
+debug 2026/01/12 22:07:37 meter width: 126
+debug 2026/01/12 22:07:37 together: 155
+debug 2026/01/12 22:07:37 together: 143
+debug 2026/01/12 22:07:37 tuning width: 17
+debug 2026/01/12 22:07:37 meter width: 126
+debug 2026/01/12 22:07:37 together: 155
+debug 2026/01/12 22:07:37 together: 143
+debug 2026/01/12 22:07:41 
+debug 2026/01/12 22:07:41 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:07:41 
+debug 2026/01/12 22:07:41 tuning width: -1
+debug 2026/01/12 22:07:41 meter width: -11
+debug 2026/01/12 22:07:41 together: 0
+debug 2026/01/12 22:07:41 together: -12
+debug 2026/01/12 22:07:41 tuning width: -1
+debug 2026/01/12 22:07:41 meter width: -11
+debug 2026/01/12 22:07:41 together: 0
+debug 2026/01/12 22:07:41 together: -12
+debug 2026/01/12 22:07:41 Terminal width: 155
+debug 2026/01/12 22:07:41 Terminal height: 35
+debug 2026/01/12 22:07:41 tuning width: 17
+debug 2026/01/12 22:07:41 meter width: 126
+debug 2026/01/12 22:07:41 together: 155
+debug 2026/01/12 22:07:41 together: 143
+debug 2026/01/12 22:07:41 tuning width: 17
+debug 2026/01/12 22:07:41 meter width: 126
+debug 2026/01/12 22:07:41 together: 155
+debug 2026/01/12 22:07:41 together: 143
+debug 2026/01/12 22:07:41 Audio stream is nil as it should be
+debug 2026/01/12 22:07:41 Opened audio stream!!
+debug 2026/01/12 22:07:41 Opened stream
+debug 2026/01/12 22:07:41 tuning width: 17
+debug 2026/01/12 22:07:41 meter width: 126
+debug 2026/01/12 22:07:41 together: 155
+debug 2026/01/12 22:07:41 together: 143
+debug 2026/01/12 22:07:41 tuning width: 17
+debug 2026/01/12 22:07:41 meter width: 126
+debug 2026/01/12 22:07:41 together: 155
+debug 2026/01/12 22:07:41 together: 143
+debug 2026/01/12 22:08:13 Terminal width: 212
+debug 2026/01/12 22:08:13 Terminal height: 51
+debug 2026/01/12 22:08:13 tuning width: 25
+debug 2026/01/12 22:08:13 meter width: 175
+debug 2026/01/12 22:08:13 together: 212
+debug 2026/01/12 22:08:13 together: 200
+debug 2026/01/12 22:08:17 Terminal width: 155
+debug 2026/01/12 22:08:17 Terminal height: 35
+debug 2026/01/12 22:08:17 tuning width: 17
+debug 2026/01/12 22:08:17 meter width: 126
+debug 2026/01/12 22:08:17 together: 155
+debug 2026/01/12 22:08:17 together: 143
+debug 2026/01/12 22:08:19 tuning width: 17
+debug 2026/01/12 22:08:19 meter width: 126
+debug 2026/01/12 22:08:19 together: 155
+debug 2026/01/12 22:08:19 together: 143
+debug 2026/01/12 22:08:20 tuning width: 17
+debug 2026/01/12 22:08:20 meter width: 126
+debug 2026/01/12 22:08:20 together: 155
+debug 2026/01/12 22:08:20 together: 143
+debug 2026/01/12 22:08:20 tuning width: 17
+debug 2026/01/12 22:08:20 meter width: 126
+debug 2026/01/12 22:08:20 together: 155
+debug 2026/01/12 22:08:20 together: 143
+debug 2026/01/12 22:08:20 tuning width: 17
+debug 2026/01/12 22:08:20 meter width: 126
+debug 2026/01/12 22:08:20 together: 155
+debug 2026/01/12 22:08:20 together: 143
+debug 2026/01/12 22:08:21 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:08:21 tuning width: 17
+debug 2026/01/12 22:08:21 meter width: 126
+debug 2026/01/12 22:08:21 together: 155
+debug 2026/01/12 22:08:21 together: 143
+debug 2026/01/12 22:08:21 tuning width: 17
+debug 2026/01/12 22:08:21 meter width: 126
+debug 2026/01/12 22:08:21 together: 155
+debug 2026/01/12 22:08:21 together: 143
+debug 2026/01/12 22:09:08 
+debug 2026/01/12 22:09:08 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:09:08 
+debug 2026/01/12 22:09:08 tuning width: -1
+debug 2026/01/12 22:09:08 meter width: -11
+debug 2026/01/12 22:09:08 together: 0
+debug 2026/01/12 22:09:08 together: -12
+debug 2026/01/12 22:09:08 tuning width: -1
+debug 2026/01/12 22:09:08 meter width: -11
+debug 2026/01/12 22:09:08 together: 0
+debug 2026/01/12 22:09:08 together: -12
+debug 2026/01/12 22:09:08 Terminal width: 155
+debug 2026/01/12 22:09:08 Terminal height: 35
+debug 2026/01/12 22:09:08 tuning width: 17
+debug 2026/01/12 22:09:08 meter width: 126
+debug 2026/01/12 22:09:08 together: 155
+debug 2026/01/12 22:09:08 together: 143
+debug 2026/01/12 22:09:08 tuning width: 17
+debug 2026/01/12 22:09:08 meter width: 126
+debug 2026/01/12 22:09:08 together: 155
+debug 2026/01/12 22:09:08 together: 143
+debug 2026/01/12 22:09:08 Audio stream is nil as it should be
+debug 2026/01/12 22:09:08 Opened audio stream!!
+debug 2026/01/12 22:09:08 Opened stream
+debug 2026/01/12 22:09:08 tuning width: 17
+debug 2026/01/12 22:09:08 meter width: 126
+debug 2026/01/12 22:09:08 together: 155
+debug 2026/01/12 22:09:08 together: 143
+debug 2026/01/12 22:09:08 tuning width: 17
+debug 2026/01/12 22:09:08 meter width: 126
+debug 2026/01/12 22:09:08 together: 155
+debug 2026/01/12 22:09:08 together: 143
+debug 2026/01/12 22:11:56 tuning width: 17
+debug 2026/01/12 22:11:56 meter width: 126
+debug 2026/01/12 22:11:56 together: 155
+debug 2026/01/12 22:11:56 together: 143
+debug 2026/01/12 22:11:56 tuning width: 17
+debug 2026/01/12 22:11:56 meter width: 126
+debug 2026/01/12 22:11:56 together: 155
+debug 2026/01/12 22:11:56 together: 143
+debug 2026/01/12 22:11:57 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:11:57 tuning width: 17
+debug 2026/01/12 22:11:57 meter width: 126
+debug 2026/01/12 22:11:57 together: 155
+debug 2026/01/12 22:11:57 together: 143
+debug 2026/01/12 22:11:57 tuning width: 17
+debug 2026/01/12 22:11:57 meter width: 126
+debug 2026/01/12 22:11:57 together: 155
+debug 2026/01/12 22:11:57 together: 143
+debug 2026/01/12 22:12:01 
+debug 2026/01/12 22:12:01 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:12:01 
+debug 2026/01/12 22:12:01 tuning width: -1
+debug 2026/01/12 22:12:01 meter width: -11
+debug 2026/01/12 22:12:01 together: 0
+debug 2026/01/12 22:12:01 tuning width: -1
+debug 2026/01/12 22:12:01 meter width: -11
+debug 2026/01/12 22:12:01 together: 0
+debug 2026/01/12 22:12:01 Terminal width: 155
+debug 2026/01/12 22:12:01 Terminal height: 35
+debug 2026/01/12 22:12:01 tuning width: 17
+debug 2026/01/12 22:12:01 meter width: 126
+debug 2026/01/12 22:12:01 together: 155
+debug 2026/01/12 22:12:01 tuning width: 17
+debug 2026/01/12 22:12:01 meter width: 126
+debug 2026/01/12 22:12:01 together: 155
+debug 2026/01/12 22:12:01 Audio stream is nil as it should be
+debug 2026/01/12 22:12:01 Opened audio stream!!
+debug 2026/01/12 22:12:01 Opened stream
+debug 2026/01/12 22:12:01 tuning width: 17
+debug 2026/01/12 22:12:01 meter width: 126
+debug 2026/01/12 22:12:01 together: 155
+debug 2026/01/12 22:12:01 tuning width: 17
+debug 2026/01/12 22:12:01 meter width: 126
+debug 2026/01/12 22:12:01 together: 155
+debug 2026/01/12 22:12:03 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:12:03 tuning width: 17
+debug 2026/01/12 22:12:03 meter width: 126
+debug 2026/01/12 22:12:03 together: 155
+debug 2026/01/12 22:12:03 tuning width: 17
+debug 2026/01/12 22:12:03 meter width: 126
+debug 2026/01/12 22:12:03 together: 155
+debug 2026/01/12 22:12:10 
+debug 2026/01/12 22:12:10 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:12:10 
+debug 2026/01/12 22:12:10 tuning width: -1
+debug 2026/01/12 22:12:10 meter width: -11
+debug 2026/01/12 22:12:10 together: 0
+debug 2026/01/12 22:12:10 tuning width: -1
+debug 2026/01/12 22:12:10 meter width: -11
+debug 2026/01/12 22:12:10 together: 0
+debug 2026/01/12 22:12:10 Terminal width: 155
+debug 2026/01/12 22:12:10 Terminal height: 35
+debug 2026/01/12 22:12:10 tuning width: 17
+debug 2026/01/12 22:12:10 meter width: 126
+debug 2026/01/12 22:12:10 together: 155
+debug 2026/01/12 22:12:10 tuning width: 17
+debug 2026/01/12 22:12:10 meter width: 126
+debug 2026/01/12 22:12:10 together: 155
+debug 2026/01/12 22:12:10 Audio stream is nil as it should be
+debug 2026/01/12 22:12:10 Opened audio stream!!
+debug 2026/01/12 22:12:10 Opened stream
+debug 2026/01/12 22:12:10 tuning width: 17
+debug 2026/01/12 22:12:10 meter width: 126
+debug 2026/01/12 22:12:10 together: 155
+debug 2026/01/12 22:12:10 tuning width: 17
+debug 2026/01/12 22:12:10 meter width: 126
+debug 2026/01/12 22:12:10 together: 155
+debug 2026/01/12 22:13:36 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:13:36 tuning width: 17
+debug 2026/01/12 22:13:36 meter width: 126
+debug 2026/01/12 22:13:36 together: 155
+debug 2026/01/12 22:13:36 tuning width: 17
+debug 2026/01/12 22:13:36 meter width: 126
+debug 2026/01/12 22:13:36 together: 155
+debug 2026/01/12 22:13:42 
+debug 2026/01/12 22:13:42 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:13:42 
+debug 2026/01/12 22:13:42 tuning width: 0
+debug 2026/01/12 22:13:42 meter width: -6
+debug 2026/01/12 22:13:42 together: 6
+debug 2026/01/12 22:13:42 tuning width: 0
+debug 2026/01/12 22:13:42 meter width: -6
+debug 2026/01/12 22:13:42 together: 6
+debug 2026/01/12 22:13:42 Terminal width: 155
+debug 2026/01/12 22:13:42 Terminal height: 35
+debug 2026/01/12 22:13:42 tuning width: 18
+debug 2026/01/12 22:13:42 meter width: 131
+debug 2026/01/12 22:13:42 together: 161
+debug 2026/01/12 22:13:42 tuning width: 18
+debug 2026/01/12 22:13:42 meter width: 131
+debug 2026/01/12 22:13:42 together: 161
+debug 2026/01/12 22:13:42 Audio stream is nil as it should be
+debug 2026/01/12 22:13:42 Opened audio stream!!
+debug 2026/01/12 22:13:42 Opened stream
+debug 2026/01/12 22:13:42 tuning width: 18
+debug 2026/01/12 22:13:42 meter width: 131
+debug 2026/01/12 22:13:42 together: 161
+debug 2026/01/12 22:13:42 tuning width: 18
+debug 2026/01/12 22:13:42 meter width: 131
+debug 2026/01/12 22:13:42 together: 161
+debug 2026/01/12 22:14:06 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:14:06 tuning width: 18
+debug 2026/01/12 22:14:06 meter width: 131
+debug 2026/01/12 22:14:06 together: 161
+debug 2026/01/12 22:14:06 tuning width: 18
+debug 2026/01/12 22:14:06 meter width: 131
+debug 2026/01/12 22:14:06 together: 161
+debug 2026/01/12 22:14:09 
+debug 2026/01/12 22:14:09 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:14:09 
+debug 2026/01/12 22:14:09 tuning width: 0
+debug 2026/01/12 22:14:09 meter width: -6
+debug 2026/01/12 22:14:09 together: 0
+debug 2026/01/12 22:14:09 tuning width: 0
+debug 2026/01/12 22:14:09 meter width: -6
+debug 2026/01/12 22:14:09 together: 0
+debug 2026/01/12 22:14:09 Terminal width: 155
+debug 2026/01/12 22:14:09 Terminal height: 35
+debug 2026/01/12 22:14:09 tuning width: 18
+debug 2026/01/12 22:14:09 meter width: 131
+debug 2026/01/12 22:14:09 together: 155
+debug 2026/01/12 22:14:09 Audio stream is nil as it should be
+debug 2026/01/12 22:14:09 tuning width: 18
+debug 2026/01/12 22:14:09 meter width: 131
+debug 2026/01/12 22:14:09 together: 155
+debug 2026/01/12 22:14:09 Opened audio stream!!
+debug 2026/01/12 22:14:09 Opened stream
+debug 2026/01/12 22:14:09 tuning width: 18
+debug 2026/01/12 22:14:09 meter width: 131
+debug 2026/01/12 22:14:09 together: 155
+debug 2026/01/12 22:14:09 tuning width: 18
+debug 2026/01/12 22:14:09 meter width: 131
+debug 2026/01/12 22:14:09 together: 155
+debug 2026/01/12 22:14:35 tuning width: 18
+debug 2026/01/12 22:14:35 meter width: 131
+debug 2026/01/12 22:14:35 together: 155
+debug 2026/01/12 22:14:57 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:14:57 tuning width: 18
+debug 2026/01/12 22:14:57 meter width: 131
+debug 2026/01/12 22:14:57 together: 155
+debug 2026/01/12 22:14:57 tuning width: 18
+debug 2026/01/12 22:14:57 meter width: 131
+debug 2026/01/12 22:14:57 together: 155
+debug 2026/01/12 22:15:02 
+debug 2026/01/12 22:15:02 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:15:02 
+debug 2026/01/12 22:15:02 tuning width: 0
+debug 2026/01/12 22:15:02 meter width: -4
+debug 2026/01/12 22:15:02 together: 0
+debug 2026/01/12 22:15:02 tuning width: 0
+debug 2026/01/12 22:15:02 meter width: -4
+debug 2026/01/12 22:15:02 together: 0
+debug 2026/01/12 22:15:02 Terminal width: 155
+debug 2026/01/12 22:15:02 Terminal height: 35
+debug 2026/01/12 22:15:02 tuning width: 18
+debug 2026/01/12 22:15:02 meter width: 133
+debug 2026/01/12 22:15:02 together: 155
+debug 2026/01/12 22:15:02 tuning width: 18
+debug 2026/01/12 22:15:02 meter width: 133
+debug 2026/01/12 22:15:02 together: 155
+debug 2026/01/12 22:15:02 Audio stream is nil as it should be
+debug 2026/01/12 22:15:02 Opened audio stream!!
+debug 2026/01/12 22:15:02 Opened stream
+debug 2026/01/12 22:15:02 tuning width: 18
+debug 2026/01/12 22:15:02 meter width: 133
+debug 2026/01/12 22:15:02 together: 155
+debug 2026/01/12 22:15:02 tuning width: 18
+debug 2026/01/12 22:15:02 meter width: 133
+debug 2026/01/12 22:15:02 together: 155
+debug 2026/01/12 22:15:05 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:15:05 tuning width: 18
+debug 2026/01/12 22:15:05 meter width: 133
+debug 2026/01/12 22:15:05 together: 155
+debug 2026/01/12 22:15:05 tuning width: 18
+debug 2026/01/12 22:15:05 meter width: 133
+debug 2026/01/12 22:15:05 together: 155
+debug 2026/01/12 22:15:46 
+debug 2026/01/12 22:15:46 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:15:46 
+debug 2026/01/12 22:15:47 tuning width: 0
+debug 2026/01/12 22:15:47 meter width: -6
+debug 2026/01/12 22:15:47 together: 0
+debug 2026/01/12 22:15:47 tuning width: 0
+debug 2026/01/12 22:15:47 meter width: -6
+debug 2026/01/12 22:15:47 together: 0
+debug 2026/01/12 22:15:47 Terminal width: 155
+debug 2026/01/12 22:15:47 Terminal height: 35
+debug 2026/01/12 22:15:47 tuning width: 18
+debug 2026/01/12 22:15:47 meter width: 131
+debug 2026/01/12 22:15:47 together: 155
+debug 2026/01/12 22:15:47 tuning width: 18
+debug 2026/01/12 22:15:47 meter width: 131
+debug 2026/01/12 22:15:47 together: 155
+debug 2026/01/12 22:15:47 Audio stream is nil as it should be
+debug 2026/01/12 22:15:47 Opened audio stream!!
+debug 2026/01/12 22:15:47 Opened stream
+debug 2026/01/12 22:15:47 tuning width: 18
+debug 2026/01/12 22:15:47 meter width: 131
+debug 2026/01/12 22:15:47 together: 155
+debug 2026/01/12 22:15:47 tuning width: 18
+debug 2026/01/12 22:15:47 meter width: 131
+debug 2026/01/12 22:15:47 together: 155
+debug 2026/01/12 22:15:48 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:15:48 tuning width: 18
+debug 2026/01/12 22:15:48 meter width: 131
+debug 2026/01/12 22:15:48 together: 155
+debug 2026/01/12 22:15:48 tuning width: 18
+debug 2026/01/12 22:15:48 meter width: 131
+debug 2026/01/12 22:15:48 together: 155
+debug 2026/01/12 22:15:56 
+debug 2026/01/12 22:15:56 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:15:56 
+debug 2026/01/12 22:15:56 tuning width: 0
+debug 2026/01/12 22:15:56 meter width: -6
+debug 2026/01/12 22:15:56 together: 0
+debug 2026/01/12 22:15:56 tuning width: 0
+debug 2026/01/12 22:15:56 meter width: -6
+debug 2026/01/12 22:15:56 together: 0
+debug 2026/01/12 22:15:56 Terminal width: 155
+debug 2026/01/12 22:15:56 Terminal height: 35
+debug 2026/01/12 22:15:56 tuning width: 18
+debug 2026/01/12 22:15:56 meter width: 131
+debug 2026/01/12 22:15:56 together: 155
+debug 2026/01/12 22:15:56 tuning width: 18
+debug 2026/01/12 22:15:56 meter width: 131
+debug 2026/01/12 22:15:56 together: 155
+debug 2026/01/12 22:15:56 Audio stream is nil as it should be
+debug 2026/01/12 22:15:56 Opened audio stream!!
+debug 2026/01/12 22:15:56 Opened stream
+debug 2026/01/12 22:15:56 tuning width: 18
+debug 2026/01/12 22:15:56 meter width: 131
+debug 2026/01/12 22:15:56 together: 155
+debug 2026/01/12 22:15:56 tuning width: 18
+debug 2026/01/12 22:15:56 meter width: 131
+debug 2026/01/12 22:15:56 together: 155
+debug 2026/01/12 22:15:58 Terminal width: 212
+debug 2026/01/12 22:15:58 Terminal height: 51
+debug 2026/01/12 22:15:58 tuning width: 25
+debug 2026/01/12 22:15:58 meter width: 181
+debug 2026/01/12 22:15:58 together: 212
+debug 2026/01/12 22:16:01 Terminal width: 155
+debug 2026/01/12 22:16:01 Terminal height: 35
+debug 2026/01/12 22:16:01 tuning width: 18
+debug 2026/01/12 22:16:01 meter width: 131
+debug 2026/01/12 22:16:01 together: 155
+debug 2026/01/12 22:18:52 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:18:52 tuning width: 18
+debug 2026/01/12 22:18:52 meter width: 131
+debug 2026/01/12 22:18:52 together: 155
+debug 2026/01/12 22:18:52 tuning width: 18
+debug 2026/01/12 22:18:52 meter width: 131
+debug 2026/01/12 22:18:52 together: 155
+debug 2026/01/12 22:18:56 
+debug 2026/01/12 22:18:56 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:18:56 
+debug 2026/01/12 22:18:57 tuning width: 0
+debug 2026/01/12 22:18:57 meter width: -6
+debug 2026/01/12 22:18:57 together: 0
+debug 2026/01/12 22:18:57 tuning width: 0
+debug 2026/01/12 22:18:57 meter width: -6
+debug 2026/01/12 22:18:57 together: 0
+debug 2026/01/12 22:18:57 Terminal width: 155
+debug 2026/01/12 22:18:57 Terminal height: 35
+debug 2026/01/12 22:18:57 tuning width: 18
+debug 2026/01/12 22:18:57 meter width: 131
+debug 2026/01/12 22:18:57 together: 155
+debug 2026/01/12 22:18:57 tuning width: 18
+debug 2026/01/12 22:18:57 meter width: 131
+debug 2026/01/12 22:18:57 together: 155
+debug 2026/01/12 22:18:57 Audio stream is nil as it should be
+debug 2026/01/12 22:18:57 Opened audio stream!!
+debug 2026/01/12 22:18:57 Opened stream
+debug 2026/01/12 22:18:57 tuning width: 18
+debug 2026/01/12 22:18:57 meter width: 131
+debug 2026/01/12 22:18:57 together: 155
+debug 2026/01/12 22:18:57 tuning width: 18
+debug 2026/01/12 22:18:57 meter width: 131
+debug 2026/01/12 22:18:57 together: 155
+debug 2026/01/12 22:19:01 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:19:01 tuning width: 18
+debug 2026/01/12 22:19:01 meter width: 131
+debug 2026/01/12 22:19:01 together: 155
+debug 2026/01/12 22:19:01 tuning width: 18
+debug 2026/01/12 22:19:01 meter width: 131
+debug 2026/01/12 22:19:01 together: 155
+debug 2026/01/12 22:20:47 
+debug 2026/01/12 22:20:47 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:20:47 
+debug 2026/01/12 22:20:47 tuning width: 0
+debug 2026/01/12 22:20:47 meter width: -6
+debug 2026/01/12 22:20:47 together: 0
+debug 2026/01/12 22:20:47 tuning width: 0
+debug 2026/01/12 22:20:47 meter width: -6
+debug 2026/01/12 22:20:47 together: 0
+debug 2026/01/12 22:20:47 Terminal width: 155
+debug 2026/01/12 22:20:47 Terminal height: 35
+debug 2026/01/12 22:20:47 tuning width: 18
+debug 2026/01/12 22:20:47 meter width: 131
+debug 2026/01/12 22:20:47 together: 155
+debug 2026/01/12 22:20:47 tuning width: 18
+debug 2026/01/12 22:20:47 meter width: 131
+debug 2026/01/12 22:20:47 together: 155
+debug 2026/01/12 22:20:47 Audio stream is nil as it should be
+debug 2026/01/12 22:20:47 Opened audio stream!!
+debug 2026/01/12 22:20:47 Opened stream
+debug 2026/01/12 22:20:47 tuning width: 18
+debug 2026/01/12 22:20:47 meter width: 131
+debug 2026/01/12 22:20:47 together: 155
+debug 2026/01/12 22:20:47 tuning width: 18
+debug 2026/01/12 22:20:47 meter width: 131
+debug 2026/01/12 22:20:47 together: 155
+debug 2026/01/12 22:21:01 tuning width: 18
+debug 2026/01/12 22:21:01 meter width: 131
+debug 2026/01/12 22:21:01 together: 155
+debug 2026/01/12 22:21:05 tuning width: 18
+debug 2026/01/12 22:21:05 meter width: 131
+debug 2026/01/12 22:21:05 together: 155
+debug 2026/01/12 22:21:06 tuning width: 18
+debug 2026/01/12 22:21:06 meter width: 131
+debug 2026/01/12 22:21:06 together: 155
+debug 2026/01/12 22:21:08 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:21:08 tuning width: 18
+debug 2026/01/12 22:21:08 meter width: 131
+debug 2026/01/12 22:21:08 together: 155
+debug 2026/01/12 22:21:08 tuning width: 18
+debug 2026/01/12 22:21:08 meter width: 131
+debug 2026/01/12 22:21:08 together: 155
+debug 2026/01/12 22:21:23 
+debug 2026/01/12 22:21:23 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:21:23 
+debug 2026/01/12 22:21:23 tuning width: 0
+debug 2026/01/12 22:21:23 meter width: -6
+debug 2026/01/12 22:21:23 together: 0
+debug 2026/01/12 22:21:23 tuning width: 0
+debug 2026/01/12 22:21:23 meter width: -6
+debug 2026/01/12 22:21:23 together: 0
+debug 2026/01/12 22:21:23 Terminal width: 155
+debug 2026/01/12 22:21:23 Terminal height: 35
+debug 2026/01/12 22:21:23 tuning width: 18
+debug 2026/01/12 22:21:23 meter width: 131
+debug 2026/01/12 22:21:23 together: 155
+debug 2026/01/12 22:21:23 tuning width: 18
+debug 2026/01/12 22:21:23 meter width: 131
+debug 2026/01/12 22:21:23 together: 155
+debug 2026/01/12 22:21:23 Audio stream is nil as it should be
+debug 2026/01/12 22:21:23 Opened audio stream!!
+debug 2026/01/12 22:21:23 Opened stream
+debug 2026/01/12 22:21:23 tuning width: 18
+debug 2026/01/12 22:21:23 meter width: 131
+debug 2026/01/12 22:21:23 together: 155
+debug 2026/01/12 22:21:23 tuning width: 18
+debug 2026/01/12 22:21:23 meter width: 131
+debug 2026/01/12 22:21:23 together: 155
+debug 2026/01/12 22:21:25 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:21:25 tuning width: 18
+debug 2026/01/12 22:21:25 meter width: 131
+debug 2026/01/12 22:21:25 together: 155
+debug 2026/01/12 22:21:25 tuning width: 18
+debug 2026/01/12 22:21:25 meter width: 131
+debug 2026/01/12 22:21:25 together: 155
+debug 2026/01/12 22:22:01 
+debug 2026/01/12 22:22:01 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:22:01 
+debug 2026/01/12 22:22:01 tuning width: 0
+debug 2026/01/12 22:22:01 meter width: -6
+debug 2026/01/12 22:22:01 together: 0
+debug 2026/01/12 22:22:01 tuning width: 0
+debug 2026/01/12 22:22:01 meter width: -6
+debug 2026/01/12 22:22:01 together: 0
+debug 2026/01/12 22:22:01 Terminal width: 155
+debug 2026/01/12 22:22:01 Terminal height: 35
+debug 2026/01/12 22:22:01 tuning width: 18
+debug 2026/01/12 22:22:01 meter width: 131
+debug 2026/01/12 22:22:01 together: 155
+debug 2026/01/12 22:22:01 tuning width: 18
+debug 2026/01/12 22:22:01 meter width: 131
+debug 2026/01/12 22:22:01 together: 155
+debug 2026/01/12 22:22:01 Audio stream is nil as it should be
+debug 2026/01/12 22:22:01 Opened audio stream!!
+debug 2026/01/12 22:22:01 Opened stream
+debug 2026/01/12 22:22:01 tuning width: 18
+debug 2026/01/12 22:22:01 meter width: 131
+debug 2026/01/12 22:22:01 together: 155
+debug 2026/01/12 22:22:01 tuning width: 18
+debug 2026/01/12 22:22:01 meter width: 131
+debug 2026/01/12 22:22:01 together: 155
+debug 2026/01/12 22:22:04 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:22:04 tuning width: 18
+debug 2026/01/12 22:22:04 meter width: 131
+debug 2026/01/12 22:22:04 together: 155
+debug 2026/01/12 22:22:04 tuning width: 18
+debug 2026/01/12 22:22:04 meter width: 131
+debug 2026/01/12 22:22:04 together: 155
+debug 2026/01/12 22:23:49 
+debug 2026/01/12 22:23:49 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:23:49 
+debug 2026/01/12 22:23:49 tuning width: 0
+debug 2026/01/12 22:23:49 meter width: -6
+debug 2026/01/12 22:23:49 together: 0
+debug 2026/01/12 22:23:49 tuning width: 0
+debug 2026/01/12 22:23:49 meter width: -6
+debug 2026/01/12 22:23:49 together: 0
+debug 2026/01/12 22:23:49 Terminal width: 155
+debug 2026/01/12 22:23:49 Terminal height: 35
+debug 2026/01/12 22:23:49 tuning width: 18
+debug 2026/01/12 22:23:49 meter width: 131
+debug 2026/01/12 22:23:49 together: 155
+debug 2026/01/12 22:23:49 tuning width: 18
+debug 2026/01/12 22:23:49 meter width: 131
+debug 2026/01/12 22:23:49 together: 155
+debug 2026/01/12 22:23:49 Audio stream is nil as it should be
+debug 2026/01/12 22:23:49 Opened audio stream!!
+debug 2026/01/12 22:23:49 Opened stream
+debug 2026/01/12 22:23:49 tuning width: 18
+debug 2026/01/12 22:23:49 meter width: 131
+debug 2026/01/12 22:23:49 together: 155
+debug 2026/01/12 22:23:49 tuning width: 18
+debug 2026/01/12 22:23:49 meter width: 131
+debug 2026/01/12 22:23:49 together: 155
+debug 2026/01/12 22:23:51 tuning width: 18
+debug 2026/01/12 22:23:51 meter width: 131
+debug 2026/01/12 22:23:51 together: 155
+debug 2026/01/12 22:24:10 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:24:10 tuning width: 18
+debug 2026/01/12 22:24:10 meter width: 131
+debug 2026/01/12 22:24:10 together: 155
+debug 2026/01/12 22:24:10 tuning width: 18
+debug 2026/01/12 22:24:10 meter width: 131
+debug 2026/01/12 22:24:10 together: 155
+debug 2026/01/12 22:24:13 
+debug 2026/01/12 22:24:13 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:24:13 
+debug 2026/01/12 22:24:13 tuning width: 0
+debug 2026/01/12 22:24:13 meter width: -6
+debug 2026/01/12 22:24:13 together: 0
+debug 2026/01/12 22:24:13 tuning width: 0
+debug 2026/01/12 22:24:13 meter width: -6
+debug 2026/01/12 22:24:13 together: 0
+debug 2026/01/12 22:24:13 Terminal width: 155
+debug 2026/01/12 22:24:13 Terminal height: 35
+debug 2026/01/12 22:24:13 tuning width: 18
+debug 2026/01/12 22:24:13 meter width: 131
+debug 2026/01/12 22:24:13 together: 155
+debug 2026/01/12 22:24:13 tuning width: 18
+debug 2026/01/12 22:24:13 meter width: 131
+debug 2026/01/12 22:24:13 together: 155
+debug 2026/01/12 22:24:13 Audio stream is nil as it should be
+debug 2026/01/12 22:24:13 Opened audio stream!!
+debug 2026/01/12 22:24:13 Opened stream
+debug 2026/01/12 22:24:13 tuning width: 18
+debug 2026/01/12 22:24:13 meter width: 131
+debug 2026/01/12 22:24:13 together: 155
+debug 2026/01/12 22:24:13 tuning width: 18
+debug 2026/01/12 22:24:13 meter width: 131
+debug 2026/01/12 22:24:13 together: 155
+debug 2026/01/12 22:24:15 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:24:15 tuning width: 18
+debug 2026/01/12 22:24:15 meter width: 131
+debug 2026/01/12 22:24:15 together: 155
+debug 2026/01/12 22:24:15 tuning width: 18
+debug 2026/01/12 22:24:15 meter width: 131
+debug 2026/01/12 22:24:15 together: 155
+debug 2026/01/12 22:24:33 
+debug 2026/01/12 22:24:33 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:24:33 
+debug 2026/01/12 22:24:34 tuning width: 0
+debug 2026/01/12 22:24:34 meter width: -6
+debug 2026/01/12 22:24:34 together: 0
+debug 2026/01/12 22:24:34 tuning width: 0
+debug 2026/01/12 22:24:34 meter width: -6
+debug 2026/01/12 22:24:34 together: 0
+debug 2026/01/12 22:24:34 Terminal width: 155
+debug 2026/01/12 22:24:34 Terminal height: 35
+debug 2026/01/12 22:24:34 tuning width: 18
+debug 2026/01/12 22:24:34 meter width: 131
+debug 2026/01/12 22:24:34 together: 155
+debug 2026/01/12 22:24:34 tuning width: 18
+debug 2026/01/12 22:24:34 meter width: 131
+debug 2026/01/12 22:24:34 together: 155
+debug 2026/01/12 22:24:34 Audio stream is nil as it should be
+debug 2026/01/12 22:24:34 Opened audio stream!!
+debug 2026/01/12 22:24:34 Opened stream
+debug 2026/01/12 22:24:34 tuning width: 18
+debug 2026/01/12 22:24:34 meter width: 131
+debug 2026/01/12 22:24:34 together: 155
+debug 2026/01/12 22:24:34 tuning width: 18
+debug 2026/01/12 22:24:34 meter width: 131
+debug 2026/01/12 22:24:34 together: 155
+debug 2026/01/12 22:24:35 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:24:35 tuning width: 18
+debug 2026/01/12 22:24:35 meter width: 131
+debug 2026/01/12 22:24:35 together: 155
+debug 2026/01/12 22:24:35 tuning width: 18
+debug 2026/01/12 22:24:35 meter width: 131
+debug 2026/01/12 22:24:35 together: 155
+debug 2026/01/12 22:24:38 
+debug 2026/01/12 22:24:38 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:24:38 
+debug 2026/01/12 22:24:38 tuning width: 0
+debug 2026/01/12 22:24:38 meter width: -6
+debug 2026/01/12 22:24:38 together: 0
+debug 2026/01/12 22:24:38 tuning width: 0
+debug 2026/01/12 22:24:38 meter width: -6
+debug 2026/01/12 22:24:38 together: 0
+debug 2026/01/12 22:24:38 Terminal width: 155
+debug 2026/01/12 22:24:38 Terminal height: 35
+debug 2026/01/12 22:24:38 tuning width: 18
+debug 2026/01/12 22:24:38 meter width: 131
+debug 2026/01/12 22:24:38 together: 155
+debug 2026/01/12 22:24:38 tuning width: 18
+debug 2026/01/12 22:24:38 meter width: 131
+debug 2026/01/12 22:24:38 together: 155
+debug 2026/01/12 22:24:38 Audio stream is nil as it should be
+debug 2026/01/12 22:24:38 Opened audio stream!!
+debug 2026/01/12 22:24:38 Opened stream
+debug 2026/01/12 22:24:38 tuning width: 18
+debug 2026/01/12 22:24:38 meter width: 131
+debug 2026/01/12 22:24:38 together: 155
+debug 2026/01/12 22:24:38 tuning width: 18
+debug 2026/01/12 22:24:38 meter width: 131
+debug 2026/01/12 22:24:38 together: 155
+debug 2026/01/12 22:24:41 tuning width: 18
+debug 2026/01/12 22:24:41 meter width: 131
+debug 2026/01/12 22:24:41 together: 155
+debug 2026/01/12 22:25:36 tuning width: 18
+debug 2026/01/12 22:25:36 meter width: 131
+debug 2026/01/12 22:25:36 together: 155
+debug 2026/01/12 22:25:36 tuning width: 18
+debug 2026/01/12 22:25:36 meter width: 131
+debug 2026/01/12 22:25:36 together: 155
+debug 2026/01/12 22:25:36 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:25:36 tuning width: 18
+debug 2026/01/12 22:25:36 meter width: 131
+debug 2026/01/12 22:25:36 together: 155
+debug 2026/01/12 22:25:36 tuning width: 18
+debug 2026/01/12 22:25:36 meter width: 131
+debug 2026/01/12 22:25:36 together: 155
+debug 2026/01/12 22:25:39 
+debug 2026/01/12 22:25:39 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:25:39 
+debug 2026/01/12 22:25:40 tuning width: 0
+debug 2026/01/12 22:25:40 meter width: -6
+debug 2026/01/12 22:25:40 together: 0
+debug 2026/01/12 22:25:40 tuning width: 0
+debug 2026/01/12 22:25:40 meter width: -6
+debug 2026/01/12 22:25:40 together: 0
+debug 2026/01/12 22:25:40 Terminal width: 155
+debug 2026/01/12 22:25:40 Terminal height: 35
+debug 2026/01/12 22:25:40 tuning width: 18
+debug 2026/01/12 22:25:40 meter width: 131
+debug 2026/01/12 22:25:40 together: 155
+debug 2026/01/12 22:25:40 tuning width: 18
+debug 2026/01/12 22:25:40 meter width: 131
+debug 2026/01/12 22:25:40 together: 155
+debug 2026/01/12 22:25:40 Audio stream is nil as it should be
+debug 2026/01/12 22:25:40 Opened audio stream!!
+debug 2026/01/12 22:25:40 Opened stream
+debug 2026/01/12 22:25:40 tuning width: 18
+debug 2026/01/12 22:25:40 meter width: 131
+debug 2026/01/12 22:25:40 together: 155
+debug 2026/01/12 22:25:40 tuning width: 18
+debug 2026/01/12 22:25:40 meter width: 131
+debug 2026/01/12 22:25:40 together: 155
+debug 2026/01/12 22:26:09 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:26:09 tuning width: 18
+debug 2026/01/12 22:26:09 meter width: 131
+debug 2026/01/12 22:26:09 together: 155
+debug 2026/01/12 22:26:09 tuning width: 18
+debug 2026/01/12 22:26:09 meter width: 131
+debug 2026/01/12 22:26:09 together: 155
+debug 2026/01/12 22:26:12 
+debug 2026/01/12 22:26:12 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:26:12 
+debug 2026/01/12 22:26:12 tuning width: 0
+debug 2026/01/12 22:26:12 meter width: -6
+debug 2026/01/12 22:26:12 together: 0
+debug 2026/01/12 22:26:12 tuning width: 0
+debug 2026/01/12 22:26:12 meter width: -6
+debug 2026/01/12 22:26:12 together: 0
+debug 2026/01/12 22:26:12 Terminal width: 155
+debug 2026/01/12 22:26:12 Terminal height: 35
+debug 2026/01/12 22:26:12 tuning width: 18
+debug 2026/01/12 22:26:12 meter width: 131
+debug 2026/01/12 22:26:12 together: 155
+debug 2026/01/12 22:26:12 tuning width: 18
+debug 2026/01/12 22:26:12 meter width: 131
+debug 2026/01/12 22:26:12 together: 155
+debug 2026/01/12 22:26:12 Audio stream is nil as it should be
+debug 2026/01/12 22:26:12 Opened audio stream!!
+debug 2026/01/12 22:26:12 Opened stream
+debug 2026/01/12 22:26:12 tuning width: 18
+debug 2026/01/12 22:26:12 meter width: 131
+debug 2026/01/12 22:26:12 together: 155
+debug 2026/01/12 22:26:12 tuning width: 18
+debug 2026/01/12 22:26:12 meter width: 131
+debug 2026/01/12 22:26:12 together: 155
+debug 2026/01/12 22:26:14 tuning width: 18
+debug 2026/01/12 22:26:14 meter width: 131
+debug 2026/01/12 22:26:14 together: 155
+debug 2026/01/12 22:27:19 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:27:19 tuning width: 18
+debug 2026/01/12 22:27:19 meter width: 131
+debug 2026/01/12 22:27:19 together: 155
+debug 2026/01/12 22:27:19 tuning width: 18
+debug 2026/01/12 22:27:19 meter width: 131
+debug 2026/01/12 22:27:19 together: 155
+debug 2026/01/12 22:27:23 
+debug 2026/01/12 22:27:23 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:27:23 
+debug 2026/01/12 22:27:23 tuning width: 0
+debug 2026/01/12 22:27:23 meter width: -6
+debug 2026/01/12 22:27:23 together: 0
+debug 2026/01/12 22:27:23 tuning width: 0
+debug 2026/01/12 22:27:23 meter width: -6
+debug 2026/01/12 22:27:23 together: 0
+debug 2026/01/12 22:27:23 Terminal width: 155
+debug 2026/01/12 22:27:23 Terminal height: 35
+debug 2026/01/12 22:27:23 tuning width: 18
+debug 2026/01/12 22:27:23 meter width: 131
+debug 2026/01/12 22:27:23 together: 155
+debug 2026/01/12 22:27:23 tuning width: 18
+debug 2026/01/12 22:27:23 meter width: 131
+debug 2026/01/12 22:27:23 together: 155
+debug 2026/01/12 22:27:23 Audio stream is nil as it should be
+debug 2026/01/12 22:27:23 Opened audio stream!!
+debug 2026/01/12 22:27:23 Opened stream
+debug 2026/01/12 22:27:23 tuning width: 18
+debug 2026/01/12 22:27:23 meter width: 131
+debug 2026/01/12 22:27:23 together: 155
+debug 2026/01/12 22:27:23 tuning width: 18
+debug 2026/01/12 22:27:23 meter width: 131
+debug 2026/01/12 22:27:23 together: 155
+debug 2026/01/12 22:27:47 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:27:47 tuning width: 18
+debug 2026/01/12 22:27:47 meter width: 131
+debug 2026/01/12 22:27:47 together: 155
+debug 2026/01/12 22:27:47 tuning width: 18
+debug 2026/01/12 22:27:47 meter width: 131
+debug 2026/01/12 22:27:47 together: 155
+debug 2026/01/12 22:27:50 
+debug 2026/01/12 22:27:50 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:27:50 
+debug 2026/01/12 22:27:50 tuning width: 0
+debug 2026/01/12 22:27:50 meter width: -6
+debug 2026/01/12 22:27:50 together: 0
+debug 2026/01/12 22:27:50 tuning width: 0
+debug 2026/01/12 22:27:50 meter width: -6
+debug 2026/01/12 22:27:50 together: 0
+debug 2026/01/12 22:27:50 Terminal width: 155
+debug 2026/01/12 22:27:50 Terminal height: 35
+debug 2026/01/12 22:27:50 tuning width: 18
+debug 2026/01/12 22:27:50 meter width: 131
+debug 2026/01/12 22:27:50 together: 155
+debug 2026/01/12 22:27:50 tuning width: 18
+debug 2026/01/12 22:27:50 meter width: 131
+debug 2026/01/12 22:27:50 together: 155
+debug 2026/01/12 22:27:50 Audio stream is nil as it should be
+debug 2026/01/12 22:27:50 Opened audio stream!!
+debug 2026/01/12 22:27:50 Opened stream
+debug 2026/01/12 22:27:50 tuning width: 18
+debug 2026/01/12 22:27:50 meter width: 131
+debug 2026/01/12 22:27:50 together: 155
+debug 2026/01/12 22:27:50 tuning width: 18
+debug 2026/01/12 22:27:50 meter width: 131
+debug 2026/01/12 22:27:50 together: 155
+debug 2026/01/12 22:27:51 ERROR STOPPING AUDIO STREAM
+debug 2026/01/12 22:27:51 tuning width: 18
+debug 2026/01/12 22:27:51 meter width: 131
+debug 2026/01/12 22:27:51 together: 155
+debug 2026/01/12 22:27:51 tuning width: 18
+debug 2026/01/12 22:27:51 meter width: 131
+debug 2026/01/12 22:27:51 together: 155
+debug 2026/01/12 22:28:42 
+debug 2026/01/12 22:28:42 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 22:28:42 
+debug 2026/01/12 22:28:42 tuning width: 0
+debug 2026/01/12 22:28:42 meter width: -6
+debug 2026/01/12 22:28:42 together: 0
+debug 2026/01/12 22:28:42 tuning width: 0
+debug 2026/01/12 22:28:42 meter width: -6
+debug 2026/01/12 22:28:42 together: 0
+debug 2026/01/12 22:28:42 Terminal width: 155
+debug 2026/01/12 22:28:42 Terminal height: 35
+debug 2026/01/12 22:28:42 tuning width: 18
+debug 2026/01/12 22:28:42 meter width: 131
+debug 2026/01/12 22:28:42 together: 155
+debug 2026/01/12 22:28:42 tuning width: 18
+debug 2026/01/12 22:28:42 meter width: 131
+debug 2026/01/12 22:28:42 together: 155
+debug 2026/01/12 22:28:42 Audio stream is nil as it should be
+debug 2026/01/12 22:28:42 Opened audio stream!!
+debug 2026/01/12 22:28:42 Opened stream
+debug 2026/01/12 22:28:42 tuning width: 18
+debug 2026/01/12 22:28:42 meter width: 131
+debug 2026/01/12 22:28:42 together: 155
+debug 2026/01/12 22:28:42 tuning width: 18
+debug 2026/01/12 22:28:42 meter width: 131
+debug 2026/01/12 22:28:42 together: 155
+debug 2026/01/12 22:28:52 Terminal width: 212
+debug 2026/01/12 22:28:52 Terminal height: 51
+debug 2026/01/12 22:28:52 tuning width: 25
+debug 2026/01/12 22:28:52 meter width: 181
+debug 2026/01/12 22:28:52 together: 212
+debug 2026/01/12 22:28:58 Terminal width: 155
+debug 2026/01/12 22:28:58 Terminal height: 35
+debug 2026/01/12 22:28:58 tuning width: 18
+debug 2026/01/12 22:28:58 meter width: 131
+debug 2026/01/12 22:28:58 together: 155
+debug 2026/01/12 22:28:59 Terminal width: 212
+debug 2026/01/12 22:28:59 Terminal height: 51
+debug 2026/01/12 22:28:59 tuning width: 25
+debug 2026/01/12 22:28:59 meter width: 181
+debug 2026/01/12 22:28:59 together: 212
+debug 2026/01/12 22:29:00 Terminal width: 155
+debug 2026/01/12 22:29:00 Terminal height: 35
+debug 2026/01/12 22:29:00 tuning width: 18
+debug 2026/01/12 22:29:00 meter width: 131
+debug 2026/01/12 22:29:00 together: 155
+debug 2026/01/12 22:29:01 Terminal width: 212
+debug 2026/01/12 22:29:01 Terminal height: 51
+debug 2026/01/12 22:29:01 tuning width: 25
+debug 2026/01/12 22:29:01 meter width: 181
+debug 2026/01/12 22:29:01 together: 212
+debug 2026/01/12 22:29:03 tuning width: 25
+debug 2026/01/12 22:29:03 meter width: 181
+debug 2026/01/12 22:29:03 together: 212
+debug 2026/01/12 22:29:05 tuning width: 25
+debug 2026/01/12 22:29:05 meter width: 181
+debug 2026/01/12 22:29:05 together: 212
+debug 2026/01/12 22:29:08 tuning width: 25
+debug 2026/01/12 22:29:08 meter width: 181
+debug 2026/01/12 22:29:08 together: 212
+debug 2026/01/12 22:29:09 tuning width: 25
+debug 2026/01/12 22:29:09 meter width: 181
+debug 2026/01/12 22:29:09 together: 212
+debug 2026/01/12 22:29:10 tuning width: 25
+debug 2026/01/12 22:29:10 meter width: 181
+debug 2026/01/12 22:29:10 together: 212
+debug 2026/01/12 22:29:11 tuning width: 25
+debug 2026/01/12 22:29:11 meter width: 181
+debug 2026/01/12 22:29:11 together: 212

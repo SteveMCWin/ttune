@@ -49,7 +49,7 @@ func NewModel() Model {
 	m := Model {
 		BlockLength: BL,
 		CurrentState:   Initializing,
-		SelectedTuning: tuning.Tunings["standard"],
+		SelectedTuning: tuning.Tunings[tuning.Standard],
 		Theme:          DefaultTheme,
 		Buffer: make([]float32, BL),
 		Buffer64: make([]float64, BL),

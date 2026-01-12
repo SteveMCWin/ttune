@@ -7,17 +7,43 @@ import (
 	// "os"
 	// "strings"
 
+	"log"
+
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss/v2"
 	// "github.com/charmbracelet/lipgloss/v2"
 )
 
 func (m Model) View() tea.View {
 
-	// doc := strings.Builder{}
+	boxStyle = boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
+	title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
+	title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
 
-	title := boxStyle.Width(m.WindowWidth).Height(TITLE_HEIGHT).Render("tTuner - " + string(m.CurrentState))
+	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
+	tuning_width := whole_widht/8
+	boxStyle = boxStyle.Width(tuning_width).Height(m.WindowHeight - title_height+1)
+	log.Println("tuning width:", tuning_width)
+	tuning_contents := "Tuning: " + m.SelectedTuning.Name + "\n\n\n"
+	for _, t := range m.SelectedTuning.Notes {
+		tuning_contents = tuning_contents + t + "\n\n"
+	}
+	tuning_contents = tuning_contents[:len(tuning_contents)-2]
+	tuning_box := boxStyle.Render(tuning_contents)
 
-	view := tea.NewView(title)
+	meter_width := whole_widht - tuning_width + 2
+	boxStyle = boxStyle.Width(meter_width).Height(m.WindowHeight - title_height+1)
+	meter_box := boxStyle.Render("Tuning meter goes here :^D")
+	log.Println("meter width:", whole_widht-tuning_width)
+	log.Println("together:", whole_widht + boxStyle.GetHorizontalFrameSize())
+
+	main_content := lipgloss.JoinHorizontal(lipgloss.Center, tuning_box, meter_box)
+
+	instructions := lipgloss.NewStyle().Foreground(m.Theme.TextUnyped).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render("q - quit   s - settings   h - help")
+	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
+	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)
+
+	view := tea.NewView(all_contents)
 	view.AltScreen = true
 	return view
 }

@@ -5,7 +5,12 @@ import (
 	"strings"
 )
 
+const (
+	Standard string = "Standard"
+)
+
 type Tuning struct {
+	Name string
 	Notes []string
 }
 var Tunings map[string]Tuning
@@ -17,6 +22,6 @@ const SEP_CHAR = ";"
 
 func init() {
 	Tunings = make(map[string]Tuning)
-	Tunings["standard"] = Tuning{ Notes:  strings.Split(STD_TUNE_STR, SEP_CHAR) }
+	Tunings[Standard] = Tuning{ Name: Standard, Notes:  strings.Split(STD_TUNE_STR, SEP_CHAR) }
 	log.Println(Tunings["standard"])
 }
