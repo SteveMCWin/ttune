@@ -18,12 +18,14 @@ const SAMPLE_RATE = 44100 // NOTE: should be loaded through settings
 var noteNames = []string{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"}
 
 func (m *Model) calcHannWindow() tea.Cmd {
-	m.Window = make([]float64, m.BlockLength)
-	for n := range BL {
-		m.Window[n] = 0.5 * (1.0 - math.Cos(2.0*math.Pi*float64(n)/float64(BL-1)))
-	}
+	return func() tea.Msg {
+		m.Window = make([]float64, m.BlockLength)
+		for n := range BL {
+			m.Window[n] = 0.5 * (1.0 - math.Cos(2.0*math.Pi*float64(n)/float64(BL-1)))
+		}
 
-	return nil
+		return nil
+	}
 }
 
 func (m *Model) applyWindowToBuffer() {
@@ -65,6 +67,9 @@ func (m *Model) GetNote() {
 	m.CentsOff = (semitone - nearestSemitone) * 100
 
 	noteIndex := int(nearestSemitone-1) % 12
+	for noteIndex < 0 {
+		noteIndex += 12
+	}
 	octave := int(nearestSemitone-1) / 12
 
 	m.Note = fmt.Sprintf("%s%d", noteNames[noteIndex], octave)
@@ -79,13 +84,19 @@ func (m *Model) DoTheThing() {
 }
 
 func (m *Model) openAudioStream() tea.Cmd {
-	var err error
-	m.AudioStream, err = portaudio.OpenDefaultStream(1, 0, SAMPLE_RATE, BL, m.Buffer)
-	if err != nil {
-		log.Println("ERROR opening audio stream")
-	}
+	return func() tea.Msg {
+		if m.AudioStream == nil {
+			log.Println("Audio stream is nil as it should be")
+		}
+		stream, err := portaudio.OpenDefaultStream(1, 0, SAMPLE_RATE, BL, m.Buffer)
+		if err != nil {
+			log.Println("ERROR opening audio stream")
+		} else {
+			log.Println("Opened audio stream!!")
+		}
 
-	return nil
+		return OpenStreamMsg(stream)
+	}
 }
 
 // func old_main() {

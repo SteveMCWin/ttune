@@ -7,6 +7,8 @@ import (
 	"github.com/charmbracelet/lipgloss/v2"
 )
 
+const TITLE_HEIGHT = 3
+
 type ColorTheme struct {
 	Primary    color.Color
 	Secondary  color.Color
@@ -52,21 +54,23 @@ var (
 	activeTabStyle    = inactiveTabStyle.Border(activeTabBorder, true)
 	tabGapLeft        = inactiveTabStyle.Border(tabGapBorderLeft, true)
 	tabGapRight       = inactiveTabStyle.Border(tabGapBorderRight, true)
-	windowStyle       = lipgloss.NewStyle().Padding(2).Align(lipgloss.Left, lipgloss.Center).Border(lipgloss.RoundedBorder()).UnsetBorderTop()
-	quoteStyle        = lipgloss.NewStyle().Foreground(DefaultTheme.TextUnyped)
-	typedStyle        = lipgloss.NewStyle().Foreground(DefaultTheme.TextTyped)
-	errorStyle        = lipgloss.NewStyle().Foreground(DefaultTheme.TextError)
-	contentStyle      = lipgloss.NewStyle().Padding(0, 8)
+	boxStyle          = lipgloss.NewStyle().Padding(2).Align(lipgloss.Center).Border(lipgloss.RoundedBorder())
+	// windowStyle       = lipgloss.NewStyle().Padding(2).Align(lipgloss.Left, lipgloss.Center).Border(lipgloss.RoundedBorder()).UnsetBorderTop()
+	// quoteStyle        = lipgloss.NewStyle().Foreground(DefaultTheme.TextUnyped)
+	// typedStyle        = lipgloss.NewStyle().Foreground(DefaultTheme.TextTyped)
+	// errorStyle        = lipgloss.NewStyle().Foreground(DefaultTheme.TextError)
+	// contentStyle      = lipgloss.NewStyle().Padding(0, 8)
 )
 
 func (t ColorTheme) SetCurrentTheme(isDark bool) func() tea.Msg {
 	var lightDark = lipgloss.LightDark(isDark)
 	return func() tea.Msg {
-		inactiveTabStyle = inactiveTabStyle.BorderForeground(lightDark(t.Accent, t.AccentLight)).Foreground(lightDark(t.Secondary, t.SecondaryLight))
-		activeTabStyle = activeTabStyle.BorderForeground(lightDark(t.Accent, t.AccentLight)).Foreground(lightDark(t.Accent, t.AccentLight))
-		tabGapLeft = tabGapLeft.BorderForeground(lightDark(t.Accent, t.AccentLight))
-		tabGapRight = tabGapRight.BorderForeground(lightDark(t.Accent, t.AccentLight))
-		windowStyle = windowStyle.BorderForeground(lightDark(t.Accent, t.AccentLight))
+		boxStyle = boxStyle.BorderForeground(lightDark(t.Accent, t.AccentLight)).Foreground(lightDark(t.Secondary, t.SecondaryLight))
+		// inactiveTabStyle = inactiveTabStyle.BorderForeground(lightDark(t.Accent, t.AccentLight)).Foreground(lightDark(t.Secondary, t.SecondaryLight))
+		// activeTabStyle = activeTabStyle.BorderForeground(lightDark(t.Accent, t.AccentLight)).Foreground(lightDark(t.Accent, t.AccentLight))
+		// tabGapLeft = tabGapLeft.BorderForeground(lightDark(t.Accent, t.AccentLight))
+		// tabGapRight = tabGapRight.BorderForeground(lightDark(t.Accent, t.AccentLight))
+		// windowStyle = windowStyle.BorderForeground(lightDark(t.Accent, t.AccentLight))
 		return nil
 	}
 }

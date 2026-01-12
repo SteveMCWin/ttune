@@ -2,8 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
-	"strings"
 
 	"tuner/tuning"
 
@@ -11,12 +9,14 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-type State int
+type OpenStreamMsg *portaudio.Stream
+type State string
 
 const (
-	Tuning State = iota
-	Settings
-	Help
+	Initializing State = "Initializing"
+	Listening State = "Listening"
+	Settings State = "Settings"
+	Help State = "Help"
 )
 
 type Model struct {
@@ -25,6 +25,9 @@ type Model struct {
 
 	Theme ColorTheme
 	// err      error
+
+	WindowWidth int
+	WindowHeight int
 
 	Buffer      []float32
 	Buffer64    []float64
@@ -44,10 +47,13 @@ type Model struct {
 func NewModel() Model {
 
 	m := Model {
-		CurrentState:   Tuning,
+		BlockLength: BL,
+		CurrentState:   Initializing,
 		SelectedTuning: tuning.Tunings["standard"],
 		Theme:          DefaultTheme,
 		Buffer: make([]float32, BL),
+		Buffer64: make([]float64, BL),
+		Window: make([]float64, BL),
 	}
 
 
@@ -84,8 +90,10 @@ func (m *Model) CloseAudioStream() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmds := make([]tea.Cmd, 0)
 
-	switch m.CurrentState {
-	case Tuning:
+	if m.CurrentState == Listening {
+		if m.AudioStream == nil {
+			log.Println("Audio stream is nil?!?!?!")
+		}
 		m.AudioStream.Read()
 		m.buffTo64()
 		m.applyWindowToBuffer()
@@ -102,10 +110,19 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "?", "h":
 			m.CurrentState = Help
 		case "backspace", "escape":
-			m.CurrentState = Tuning
+			m.CurrentState = Listening
 		case "s", "tab":
 			m.CurrentState = Settings
 		}
+	case tea.WindowSizeMsg:
+		log.Println("Terminal width:", message.Width)
+		log.Println("Terminal height:", message.Height)
+		m.WindowWidth = message.Width
+		m.WindowHeight = message.Height
+	case OpenStreamMsg:
+		log.Println("Opened stream")
+		m.AudioStream = message
+		m.CurrentState = Listening
 	default:
 	}
 

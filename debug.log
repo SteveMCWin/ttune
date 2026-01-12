@@ -1,0 +1,36 @@
+debug 2026/01/12 19:46:47 
+debug 2026/01/12 19:46:47 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 19:46:47 
+debug 2026/01/12 19:46:47 Terminal width: 212
+debug 2026/01/12 19:46:47 Terminal height: 51
+debug 2026/01/12 19:46:47 Audio stream is nil as it should be
+debug 2026/01/12 19:46:47 Opened audio stream!!
+debug 2026/01/12 19:46:47 Opened stream
+debug 2026/01/12 19:46:47 Unable to run tui:program was killed: program experienced a panic
+debug 2026/01/12 19:47:37 
+debug 2026/01/12 19:47:37 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 19:47:37 
+debug 2026/01/12 19:47:37 Terminal width: 212
+debug 2026/01/12 19:47:37 Terminal height: 51
+debug 2026/01/12 19:47:37 Audio stream is nil as it should be
+debug 2026/01/12 19:47:37 Opened audio stream!!
+debug 2026/01/12 19:47:37 Opened stream
+debug 2026/01/12 19:47:37 Unable to run tui:program was killed: program experienced a panic
+debug 2026/01/12 19:48:11 
+debug 2026/01/12 19:48:11 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 19:48:11 
+debug 2026/01/12 19:48:11 Terminal width: 212
+debug 2026/01/12 19:48:11 Terminal height: 51
+debug 2026/01/12 19:48:11 Audio stream is nil as it should be
+debug 2026/01/12 19:48:11 Opened audio stream!!
+debug 2026/01/12 19:48:11 Opened stream
+debug 2026/01/12 19:48:11 Unable to run tui:program was killed: program experienced a panic
+debug 2026/01/12 19:50:36 
+debug 2026/01/12 19:50:36 ~~~~~~~~~PROGRAM START~~~~~~~~~
+debug 2026/01/12 19:50:36 
+debug 2026/01/12 19:50:36 Terminal width: 212
+debug 2026/01/12 19:50:36 Terminal height: 51
+debug 2026/01/12 19:50:36 Audio stream is nil as it should be
+debug 2026/01/12 19:50:36 Opened audio stream!!
+debug 2026/01/12 19:50:36 Opened stream
+debug 2026/01/12 19:50:40 ERROR STOPPING AUDIO STREAM

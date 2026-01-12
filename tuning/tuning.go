@@ -1,6 +1,9 @@
 package tuning
 
-import "strings"
+import (
+	"log"
+	"strings"
+)
 
 type Tuning struct {
 	Notes []string
@@ -13,5 +16,7 @@ const STD_TUNE_STR = "E2;A2;D3;G3;B3;E4"
 const SEP_CHAR = ";"
 
 func init() {
+	Tunings = make(map[string]Tuning)
 	Tunings["standard"] = Tuning{ Notes:  strings.Split(STD_TUNE_STR, SEP_CHAR) }
+	log.Println(Tunings["standard"])
 }
