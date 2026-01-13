@@ -19,6 +19,11 @@ const (
 	Help State = "Help"
 )
 
+type Note struct {
+	Index int
+	Octave int
+}
+
 type Model struct {
 	// windowWidth  int
 	// windowHeight int
@@ -34,7 +39,7 @@ type Model struct {
 	BlockLength int
 	Window      []float64
 	Frequency   float64
-	Note        string
+	Note        Note
 	CentsOff    float64
 
 	AudioStream *portaudio.Stream
@@ -91,9 +96,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmds := make([]tea.Cmd, 0)
 
 	if m.CurrentState == Listening {
-		if m.AudioStream == nil {
-			log.Println("Audio stream is nil?!?!?!")
-		}
 		m.AudioStream.Read()
 		m.buffTo64()
 		m.applyWindowToBuffer()

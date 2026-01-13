@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"math"
 	"math/cmplx"
+	"tuner/tuning"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/gordonklaus/portaudio"
@@ -14,8 +14,6 @@ import (
 
 const BL = 4096 * 2       // NOTE: should be loaded through settings
 const SAMPLE_RATE = 44100 // NOTE: should be loaded through settings
-
-var noteNames = []string{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"}
 
 func (m *Model) calcHannWindow() tea.Cmd {
 	return func() tea.Msg {
@@ -57,7 +55,8 @@ func (m *Model) calculateFrequency() {
 
 func (m *Model) GetNote() {
 	if m.Frequency < 20 {
-		m.Note = "---"
+		m.Note.Index = 0
+		m.Note.Octave = 0
 		m.CentsOff = 0
 	}
 
@@ -72,7 +71,8 @@ func (m *Model) GetNote() {
 	}
 	octave := int(nearestSemitone-1) / 12
 
-	m.Note = fmt.Sprintf("%s%d", noteNames[noteIndex], octave)
+	m.Note.Index = noteIndex
+	m.Note.Octave = octave
 }
 
 func (m *Model) DoTheThing() {
@@ -97,6 +97,32 @@ func (m *Model) openAudioStream() tea.Cmd {
 
 		return OpenStreamMsg(stream)
 	}
+}
+
+func (m *Model) prevNote() Note {
+	res := Note {
+		Index: (m.Note.Index-1+len(tuning.NoteNames))%len(tuning.NoteNames),
+		Octave: m.Note.Octave,
+	}
+
+	if res.Index > m.Note.Index {
+		res.Octave -= 1
+	}
+
+	return res
+}
+
+func (m *Model) nextNote() Note {
+	res := Note {
+		Index: (m.Note.Index+1)%len(tuning.NoteNames),
+		Octave: m.Note.Octave,
+	}
+
+	if res.Index < m.Note.Index {
+		res.Octave += 1
+	}
+
+	return res
 }
 
 // func old_main() {

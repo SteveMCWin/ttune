@@ -13,7 +13,10 @@ type Tuning struct {
 	Name string
 	Notes []string
 }
+
 var Tunings map[string]Tuning
+
+var NoteNames = []string{"C ", "C#", "D ", "D#", "E ", "F ", "F#", "G ", "G#", "A ", "A#", "B "}
 
 // NOTE: place this in a file where each line starts with tuning name and then the notes
 // this way the user can add their own tunings
