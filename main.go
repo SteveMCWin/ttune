@@ -25,7 +25,5 @@ func main() {
 	p := tea.NewProgram(m)
 	if _, err := p.Run(); err != nil {
 		log.Fatal("Unable to run tui:", err)
-		m.AudioStream.Stop()
-		m.AudioStream.Close()
 	}
 }

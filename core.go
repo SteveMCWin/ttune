@@ -15,31 +15,49 @@ import (
 const BL = 4096 * 2       // NOTE: should be loaded through settings
 const SAMPLE_RATE = 44100 // NOTE: should be loaded through settings
 
-func (m *Model) calcHannWindow() tea.Cmd {
+var AudioStream *portaudio.Stream
+var Buffer []float32
+var Buffer64 []float64
+var Window []float64
+
+func initAutioStream() tea.Cmd {
 	return func() tea.Msg {
-		m.Window = make([]float64, m.BlockLength)
+		if AudioStream == nil {
+			log.Println("Audio stream is nil as it should be")
+		}
+		Buffer = make([]float32, BL)
+		Buffer64 = make([]float64, BL)
+		Window = make([]float64, BL)
 		for n := range BL {
-			m.Window[n] = 0.5 * (1.0 - math.Cos(2.0*math.Pi*float64(n)/float64(BL-1)))
+			Window[n] = 0.5 * (1.0 - math.Cos(2.0*math.Pi*float64(n)/float64(BL-1)))
 		}
 
-		return nil
+		var err error
+		AudioStream, err = portaudio.OpenDefaultStream(1, 0, SAMPLE_RATE, BL, Buffer)
+		if err != nil {
+			log.Println("ERROR opening audio stream")
+		} else {
+			log.Println("Opened audio stream!!")
+		}
+
+		return OpenStreamMsg(AudioStream)
 	}
 }
 
-func (m *Model) applyWindowToBuffer() {
+func applyWindowToBuffer() {
 	for i := range BL {
-		m.Buffer64[i] *= m.Window[i]
+		Buffer64[i] *= Window[i]
 	}
 }
 
-func (m *Model) buffTo64() {
-	for i := range m.BlockLength {
-		m.Buffer64[i] = float64(m.Buffer[i])
+func buffTo64() {
+	for i := range BL {
+		Buffer64[i] = float64(Buffer[i])
 	}
 }
 
-func (m *Model) calculateFrequency() {
-	comp := fft.FFTReal(m.Buffer64)
+func calculateFrequency() float64 {
+	comp := fft.FFTReal(Buffer64)
 	var max_mag float64 = 0
 	var max_mag_idx int = 0
 	for i := range len(comp) / 2 {
@@ -50,75 +68,68 @@ func (m *Model) calculateFrequency() {
 		}
 	}
 
-	m.Frequency = float64(max_mag_idx) * SAMPLE_RATE / BL
+	return float64(max_mag_idx) * SAMPLE_RATE / BL
 }
 
-func (m *Model) GetNote() {
-	if m.Frequency < 20 {
-		m.Note.Index = 0
-		m.Note.Octave = 0
-		m.CentsOff = 0
+func FrequencyToNote(freq float64) Note {
+	res := Note{}
+	if freq < 20 {
+		return res
 	}
 
-	semitone := 12*math.Log2(m.Frequency/440.0) + 58.0
+	semitone := 12*math.Log2(freq/440.0) + 58.0
 	nearestSemitone := math.Round(semitone)
 
-	m.CentsOff = (semitone - nearestSemitone) * 100
+	res.CentsOff = int((semitone - nearestSemitone) * 100)
 
-	noteIndex := int(nearestSemitone-1) % 12
+	noteIndex := int(nearestSemitone-1) % tuning.NUM_SEMITONES
 	for noteIndex < 0 {
-		noteIndex += 12
+		noteIndex += tuning.NUM_SEMITONES
 	}
-	octave := int(nearestSemitone-1) / 12
+	octave := int(nearestSemitone-1) / tuning.NUM_SEMITONES
 
-	m.Note.Index = noteIndex
-	m.Note.Octave = octave
+	res.Index = noteIndex
+	res.Octave = octave
+
+	return res
 }
 
-func (m *Model) DoTheThing() {
-	m.AudioStream.Read()
-	m.buffTo64()
-	m.applyWindowToBuffer()
-	m.calculateFrequency()
-	m.GetNote()
-}
-
-func (m *Model) openAudioStream() tea.Cmd {
+func CalculateNote() tea.Cmd {
 	return func() tea.Msg {
-		if m.AudioStream == nil {
-			log.Println("Audio stream is nil as it should be")
+		var note Note
+		if AudioStream == nil {
+			return NoteReadingMsg(note)
 		}
-		stream, err := portaudio.OpenDefaultStream(1, 0, SAMPLE_RATE, BL, m.Buffer)
-		if err != nil {
-			log.Println("ERROR opening audio stream")
-		} else {
-			log.Println("Opened audio stream!!")
-		}
+		AudioStream.Read()
+		buffTo64()
+		applyWindowToBuffer()
+		frequency := calculateFrequency()
+		note = FrequencyToNote(frequency)
 
-		return OpenStreamMsg(stream)
+		return NoteReadingMsg(note)
 	}
 }
 
-func (m *Model) prevNote() Note {
+func prevNote(n Note) Note {
 	res := Note {
-		Index: (m.Note.Index-1+len(tuning.NoteNames))%len(tuning.NoteNames),
-		Octave: m.Note.Octave,
+		Index: (n.Index-1+len(tuning.NoteNames))%len(tuning.NoteNames),
+		Octave: n.Octave,
 	}
 
-	if res.Index > m.Note.Index {
+	if res.Index > n.Index {
 		res.Octave -= 1
 	}
 
 	return res
 }
 
-func (m *Model) nextNote() Note {
+func nextNote(n Note) Note {
 	res := Note {
-		Index: (m.Note.Index+1)%len(tuning.NoteNames),
-		Octave: m.Note.Octave,
+		Index: (n.Index+1)%len(tuning.NoteNames),
+		Octave: n.Octave,
 	}
 
-	if res.Index < m.Note.Index {
+	if res.Index < n.Index {
 		res.Octave += 1
 	}
 

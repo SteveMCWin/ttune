@@ -10,6 +10,7 @@ import (
 )
 
 type OpenStreamMsg *portaudio.Stream
+type NoteReadingMsg Note
 type State string
 
 const (
@@ -22,27 +23,21 @@ const (
 type Note struct {
 	Index int
 	Octave int
+	CentsOff int
 }
 
 type Model struct {
-	// windowWidth  int
-	// windowHeight int
-
 	Theme ColorTheme
-	// err      error
 
 	WindowWidth int
 	WindowHeight int
 
-	Buffer      []float32
-	Buffer64    []float64
 	BlockLength int
-	Window      []float64
 	Frequency   float64
 	Note        Note
 	CentsOff    float64
 
-	AudioStream *portaudio.Stream
+	// AudioStream *portaudio.Stream
 
 	CurrentState State
 
@@ -56,11 +51,7 @@ func NewModel() Model {
 		CurrentState:   Initializing,
 		SelectedTuning: tuning.Tunings[tuning.Standard],
 		Theme:          DefaultTheme,
-		Buffer: make([]float32, BL),
-		Buffer64: make([]float64, BL),
-		Window: make([]float64, BL),
 	}
-
 
 	return m
 }
@@ -72,43 +63,37 @@ func LoadLocalData() tea.Msg {
 func (m Model) Init() tea.Cmd {
 	cmds := []tea.Cmd{
 		m.Theme.SetCurrentTheme(true), // NOTE: hard coded for testing
-		m.calcHannWindow(),
-		m.openAudioStream(),
+		initAutioStream(),
 	}
 
 	return tea.Batch(cmds...) // NOTE: set curr theme should be replaced with a function that loads save data and that handles the theme
 }
 
-func (m *Model) CloseAudioStream() tea.Cmd {
-	err := m.AudioStream.Stop()
-	if err != nil {
-		log.Println("ERROR STOPPING AUDIO STREAM")
-	}
-
-	err = m.AudioStream.Close()
-	if err != nil {
-		log.Println("ERROR CLOSING AUDIO STREAM")
-	}
-	return nil
-}
+// func (m *Model) CloseAudioStream() tea.Cmd {
+// 	err := m.AudioStream.Stop()
+// 	if err != nil {
+// 		log.Println("ERROR STOPPING AUDIO STREAM")
+// 	}
+//
+// 	err = m.AudioStream.Close()
+// 	if err != nil {
+// 		log.Println("ERROR CLOSING AUDIO STREAM")
+// 	}
+// 	return nil
+// }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmds := make([]tea.Cmd, 0)
-
-	if m.CurrentState == Listening {
-		m.AudioStream.Read()
-		m.buffTo64()
-		m.applyWindowToBuffer()
-		m.calculateFrequency()
-		m.GetNote()
-	}
+	cmds = append(cmds, CalculateNote())
 
 	switch message := msg.(type) {
+	case NoteReadingMsg:
+		m.Note = Note(message)
 	case tea.KeyMsg:
 		switch message.String() {
 		case "ctrl+c", "q":
-			seq := tea.Sequence(m.CloseAudioStream(), tea.Quit)
-			cmds = append(cmds, seq)
+			// seq := tea.Sequence(m.CloseAudioStream(), tea.Quit)
+			cmds = append(cmds, tea.Quit)
 		case "?", "h":
 			m.CurrentState = Help
 		case "backspace", "escape":
@@ -117,13 +102,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.CurrentState = Settings
 		}
 	case tea.WindowSizeMsg:
-		log.Println("Terminal width:", message.Width)
-		log.Println("Terminal height:", message.Height)
+		// log.Println("Terminal width:", message.Width)
+		// log.Println("Terminal height:", message.Height)
 		m.WindowWidth = message.Width
 		m.WindowHeight = message.Height
 	case OpenStreamMsg:
 		log.Println("Opened stream")
-		m.AudioStream = message
 		m.CurrentState = Listening
 	default:
 	}

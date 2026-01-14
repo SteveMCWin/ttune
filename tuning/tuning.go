@@ -23,6 +23,8 @@ var NoteNames = []string{"C ", "C#", "D ", "D#", "E ", "F ", "F#", "G ", "G#", "
 const STD_TUNE_STR = "E2;A2;D3;G3;B3;E4"
 const SEP_CHAR = ";"
 
+const NUM_SEMITONES = 12
+
 func init() {
 	Tunings = make(map[string]Tuning)
 	Tunings[Standard] = Tuning{ Name: Standard, Notes:  strings.Split(STD_TUNE_STR, SEP_CHAR) }

@@ -31,7 +31,6 @@ func (m Model) View() tea.View {
 	}
 
 	boxStyle = boxStyle.Width(tuning_width).Height(m.WindowHeight - title_height+1)
-	log.Println("tuning width:", tuning_width)
 	tuning_contents := "Tuning: " + m.SelectedTuning.Name + "\n\n\n"
 	for _, t := range m.SelectedTuning.Notes {
 		tuning_contents = tuning_contents + t + "\n\n"
@@ -41,14 +40,13 @@ func (m Model) View() tea.View {
 
 
 	meter_content_width := (int)(0.8 * (float32)(meter_box_width - boxStyle.GetHorizontalFrameSize()))
-	log.Println("Meter content width:", meter_content_width)
 	meter_notes_arr := make([]byte, meter_content_width)
 	for i := range meter_content_width {
 		meter_notes_arr[i] = ' '
 	}
 
-	prev_note := m.prevNote()
-	next_note := m.nextNote()
+	prev_note := prevNote(m.Note)
+	next_note := nextNote(m.Note)
 	curr_full_note := []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave))
 	prev_full_note := []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[prev_note.Index], prev_note.Octave))
 	next_full_note := []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[next_note.Index], next_note.Octave))
