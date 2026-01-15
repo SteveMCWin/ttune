@@ -1,19 +1,12 @@
 package main
 
 import (
-	// "fmt"
-	// "log"
-
-	// "os"
-	// "strings"
 
 	"fmt"
-	"log"
 	"tuner/tuning"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
-	// "github.com/charmbracelet/lipgloss/v2"
 )
 
 func (m Model) View() tea.View {
@@ -69,8 +62,6 @@ func (m Model) View() tea.View {
 
 	boxStyle = boxStyle.Width(meter_box_width).Height(m.WindowHeight - title_height+1)
 	meter_box := boxStyle.Render(meter_content)
-	log.Println("meter width:", whole_widht-tuning_width)
-	log.Println("together:", whole_widht + boxStyle.GetHorizontalFrameSize())
 
 	main_content := lipgloss.JoinHorizontal(lipgloss.Center, tuning_box, meter_box)
 
