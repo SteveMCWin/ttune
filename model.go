@@ -84,16 +84,22 @@ func (m Model) Init() tea.Cmd {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmds := make([]tea.Cmd, 0)
-	cmds = append(cmds, CalculateNote())
 
 	switch message := msg.(type) {
 	case NoteReadingMsg:
-		m.Note = Note(message)
+		new_note := Note(message)
+		if m.Note.Index != new_note.Index || m.Note.CentsOff != new_note.CentsOff {
+			log.Printf("Old note: %2s%d %3d   New note: %2s%d %3d\n",
+				tuning.NoteNames[m.Note.Index], m.Note.Octave, m.Note.CentsOff,
+				tuning.NoteNames[new_note.Index], new_note.Octave, new_note.CentsOff)
+		}
+		m.Note = new_note
+		cmds = append(cmds, CalculateNote())
 	case tea.KeyMsg:
 		switch message.String() {
 		case "ctrl+c", "q":
-			// seq := tea.Sequence(m.CloseAudioStream(), tea.Quit)
-			cmds = append(cmds, tea.Quit)
+			seq := tea.Sequence(closeAudioStream(), tea.Quit)
+			cmds = append(cmds, seq)
 		case "?", "h":
 			m.CurrentState = Help
 		case "backspace", "escape":
@@ -109,6 +115,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case OpenStreamMsg:
 		log.Println("Opened stream")
 		m.CurrentState = Listening
+		cmds = append(cmds, CalculateNote())
 	default:
 	}
 
