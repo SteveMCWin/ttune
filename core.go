@@ -3,13 +3,10 @@ package main
 import (
 	"log"
 	"math"
-	"math/cmplx"
 	"tuner/tuning"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/gordonklaus/portaudio"
-
-	"github.com/mjibson/go-dsp/fft"
 )
 
 const BL = 4096 * 2       // NOTE: should be loaded through settings
@@ -19,19 +16,21 @@ const MIN_FREQUENCY = 70
 const MAX_FREQUENCY = 1500
 
 const MIN_AMPLITUDE_THRESHOLD = 0.01
-const MIN_CLARITY_RATIO = 2.0
+const YIN_THRESHOLD = 0.10 // Lower = stricter detection, reduces harmonic errors
+
+// YIN power threshold - helps filter weak detections
+const YIN_POWER_THRESHOLD = 0.85
 
 const MIN_BIN = MIN_FREQUENCY * BL / SAMPLE_RATE
 const MAX_BIN = MAX_FREQUENCY * BL / SAMPLE_RATE
 
 var frequencyHistory []float64
 
-const HISTORY_SIZE = 3
+const HISTORY_SIZE = 5 // Increased for better smoothing
 
 var AudioStream *portaudio.Stream
 var Buffer []float32
 var Buffer64 []float64
-var Window []float64
 
 func freq_to_octave(freq float64) int {
 	var i int
@@ -52,10 +51,6 @@ func initAutioStream() tea.Cmd {
 		}
 		Buffer = make([]float32, BL)
 		Buffer64 = make([]float64, BL)
-		Window = make([]float64, BL)
-		for n := range BL {
-			Window[n] = 0.5 * (1.0 - math.Cos(2.0*math.Pi*float64(n)/float64(BL-1)))
-		}
 
 		var err error
 		AudioStream, err = portaudio.OpenDefaultStream(1, 0, SAMPLE_RATE, BL, Buffer)
@@ -94,12 +89,6 @@ func closeAudioStream() tea.Cmd {
 	}
 }
 
-func applyWindowToBuffer() {
-	for i := range BL {
-		Buffer64[i] *= Window[i]
-	}
-}
-
 func buffTo64() {
 	for i := range BL {
 		Buffer64[i] = float64(Buffer[i])
@@ -115,73 +104,119 @@ func checkSignalStrength() bool {
 	return rms > MIN_AMPLITUDE_THRESHOLD
 }
 
-func calculateFrequency() (float64, bool) {
-	comp := fft.FFTReal(Buffer64)
-
-	// Convert frequency to bin indices
-	minBin := MIN_FREQUENCY * BL / SAMPLE_RATE
-	maxBin := MAX_FREQUENCY * BL / SAMPLE_RATE
-
-	if maxBin > len(comp)/2 {
-		log.Println("Max bin is larger than len(comp)")
-		maxBin = len(comp) / 2
-	}
-
-	// Find peak magnitude within our frequency range
-	var maxMag float64 = 0
-	var maxMagIdx int = 0
-	var sumMag float64 = 0
-	var count int = 0
-
-	for i := minBin; i < maxBin; i++ {
-		magnitude := cmplx.Abs(comp[i])
-		sumMag += magnitude
-		count++
-
-		if magnitude > maxMag {
-			maxMag = magnitude
-			maxMagIdx = i
+// YIN Algorithm Implementation
+func yinDifference(buffer []float64, tauMax int) []float64 {
+	diff := make([]float64, tauMax)
+	
+	for tau := 0; tau < tauMax; tau++ {
+		for i := 0; i < len(buffer)-tauMax; i++ {
+			delta := buffer[i] - buffer[i+tau]
+			diff[tau] += delta * delta
 		}
 	}
-
-	// Check if peak is clear enough (stands out from noise)
-	avgMag := sumMag / float64(count)
-	clarityRatio := maxMag / avgMag
-
-	if clarityRatio < MIN_CLARITY_RATIO {
-		log.Printf("Signal not clear enough: clarity ratio %.2f (need %.2f)\n",
-			clarityRatio, MIN_CLARITY_RATIO)
-		return 0, false
-	}
-
-	// Parabolic interpolation for sub-bin accuracy
-	// This significantly improves frequency resolution
-	freq := parabolicInterpolation(comp, maxMagIdx)
-
-	log.Printf("Peak at bin %d, interpolated freq: %.2f Hz, clarity: %.2f\n",
-		maxMagIdx, freq, clarityRatio)
-
-	return freq, true
+	
+	return diff
 }
 
-func parabolicInterpolation(spectrum []complex128, peakBin int) float64 {
-	if peakBin <= 0 || peakBin >= len(spectrum)-1 {
-		return float64(peakBin) * SAMPLE_RATE / BL
+func yinCumulativeMeanNormalizedDifference(diff []float64) []float64 {
+	cmndf := make([]float64, len(diff))
+	cmndf[0] = 1.0
+	
+	runningSum := 0.0
+	for tau := 1; tau < len(diff); tau++ {
+		runningSum += diff[tau]
+		if runningSum == 0 {
+			cmndf[tau] = 1.0
+		} else {
+			cmndf[tau] = diff[tau] / (runningSum / float64(tau))
+		}
 	}
+	
+	return cmndf
+}
 
-	// Get magnitudes of peak and neighbors
-	alpha := cmplx.Abs(spectrum[peakBin-1])
-	beta := cmplx.Abs(spectrum[peakBin])
-	gamma := cmplx.Abs(spectrum[peakBin+1])
+func yinAbsoluteThreshold(cmndf []float64, threshold float64, tauMin int) int {
+	tau := tauMin
+	
+	// Find first tau where cmndf drops below threshold
+	for tau < len(cmndf) {
+		if cmndf[tau] < threshold {
+			// Find the minimum in the valley
+			for tau+1 < len(cmndf) && cmndf[tau+1] < cmndf[tau] {
+				tau++
+			}
+			
+			// Additional check: verify this is a strong period
+			// by checking the power at this tau
+			if cmndf[tau] < YIN_POWER_THRESHOLD {
+				return tau
+			}
+		}
+		tau++
+	}
+	
+	// No period found below threshold, return minimum cmndf
+	minTau := tauMin
+	minVal := cmndf[tauMin]
+	for tau := tauMin + 1; tau < len(cmndf); tau++ {
+		if cmndf[tau] < minVal {
+			minVal = cmndf[tau]
+			minTau = tau
+		}
+	}
+	
+	return minTau
+}
 
-	// Parabolic interpolation formula
-	p := 0.5 * (alpha - gamma) / (alpha - 2*beta + gamma)
+func yinParabolicInterpolation(cmndf []float64, tau int) float64 {
+	if tau < 1 || tau >= len(cmndf)-1 {
+		return float64(tau)
+	}
+	
+	s0 := cmndf[tau-1]
+	s1 := cmndf[tau]
+	s2 := cmndf[tau+1]
+	
+	// Parabolic interpolation
+	adjustment := (s2 - s0) / (2 * (2*s1 - s2 - s0))
+	
+	return float64(tau) + adjustment
+}
 
-	// Interpolated bin position
-	interpolatedBin := float64(peakBin) + p
-
-	// Convert to frequency
-	return interpolatedBin * SAMPLE_RATE / BL
+func calculateFrequencyYIN() (float64, bool) {
+	// Calculate tau range based on frequency range
+	tauMin := int(math.Round(float64(SAMPLE_RATE) / MAX_FREQUENCY))
+	tauMax := int(math.Round(float64(SAMPLE_RATE) / MIN_FREQUENCY))
+	
+	if tauMax > len(Buffer64)/2 {
+		tauMax = len(Buffer64) / 2
+	}
+	
+	// Step 1: Calculate difference function
+	diff := yinDifference(Buffer64, tauMax)
+	
+	// Step 2: Cumulative mean normalized difference
+	cmndf := yinCumulativeMeanNormalizedDifference(diff)
+	
+	// Step 3: Absolute threshold
+	tau := yinAbsoluteThreshold(cmndf, YIN_THRESHOLD, tauMin)
+	
+	// Check if we found a valid period
+	if tau == 0 || cmndf[tau] >= 1.0 {
+		log.Printf("YIN: No clear pitch detected (cmndf[%d] = %.3f)\n", tau, cmndf[tau])
+		return 0, false
+	}
+	
+	// Step 4: Parabolic interpolation for better accuracy
+	betterTau := yinParabolicInterpolation(cmndf, tau)
+	
+	// Convert tau to frequency
+	frequency := float64(SAMPLE_RATE) / betterTau
+	
+	log.Printf("YIN: tau=%d, interpolated=%.2f, freq=%.2f Hz, confidence=%.3f\n",
+		tau, betterTau, frequency, 1.0-cmndf[tau])
+	
+	return frequency, true
 }
 
 func medianFilter(values []float64) float64 {
@@ -211,6 +246,23 @@ func medianFilter(values []float64) float64 {
 }
 
 func smoothFrequency(freq float64) float64 {
+	// Check if frequency is a likely harmonic error
+	// If new frequency is very different, clear history
+	if len(frequencyHistory) > 0 {
+		lastFreq := frequencyHistory[len(frequencyHistory)-1]
+		ratio := freq / lastFreq
+		
+		// If jump is near a harmonic ratio (2x, 3x, 0.5x, 0.33x), it's suspicious
+		// Allow small variations, but reset on large jumps
+		if ratio > 1.8 || ratio < 0.55 {
+			// Large jump detected, might be harmonic error
+			// Only reset if the jump is really significant
+			log.Printf("Frequency jump detected: %.2f -> %.2f (ratio: %.2f)\n", lastFreq, freq, ratio)
+			frequencyHistory = []float64{freq}
+			return freq
+		}
+	}
+	
 	frequencyHistory = append(frequencyHistory, freq)
 	if len(frequencyHistory) > HISTORY_SIZE {
 		frequencyHistory = frequencyHistory[1:]
@@ -260,12 +312,11 @@ func CalculateNote() tea.Cmd {
 		// Check signal strength before processing
 		if !checkSignalStrength() {
 			log.Println("Signal too weak, skipping...")
-			// Return empty note to indicate no clear signal
 			return NoteReadingMsg(note)
 		}
 
-		applyWindowToBuffer()
-		frequency, isValid := calculateFrequency()
+		// Use YIN algorithm instead of FFT
+		frequency, isValid := calculateFrequencyYIN()
 
 		if !isValid {
 			log.Println("Invalid frequency detection")
