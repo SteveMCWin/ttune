@@ -22,13 +22,13 @@ func main() {
 	log.Println("~~~~~~~~~PROGRAM START~~~~~~~~~")
 	log.Println()
 
+	// Suppress ALSA warnings during cleanup by redirecting stderr
 	oldStderr, _ := syscall.Dup(int(os.Stderr.Fd()))
 	devNull, _ := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
 	syscall.Dup2(int(devNull.Fd()), int(os.Stderr.Fd()))
 		
 	portaudio.Initialize()
 	defer func() {
-		// Suppress ALSA warnings during cleanup by redirecting stderr
 		portaudio.Terminate()
 		
 		// Restore stderr

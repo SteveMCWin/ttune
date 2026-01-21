@@ -1,4 +1,7 @@
 {
-  "ascii_art_filename": "./config/art/utf_guitar",
-  "show_ascii_art": true
+    "ascii_art_filename": "./config/art/utf_guitar",
+    "show_ascii_art": true,
+    "tuning_name": "Standard",
+    "border_style": "normal",
+    "color_theme_name": "white"
 }

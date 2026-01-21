@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"os"
 
@@ -47,55 +46,41 @@ type Model struct {
 	AsciiArt string
 }
 
-type AppSettings struct {
-	AsciiArtFileName string `json:"ascii_art_filename"`
-	ShowAsciiArt bool `json:"show_ascii_art"`
-}
-
 func NewModel() Model {
 	m := Model{
 		BlockLength:    BL,
 		CurrentState:   Initializing,
 		SelectedTuning: tuning.Tunings[tuning.Standard],
-		Theme:          WhiteTheme,
+		Settings: LoadSettings(),
 	}
 
-	m.LoadSettings()
+	m.ApplySettings()
 
 	return m
 }
 
-func (m *Model) LoadSettings() {
-	data, err := os.ReadFile("./config/default.json")
-	if err != nil {
-		log.Println("Error reading config file!!!!")
-		panic(err)
-	}
-
-	var settings AppSettings
-	err = json.Unmarshal(data, &settings)
-	if err != nil {
-		log.Println("Error parsing json data")
-		panic(err)
-	}
-
-	m.Settings = settings
-
-	data, err = os.ReadFile(settings.AsciiArtFileName)
+func (m *Model) ApplySettings() {
+	ascii_art, err := os.ReadFile(m.Settings.AsciiArtFileName)
 	if err != nil {
 		log.Println("Error reading ascii art file name")
 		panic(err)
 	}
-	m.AsciiArt = string(data)
+	m.AsciiArt = string(ascii_art)
+
+	m.Theme = ColorThemes[m.Settings.ColorThemeName]
+	SetBorderStyle(m.Settings.BorderStyle)
+
+	m.SelectedTuning = tuning.Tunings[m.Settings.TuningName]
 }
+
 
 func (m Model) Init() tea.Cmd {
 	cmds := []tea.Cmd{
-		m.Theme.SetCurrentTheme(true), // NOTE: hard coded for testing
+		m.Theme.SetToCurrent(true),
 		initAutioStream(),
 	}
 
-	return tea.Batch(cmds...) // NOTE: set curr theme should be replaced with a function that loads save data and that handles the theme
+	return tea.Batch(cmds...)
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
