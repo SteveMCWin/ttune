@@ -17,7 +17,7 @@ type Tuning struct {
 var OctaveEnds []float64
 var Tunings map[string]Tuning
 
-var NoteNames = []string{"C ", "C#", "D ", "D#", "E ", "F ", "F#", "G ", "G#", "A ", "A#", "B "}
+var NoteNames = [12]string{"C ", "C#", "D ", "D#", "E ", "F ", "F#", "G ", "G#", "A ", "A#", "B "}
 
 // NOTE: place this in a file where each line starts with tuning name and then the notes
 // this way the user can add their own tunings
@@ -33,7 +33,7 @@ func init() {
 	curr_freq := 30.87
 	half_note := 1.01395947979
 
-	for range 8 {
+	for range 10 {
 		OctaveEnds = append(OctaveEnds, curr_freq*half_note)
 		curr_freq *= 2
 	}

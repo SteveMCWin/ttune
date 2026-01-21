@@ -56,15 +56,11 @@ func initAutioStream() tea.Cmd {
 		AudioStream, err = portaudio.OpenDefaultStream(1, 0, SAMPLE_RATE, BL, Buffer)
 		if err != nil {
 			log.Println("ERROR opening audio stream")
-		} else {
-			log.Println("Opened audio stream!!")
 		}
 
 		err = AudioStream.Start()
 		if err != nil {
 			log.Println("ERROR starting audio stream")
-		} else {
-			log.Println("Started audio stream!!")
 		}
 
 		return OpenStreamMsg(AudioStream)
@@ -83,7 +79,6 @@ func closeAudioStream() tea.Cmd {
 		if err != nil {
 			log.Println("FAILED TO CLOSE THE AUDIO STREAM")
 		}
-		log.Println("Closed audio stream successfully")
 
 		return nil
 	}
@@ -107,21 +102,21 @@ func checkSignalStrength() bool {
 // YIN Algorithm Implementation
 func yinDifference(buffer []float64, tauMax int) []float64 {
 	diff := make([]float64, tauMax)
-	
-	for tau := 0; tau < tauMax; tau++ {
+
+	for tau := range tauMax {
 		for i := 0; i < len(buffer)-tauMax; i++ {
 			delta := buffer[i] - buffer[i+tau]
 			diff[tau] += delta * delta
 		}
 	}
-	
+
 	return diff
 }
 
 func yinCumulativeMeanNormalizedDifference(diff []float64) []float64 {
 	cmndf := make([]float64, len(diff))
 	cmndf[0] = 1.0
-	
+
 	runningSum := 0.0
 	for tau := 1; tau < len(diff); tau++ {
 		runningSum += diff[tau]
@@ -131,13 +126,13 @@ func yinCumulativeMeanNormalizedDifference(diff []float64) []float64 {
 			cmndf[tau] = diff[tau] / (runningSum / float64(tau))
 		}
 	}
-	
+
 	return cmndf
 }
 
 func yinAbsoluteThreshold(cmndf []float64, threshold float64, tauMin int) int {
 	tau := tauMin
-	
+
 	// Find first tau where cmndf drops below threshold
 	for tau < len(cmndf) {
 		if cmndf[tau] < threshold {
@@ -145,7 +140,7 @@ func yinAbsoluteThreshold(cmndf []float64, threshold float64, tauMin int) int {
 			for tau+1 < len(cmndf) && cmndf[tau+1] < cmndf[tau] {
 				tau++
 			}
-			
+
 			// Additional check: verify this is a strong period
 			// by checking the power at this tau
 			if cmndf[tau] < YIN_POWER_THRESHOLD {
@@ -154,7 +149,7 @@ func yinAbsoluteThreshold(cmndf []float64, threshold float64, tauMin int) int {
 		}
 		tau++
 	}
-	
+
 	// No period found below threshold, return minimum cmndf
 	minTau := tauMin
 	minVal := cmndf[tauMin]
@@ -164,7 +159,7 @@ func yinAbsoluteThreshold(cmndf []float64, threshold float64, tauMin int) int {
 			minTau = tau
 		}
 	}
-	
+
 	return minTau
 }
 
@@ -172,14 +167,14 @@ func yinParabolicInterpolation(cmndf []float64, tau int) float64 {
 	if tau < 1 || tau >= len(cmndf)-1 {
 		return float64(tau)
 	}
-	
+
 	s0 := cmndf[tau-1]
 	s1 := cmndf[tau]
 	s2 := cmndf[tau+1]
-	
+
 	// Parabolic interpolation
 	adjustment := (s2 - s0) / (2 * (2*s1 - s2 - s0))
-	
+
 	return float64(tau) + adjustment
 }
 
@@ -187,35 +182,33 @@ func calculateFrequencyYIN() (float64, bool) {
 	// Calculate tau range based on frequency range
 	tauMin := int(math.Round(float64(SAMPLE_RATE) / MAX_FREQUENCY))
 	tauMax := int(math.Round(float64(SAMPLE_RATE) / MIN_FREQUENCY))
-	
-	if tauMax > len(Buffer64)/2 {
-		tauMax = len(Buffer64) / 2
-	}
-	
+
+	tauMax = min(tauMax, len(Buffer64))
+
 	// Step 1: Calculate difference function
 	diff := yinDifference(Buffer64, tauMax)
-	
+
 	// Step 2: Cumulative mean normalized difference
 	cmndf := yinCumulativeMeanNormalizedDifference(diff)
-	
+
 	// Step 3: Absolute threshold
 	tau := yinAbsoluteThreshold(cmndf, YIN_THRESHOLD, tauMin)
-	
+
 	// Check if we found a valid period
 	if tau == 0 || cmndf[tau] >= 1.0 {
 		log.Printf("YIN: No clear pitch detected (cmndf[%d] = %.3f)\n", tau, cmndf[tau])
 		return 0, false
 	}
-	
+
 	// Step 4: Parabolic interpolation for better accuracy
 	betterTau := yinParabolicInterpolation(cmndf, tau)
-	
+
 	// Convert tau to frequency
 	frequency := float64(SAMPLE_RATE) / betterTau
-	
+
 	log.Printf("YIN: tau=%d, interpolated=%.2f, freq=%.2f Hz, confidence=%.3f\n",
 		tau, betterTau, frequency, 1.0-cmndf[tau])
-	
+
 	return frequency, true
 }
 
@@ -229,7 +222,7 @@ func medianFilter(values []float64) float64 {
 	copy(sorted, values)
 
 	// Simple bubble sort (fine for small arrays)
-	for i := 0; i < len(sorted); i++ {
+	for i := range len(sorted) {
 		for j := i + 1; j < len(sorted); j++ {
 			if sorted[i] > sorted[j] {
 				sorted[i], sorted[j] = sorted[j], sorted[i]
@@ -251,7 +244,7 @@ func smoothFrequency(freq float64) float64 {
 	if len(frequencyHistory) > 0 {
 		lastFreq := frequencyHistory[len(frequencyHistory)-1]
 		ratio := freq / lastFreq
-		
+
 		// If jump is near a harmonic ratio (2x, 3x, 0.5x, 0.33x), it's suspicious
 		// Allow small variations, but reset on large jumps
 		if ratio > 1.8 || ratio < 0.55 {
@@ -262,7 +255,7 @@ func smoothFrequency(freq float64) float64 {
 			return freq
 		}
 	}
-	
+
 	frequencyHistory = append(frequencyHistory, freq)
 	if len(frequencyHistory) > HISTORY_SIZE {
 		frequencyHistory = frequencyHistory[1:]
@@ -277,7 +270,7 @@ func FrequencyToNote(freq float64) Note {
 		return res
 	}
 
-	semitone := 12*math.Log2(freq/440.0) + 58.0
+	semitone := float64(len(tuning.NoteNames))*math.Log2(freq/440.0) + 58.0
 	nearestSemitone := math.Round(semitone)
 
 	res.CentsOff = int((semitone - nearestSemitone) * 100)
@@ -340,7 +333,7 @@ func prevNote(n Note) Note {
 	}
 
 	if res.Index > n.Index {
-		res.Octave -= 1
+		res.Octave = res.Octave - 1
 	}
 
 	return res

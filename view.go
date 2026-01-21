@@ -16,7 +16,7 @@ func (m Model) View() tea.View {
 	title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
 
 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
-	tuning_width := whole_widht/8
+	tuning_width := whole_widht/4
 	meter_box_width := whole_widht - tuning_width + 2
 
 	if meter_box_width <= 0 {
@@ -24,11 +24,13 @@ func (m Model) View() tea.View {
 	}
 
 	boxStyle = boxStyle.Width(tuning_width).Height(m.WindowHeight - title_height+1)
-	tuning_contents := "Tuning: " + m.SelectedTuning.Name + "\n\n\n"
+	tuning_name := "Tuning: " + m.SelectedTuning.Name + "\n\n\n"
+	tuning_notes := "\n"
 	for _, t := range m.SelectedTuning.Notes {
-		tuning_contents = tuning_contents + t + "\n\n"
+		tuning_notes = tuning_notes + t + "\n\n"
 	}
-	tuning_contents = tuning_contents[:len(tuning_contents)-2]
+	tuning_notes = tuning_notes[:len(tuning_notes)-2]
+	tuning_contents := lipgloss.JoinVertical(lipgloss.Center, tuning_name, lipgloss.JoinHorizontal(lipgloss.Top, tuning_notes, m.AsciiArt))
 	tuning_box := boxStyle.Render(tuning_contents)
 
 
@@ -40,9 +42,20 @@ func (m Model) View() tea.View {
 
 	prev_note := prevNote(m.Note)
 	next_note := nextNote(m.Note)
-	curr_full_note := []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave))
-	prev_full_note := []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[prev_note.Index], prev_note.Octave))
-	next_full_note := []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[next_note.Index], next_note.Octave))
+
+	var curr_full_note []byte
+	var prev_full_note []byte
+	var next_full_note []byte
+
+	if prev_note.Octave < 0 {
+		curr_full_note = []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave))
+		prev_full_note = []byte("     ")
+		next_full_note = []byte("     ")
+	} else {
+		curr_full_note = []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave))
+		prev_full_note = []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[prev_note.Index], prev_note.Octave))
+		next_full_note = []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[next_note.Index], next_note.Octave))
+	}
 
 	for i := range len(curr_full_note) {
 		meter_notes_arr[i] = prev_full_note[i]
@@ -51,14 +64,20 @@ func (m Model) View() tea.View {
 	}
 
 	meter_bar_arr := make([]rune, meter_content_width)
+	acc_indicator_arr := make([]rune, meter_content_width)
 	for i := range meter_bar_arr {
 		meter_bar_arr[i] = '─'
+		acc_indicator_arr[i] = ' '
 	}
-	meter_bar_arr[0] = '├'
-	meter_bar_arr[len(meter_bar_arr)-1] = '┤'
-	meter_bar_arr[len(meter_bar_arr)/2] = '┴'
+	meter_bar_arr[0] = '┎'
+	meter_bar_arr[len(meter_bar_arr)-1] = '┒'
+	meter_bar_arr[len(meter_bar_arr)/2] = '┰'
+	
+	accuracy_pos_offset := m.Note.CentsOff/10 // NOTE: Perhaps make this a precision setting
+	accuracy_pos := max(0, min(len(meter_bar_arr)/2+accuracy_pos_offset, len(meter_bar_arr)-1))
+	acc_indicator_arr[accuracy_pos] = '^'
 
-	meter_content := lipgloss.JoinVertical(lipgloss.Center, string(meter_notes_arr), string(meter_bar_arr))
+	meter_content := lipgloss.JoinVertical(lipgloss.Center, string(meter_notes_arr), string(meter_bar_arr), string(acc_indicator_arr))
 
 	boxStyle = boxStyle.Width(meter_box_width).Height(m.WindowHeight - title_height+1)
 	meter_box := boxStyle.Render(meter_content)

@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
+	"os"
 
 	"tuner/tuning"
 
-	"github.com/gordonklaus/portaudio"
 	tea "charm.land/bubbletea/v2"
+	"github.com/gordonklaus/portaudio"
 )
 
 type OpenStreamMsg *portaudio.Stream
@@ -15,21 +17,21 @@ type State string
 
 const (
 	Initializing State = "Initializing"
-	Listening State = "Listening"
-	Settings State = "Settings"
-	Help State = "Help"
+	Listening    State = "Listening"
+	Settings     State = "Settings"
+	Help         State = "Help"
 )
 
 type Note struct {
-	Index int
-	Octave int
+	Index    int
+	Octave   int
 	CentsOff int
 }
 
 type Model struct {
 	Theme ColorTheme
 
-	WindowWidth int
+	WindowWidth  int
 	WindowHeight int
 
 	BlockLength int
@@ -37,27 +39,54 @@ type Model struct {
 	Note        Note
 	CentsOff    float64
 
-	// AudioStream *portaudio.Stream
-
 	CurrentState State
 
 	SelectedTuning tuning.Tuning
+
+	Settings AppSettings
+	AsciiArt string
+}
+
+type AppSettings struct {
+	AsciiArtFileName string `json:"ascii_art_filename"`
+	ShowAsciiArt bool `json:"show_ascii_art"`
 }
 
 func NewModel() Model {
-
-	m := Model {
-		BlockLength: BL,
+	m := Model{
+		BlockLength:    BL,
 		CurrentState:   Initializing,
 		SelectedTuning: tuning.Tunings[tuning.Standard],
-		Theme:          DefaultTheme,
+		Theme:          WhiteTheme,
 	}
+
+	m.LoadSettings()
 
 	return m
 }
 
-func LoadLocalData() tea.Msg {
-	return "todo"
+func (m *Model) LoadSettings() {
+	data, err := os.ReadFile("./config/default.json")
+	if err != nil {
+		log.Println("Error reading config file!!!!")
+		panic(err)
+	}
+
+	var settings AppSettings
+	err = json.Unmarshal(data, &settings)
+	if err != nil {
+		log.Println("Error parsing json data")
+		panic(err)
+	}
+
+	m.Settings = settings
+
+	data, err = os.ReadFile(settings.AsciiArtFileName)
+	if err != nil {
+		log.Println("Error reading ascii art file name")
+		panic(err)
+	}
+	m.AsciiArt = string(data)
 }
 
 func (m Model) Init() tea.Cmd {
@@ -69,30 +98,12 @@ func (m Model) Init() tea.Cmd {
 	return tea.Batch(cmds...) // NOTE: set curr theme should be replaced with a function that loads save data and that handles the theme
 }
 
-// func (m *Model) CloseAudioStream() tea.Cmd {
-// 	err := m.AudioStream.Stop()
-// 	if err != nil {
-// 		log.Println("ERROR STOPPING AUDIO STREAM")
-// 	}
-//
-// 	err = m.AudioStream.Close()
-// 	if err != nil {
-// 		log.Println("ERROR CLOSING AUDIO STREAM")
-// 	}
-// 	return nil
-// }
-
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmds := make([]tea.Cmd, 0)
 
 	switch message := msg.(type) {
 	case NoteReadingMsg:
 		new_note := Note(message)
-		if m.Note.Index != new_note.Index || m.Note.CentsOff != new_note.CentsOff {
-			log.Printf("Old note: %2s%d %3d   New note: %2s%d %3d\n",
-				tuning.NoteNames[m.Note.Index], m.Note.Octave, m.Note.CentsOff,
-				tuning.NoteNames[new_note.Index], new_note.Octave, new_note.CentsOff)
-		}
 		m.Note = new_note
 		cmds = append(cmds, CalculateNote())
 	case tea.KeyMsg:

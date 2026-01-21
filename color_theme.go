@@ -41,10 +41,25 @@ var (
 		TextTypedLight:  lipgloss.Color("#000000"),
 		TextUnypedLight: lipgloss.Color("#444444"),
 	}
+	WhiteTheme = ColorTheme{
+		Primary:    lipgloss.Color("#ffffff"),
+		Secondary:  lipgloss.Color("#ffffff"),
+		Accent:     lipgloss.Color("#ffffff"),
+		TextError:  lipgloss.Color("#ffffff"),
+		TextTyped:  lipgloss.Color("#ffffff"),
+		TextUnyped: lipgloss.Color("#ffffff"),
+
+		PrimaryLight:    lipgloss.Color("#ffffff"),
+		SecondaryLight:  lipgloss.Color("#ffffff"),
+		AccentLight:     lipgloss.Color("#ffffff"),
+		TextErrorLight:  lipgloss.Color("#ffffff"),
+		TextTypedLight:  lipgloss.Color("#ffffff"),
+		TextUnypedLight: lipgloss.Color("#ffffff"),
+	}
 )
 
 var (
-	boxStyle          = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.RoundedBorder())
+	boxStyle          = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
 	// windowStyle       = lipgloss.NewStyle().Padding(2).Align(lipgloss.Left, lipgloss.Center).Border(lipgloss.RoundedBorder()).UnsetBorderTop()
 	// quoteStyle        = lipgloss.NewStyle().Foreground(DefaultTheme.TextUnyped)
 	// typedStyle        = lipgloss.NewStyle().Foreground(DefaultTheme.TextTyped)
