@@ -50,7 +50,6 @@ func NewModel() Model {
 	m := Model{
 		BlockLength:    BL,
 		CurrentState:   Initializing,
-		SelectedTuning: tuning.Tunings[tuning.Standard],
 		Settings: LoadSettings(),
 	}
 
@@ -70,7 +69,7 @@ func (m *Model) ApplySettings() {
 	m.Theme = ColorThemes[m.Settings.ColorThemeName]
 	SetBorderStyle(m.Settings.BorderStyle)
 
-	m.SelectedTuning = tuning.Tunings[m.Settings.TuningName]
+	m.SelectedTuning = m.Settings.Tunings[m.Settings.TuningName]
 }
 
 

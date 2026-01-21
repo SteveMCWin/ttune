@@ -1,34 +1,17 @@
 package tuning
 
-import (
-	// "log"
-	"strings"
-)
-
-const (
-	Standard string = "Standard"
-)
-
 type Tuning struct {
-	Name string
-	Notes []string
+	Name string `json:"name"`
+	Notes []string `json:"notes"`
 }
 
 var OctaveEnds []float64
-var Tunings map[string]Tuning
 
 var NoteNames = [12]string{"C ", "C#", "D ", "D#", "E ", "F ", "F#", "G ", "G#", "A ", "A#", "B "}
-
-// NOTE: place this in a file where each line starts with tuning name and then the notes
-// this way the user can add their own tunings
-const STD_TUNE_STR = "E2;A2;D3;G3;B3;E4"
-const SEP_CHAR = ";"
 
 const NUM_SEMITONES = 12
 
 func init() {
-	Tunings = make(map[string]Tuning)
-	Tunings[Standard] = Tuning{ Name: Standard, Notes:  strings.Split(STD_TUNE_STR, SEP_CHAR) }
 
 	curr_freq := 30.87
 	half_note := 1.01395947979

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"tuner/tuning"
 )
 
 type AppSettings struct {
@@ -12,6 +13,7 @@ type AppSettings struct {
 	TuningName string `json:"tuning_name"`
 	ColorThemeName string `json:"color_theme_name"`
 	BorderStyle string `json:"border_style"`
+	Tunings map[string]tuning.Tuning `json:"tunings"`
 }
 
 func LoadSettings() AppSettings {
