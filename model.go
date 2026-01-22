@@ -66,10 +66,11 @@ func (m *Model) ApplySettings() {
 	}
 	m.AsciiArt = string(ascii_art)
 
-	m.Theme = ColorThemes[m.Settings.ColorThemeName]
 	SetBorderStyle(m.Settings.BorderStyle)
 
-	m.SelectedTuning = m.Settings.Tunings[m.Settings.TuningName]
+	m.SelectedTuning = m.Settings.Tunings[m.Settings.SelectedTuning]
+
+	m.Theme = m.Settings.ColorThemes[m.Settings.SelectedTheme]
 }
 
 
@@ -89,7 +90,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case NoteReadingMsg:
 		new_note := Note(message)
 		m.Note = new_note
-		cmds = append(cmds, CalculateNote())
+		if m.CurrentState == Listening {
+			cmds = append(cmds, CalculateNote())
+		}
 	case tea.KeyMsg:
 		switch message.String() {
 		case "ctrl+c", "q":
@@ -99,6 +102,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.CurrentState = Help
 		case "backspace", "escape":
 			m.CurrentState = Listening
+			cmds = append(cmds, CalculateNote())
 		case "s", "tab":
 			m.CurrentState = Settings
 		}

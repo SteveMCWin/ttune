@@ -1,13 +1,14 @@
 package main
 
 import (
-
 	"fmt"
 	"tuner/tuning"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
 )
+
+const TITLE_HEIGHT = 3
 
 func (m Model) View() tea.View {
 
@@ -48,13 +49,13 @@ func (m Model) View() tea.View {
 	var next_full_note []byte
 
 	if prev_note.Octave < 0 {
-		curr_full_note = []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave))
+		curr_full_note = fmt.Appendf(curr_full_note, "%2s %-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave)
 		prev_full_note = []byte("     ")
 		next_full_note = []byte("     ")
 	} else {
-		curr_full_note = []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave))
-		prev_full_note = []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[prev_note.Index], prev_note.Octave))
-		next_full_note = []byte(fmt.Sprintf("%2s %-2d", tuning.NoteNames[next_note.Index], next_note.Octave))
+		curr_full_note = fmt.Appendf(curr_full_note, "%2s %-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave)
+		prev_full_note = fmt.Appendf(prev_full_note, "%2s %-2d", tuning.NoteNames[prev_note.Index], prev_note.Octave)
+		next_full_note = fmt.Appendf(next_full_note, "%2s %-2d", tuning.NoteNames[next_note.Index], next_note.Octave)
 	}
 
 	for i := range len(curr_full_note) {
@@ -84,7 +85,7 @@ func (m Model) View() tea.View {
 
 	main_content := lipgloss.JoinHorizontal(lipgloss.Center, tuning_box, meter_box)
 
-	instructions := lipgloss.NewStyle().Foreground(m.Theme.TextUnyped).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render("q - quit   s - settings   h - help")
+	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render("q - quit   s - settings   h - help")
 	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
 	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)
 

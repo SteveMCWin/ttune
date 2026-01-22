@@ -10,10 +10,11 @@ import (
 type AppSettings struct {
 	AsciiArtFileName string `json:"ascii_art_filename"`
 	ShowAsciiArt bool `json:"show_ascii_art"`
-	TuningName string `json:"tuning_name"`
-	ColorThemeName string `json:"color_theme_name"`
+	SelectedTuning string `json:"selected_tuning"`
 	BorderStyle string `json:"border_style"`
 	Tunings map[string]tuning.Tuning `json:"tunings"`
+	ColorThemes map[string]ColorTheme `json:"themes"`
+	SelectedTheme string `json:"selected_theme"`
 }
 
 func LoadSettings() AppSettings {
