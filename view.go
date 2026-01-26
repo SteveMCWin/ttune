@@ -13,6 +13,26 @@ const TITLE_HEIGHT = 3
 
 func (m Model) View() tea.View {
 
+	view := tea.NewView("Loading...")
+	view.AltScreen = true
+
+	switch m.CurrentState {
+	case Listening:
+		contents := createListeningContents(m)
+		view.SetContent(contents)
+	case Settings:
+		contents := createSettingsContents(m)
+		view.SetContent(contents)
+	case Help:
+		contents := createHelpContents(m)
+		view.SetContent(contents)
+	}
+	
+	return view
+}
+
+func createListeningContents(m Model) string {
+
 	boxStyle = boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
 	title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
 	title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
@@ -25,7 +45,7 @@ func (m Model) View() tea.View {
 	meter_box_width := whole_widht - tuning_width + 2
 
 	if meter_box_width <= 0 {
-		return tea.NewView("")
+		return ""
 	}
 
 	boxStyle = boxStyle.Width(tuning_width).Height(m.WindowHeight - title_height+1)
@@ -103,7 +123,47 @@ func (m Model) View() tea.View {
 	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
 	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)
 
-	view := tea.NewView(all_contents)
-	view.AltScreen = true
-	return view
+	return all_contents
+}
+
+func createSettingsContents(m Model) string {
+
+	boxStyle = boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
+	// title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
+	// title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
+
+	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
+	tuning_width := whole_widht/4
+	if !m.Settings.ShowAsciiArt {
+		tuning_width /= 2
+	}
+	meter_box_width := whole_widht - tuning_width + 2
+
+	if meter_box_width <= 0 {
+		return ""
+	}
+
+
+	return ""
+}
+
+func createHelpContents(m Model) string {
+
+	boxStyle = boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
+	// title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
+	// title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
+
+	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
+	tuning_width := whole_widht/4
+	if !m.Settings.ShowAsciiArt {
+		tuning_width /= 2
+	}
+	meter_box_width := whole_widht - tuning_width + 2
+
+	if meter_box_width <= 0 {
+		return ""
+	}
+
+
+	return ""
 }

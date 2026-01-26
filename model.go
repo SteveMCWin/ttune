@@ -103,7 +103,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmds = append(cmds, seq)
 		case "?", "h":
 			m.CurrentState = Help
-		case "backspace", "escape":
+		case "backspace", "esc":
 			m.CurrentState = Listening
 			cmds = append(cmds, CalculateNote())
 		case "s", "tab":
