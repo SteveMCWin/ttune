@@ -1,102 +1,44 @@
 package main
 
 import (
-	"fmt"
-	"math"
-	"math/cmplx"
-
+	"os"
+	"log"
+	"syscall"
 	"github.com/gordonklaus/portaudio"
-	"github.com/mjibson/go-dsp/fft"
+	tea "charm.land/bubbletea/v2"
 )
 
-const BL = 4096*2
-const SAMPLE_RATE = 44100
-
-var noteNames = []string{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"}
-
-func calcHannWindow() [BL]float64 {
-	var res [BL]float64
-	for n := range BL {
-		res[n] = 0.5*(1.0-math.Cos(2.0*math.Pi*float64(n)/float64(BL-1)))
-	}
-
-	return res
-}
-
-func applyWindowToBuffer(buff []float64, window [BL]float64) {
-	for i := range BL {
-		buff[i] *= window[i]
-	}
-}
-
-func to64(buff []float32) []float64 {
-	res := make([]float64, len(buff))
-	for i := range len(buff) {
-		res[i] = float64(buff[i])
-	}
-
-	return res
-}
-
-func getFrequency(buff []float64) float64 {
-	comp := fft.FFTReal(buff)
-	var max_mag float64 = 0
-	var max_mag_idx int = 0
-	for i := range len(comp)/2 {
-		magnitude := cmplx.Abs(comp[i])
-		if magnitude > max_mag {
-			max_mag = magnitude
-			max_mag_idx = i
-		}
-	}
-
-	frequency := float64(max_mag_idx) * SAMPLE_RATE / BL
-	return frequency
-}
-
-func frequencyToNote(freq float64) (string, float64) {
-    if freq < 20 {
-        return "---", 0
-    }
-    
-    // Calculate semitone number
-    semitone := 12*math.Log2(freq/440.0) + 58.0
-    nearestSemitone := math.Round(semitone)
-    
-    // Calculate cents off (100 cents = 1 semitone)
-    centsOff := (semitone - nearestSemitone) * 100
-    
-    // Get note name and octave
-    noteIndex := int(nearestSemitone-1) % 12
-    octave := int(nearestSemitone-1) / 12
-    
-    noteName := fmt.Sprintf("%s%d", noteNames[noteIndex], octave)
-    
-    return noteName, centsOff
-}
-
 func main() {
-	portaudio.Initialize()
-	defer portaudio.Terminate()
 
-	var buffer = make([]float32, BL)
-	var window = calcHannWindow()
-
-	stream, err := portaudio.OpenDefaultStream(1, 0, SAMPLE_RATE, BL, buffer)
+	f, err := tea.LogToFile("debug.log", "debug")
 	if err != nil {
-		panic(err)
+		log.Fatalf("failed setting the debug log file: %v", err)
 	}
-	defer stream.Close()
+	defer f.Close()
+	// should check for commandline args
+	m := NewModel()
 
-	stream.Start()
-	defer stream.Stop()
+	log.Println()
+	log.Println("~~~~~~~~~PROGRAM START~~~~~~~~~")
+	log.Println()
 
-	for {
-		stream.Read()
-		buff64 := to64(buffer)
-		applyWindowToBuffer(buff64, window)
-		freq := getFrequency(buff64)
-		note, cents := frequencyToNote(freq)
-		fmt.Printf("\rFrequency: %.2f Hz | Note: %s | Cents: %+.0f    ", freq, note, cents)
+	// Suppress ALSA warnings during cleanup by redirecting stderr
+	oldStderr, _ := syscall.Dup(int(os.Stderr.Fd()))
+	devNull, _ := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
+	syscall.Dup2(int(devNull.Fd()), int(os.Stderr.Fd()))
+		
+	portaudio.Initialize()
+	defer func() {
+		portaudio.Terminate()
+		
+		// Restore stderr
+		syscall.Dup2(oldStderr, int(os.Stderr.Fd()))
+		syscall.Close(oldStderr)
+		devNull.Close()
+	}()
+
+	p := tea.NewProgram(m)
+	if _, err := p.Run(); err != nil {
+		log.Fatal("Unable to run tui:", err)
 	}
 }
