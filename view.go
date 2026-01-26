@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"tuner/tuning"
 
 	tea "charm.land/bubbletea/v2"
@@ -18,6 +19,9 @@ func (m Model) View() tea.View {
 
 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
 	tuning_width := whole_widht/4
+	if !m.Settings.ShowAsciiArt {
+		tuning_width /= 2
+	}
 	meter_box_width := whole_widht - tuning_width + 2
 
 	if meter_box_width <= 0 {
@@ -26,12 +30,21 @@ func (m Model) View() tea.View {
 
 	boxStyle = boxStyle.Width(tuning_width).Height(m.WindowHeight - title_height+1)
 	tuning_name := "Tuning: " + m.SelectedTuning.Name + "\n\n\n"
-	tuning_notes := "\n"
-	for _, t := range m.SelectedTuning.Notes {
-		tuning_notes = tuning_notes + t + "\n\n"
+	var tuning_contents string
+	if m.Settings.ShowAsciiArt {
+		ascii_art := m.AsciiArt
+		for i := len(m.SelectedTuning.Notes)-1; i >= 0; i-- {
+			ascii_art = strings.Replace(ascii_art, "%%%", m.SelectedTuning.Notes[i], 1)
+		}
+		tuning_contents = lipgloss.JoinVertical(lipgloss.Center, tuning_name, lipgloss.JoinHorizontal(lipgloss.Top, "", ascii_art))
+	} else {
+		tuning_notes := "\n"
+		for _, t := range m.SelectedTuning.Notes {
+			tuning_notes = tuning_notes + t + "\n\n"
+		}
+		tuning_notes = tuning_notes[:len(tuning_notes)-2]
+		tuning_contents = lipgloss.JoinVertical(lipgloss.Center, tuning_name, tuning_notes)
 	}
-	tuning_notes = tuning_notes[:len(tuning_notes)-2]
-	tuning_contents := lipgloss.JoinVertical(lipgloss.Center, tuning_name, lipgloss.JoinHorizontal(lipgloss.Top, tuning_notes, m.AsciiArt))
 	tuning_box := boxStyle.Render(tuning_contents)
 
 
@@ -53,15 +66,15 @@ func (m Model) View() tea.View {
 		prev_full_note = []byte("     ")
 		next_full_note = []byte("     ")
 	} else {
-		curr_full_note = fmt.Appendf(curr_full_note, "%2s %-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave)
-		prev_full_note = fmt.Appendf(prev_full_note, "%2s %-2d", tuning.NoteNames[prev_note.Index], prev_note.Octave)
-		next_full_note = fmt.Appendf(next_full_note, "%2s %-2d", tuning.NoteNames[next_note.Index], next_note.Octave)
+		curr_full_note = fmt.Appendf(curr_full_note, "%2s%-2d", tuning.NoteNames[m.Note.Index], m.Note.Octave)
+		prev_full_note = fmt.Appendf(prev_full_note, "%2s%-2d", tuning.NoteNames[prev_note.Index], prev_note.Octave)
+		next_full_note = fmt.Appendf(next_full_note, "%2s%-2d", tuning.NoteNames[next_note.Index], next_note.Octave)
 	}
 
 	for i := range len(curr_full_note) {
-		meter_notes_arr[i] = prev_full_note[i]
-		meter_notes_arr[meter_content_width/2+i-2] = curr_full_note[i]
-		meter_notes_arr[meter_content_width-len(next_full_note)-1+i] = next_full_note[i]
+		meter_notes_arr[i+1] = prev_full_note[i]
+		meter_notes_arr[meter_content_width/2+i-1] = curr_full_note[i]
+		meter_notes_arr[meter_content_width-len(next_full_note)+i] = next_full_note[i]
 	}
 
 	meter_bar_arr := make([]rune, meter_content_width)
@@ -85,7 +98,8 @@ func (m Model) View() tea.View {
 
 	main_content := lipgloss.JoinHorizontal(lipgloss.Center, tuning_box, meter_box)
 
-	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render("q - quit   s - settings   h - help")
+	instructions_str := "q - quit   s - settings   h - help   backspace - back"
+	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
 	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
 	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)
 

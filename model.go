@@ -59,7 +59,7 @@ func NewModel() Model {
 }
 
 func (m *Model) ApplySettings() {
-	ascii_art, err := os.ReadFile(m.Settings.AsciiArtFileName)
+	ascii_art, err := os.ReadFile(m.Settings.AsciiArtFileName) // NOTE: will have to change this to support ascii art from local .config, tho it's not all that important
 	if err != nil {
 		log.Println("Error reading ascii art file name")
 		panic(err)
@@ -71,6 +71,9 @@ func (m *Model) ApplySettings() {
 	m.SelectedTuning = m.Settings.Tunings[m.Settings.SelectedTuning]
 
 	m.Theme = m.Settings.ColorThemes[m.Settings.SelectedTheme]
+
+	// Store settings to json file
+	StoreSettings(m.Settings)
 }
 
 

@@ -20,21 +20,6 @@ var (
 	ColorThemes map[string]ColorTheme
 )
 
-// func init() {
-// 	ColorThemes = make(map[string]ColorTheme)
-// 	ColorThemes["default"] = ColorTheme{
-// 		Primary:    lipgloss.Color("#1e1e2e"),
-// 		Secondary:  lipgloss.Color("#6c7086"),
-// 		Tertiary:     lipgloss.Color("#89b4fa"),
-// 	}
-//
-// 	ColorThemes["white"] = ColorTheme{
-// 		Primary:    lipgloss.Color("#ffffff"),
-// 		Secondary:  lipgloss.Color("#ffffff"),
-// 		Tertiary:     lipgloss.Color("#ffffff"),
-// 	}
-// }
-
 func (t ColorTheme) SetToCurrent(isDark bool) func() tea.Msg {
 	return func() tea.Msg {
 		boxStyle = boxStyle.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Tertiary))
