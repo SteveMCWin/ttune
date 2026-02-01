@@ -129,22 +129,36 @@ func createListeningContents(m Model) string {
 func createSettingsContents(m Model) string {
 
 	boxStyle = boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
-	// title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
-	// title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
+	title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
+	title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
 
 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
-	tuning_width := whole_widht/4
+	settings_width := whole_widht/4
 	if !m.Settings.ShowAsciiArt {
-		tuning_width /= 2
+		settings_width /= 2
 	}
-	meter_box_width := whole_widht - tuning_width + 2
+	setting_val_box_width := whole_widht - settings_width + 2
 
-	if meter_box_width <= 0 {
+	if setting_val_box_width <= 0 {
 		return ""
 	}
 
+	boxStyle = boxStyle.Width(settings_width).Height(m.WindowHeight - title_height+1)
+	setting_names := []string{ "Ascii Art", "Color Scheme", "Selected Tuning", "Border Style"}
+	settings_box := boxStyle.Render(lipgloss.JoinVertical(lipgloss.Left, setting_names...))
 
-	return ""
+	boxStyle = boxStyle.Width(setting_val_box_width).Height(m.WindowHeight - title_height+1)
+	settings_vals_box := boxStyle.Render("")
+
+	instructions_str := "q - quit   s - settings   h - help   backspace - back"
+	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
+
+	main_content := lipgloss.JoinHorizontal(lipgloss.Center, settings_box, settings_vals_box)
+
+	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
+	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)
+
+	return all_contents
 }
 
 func createHelpContents(m Model) string {
