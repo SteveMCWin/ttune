@@ -108,6 +108,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmds = append(cmds, CalculateNote())
 		case "s":
 			m.CurrentState = Settings
+		case "h", "left":
+			if m.CurrentState == Settings || m.CurrentState == Help {
+				log.Println("LEFT")
+			}
+		case "j", "down":
+			if m.CurrentState == Settings || m.CurrentState == Help {
+				log.Println("DOWN")
+			}
+		case "k", "up":
+			if m.CurrentState == Settings || m.CurrentState == Help {
+				log.Println("UP")
+			}
+		case "l", "right":
+			if m.CurrentState == Settings || m.CurrentState == Help {
+				log.Println("RIGHT")
+			}
 		}
 	case tea.WindowSizeMsg:
 		// log.Println("Terminal width:", message.Width)

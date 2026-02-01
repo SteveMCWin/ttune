@@ -11,7 +11,7 @@ import (
 
 type AppSettings struct {
 	AsciiArtFileName string `json:"ascii_art_filename"`
-	ShowAsciiArt bool `json:"show_ascii_art"`
+	// ShowAsciiArt bool `json:"show_ascii_art"`
 	SelectedTuning string `json:"selected_tuning"`
 	BorderStyle string `json:"border_style"`
 	Tunings map[string]tuning.Tuning `json:"tunings"`
