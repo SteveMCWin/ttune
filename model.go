@@ -101,12 +101,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			seq := tea.Sequence(closeAudioStream(), tea.Quit)
 			cmds = append(cmds, seq)
-		case "?", "h":
+		case "?":
 			m.CurrentState = Help
-		case "backspace", "esc":
+		case "backspace":
 			m.CurrentState = Listening
 			cmds = append(cmds, CalculateNote())
-		case "s", "tab":
+		case "s":
 			m.CurrentState = Settings
 		}
 	case tea.WindowSizeMsg:
