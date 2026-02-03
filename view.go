@@ -150,7 +150,7 @@ func createSettingsContents(m Model) string {
 	boxStyle = boxStyle.Width(setting_val_box_width).Height(m.WindowHeight - title_height+1)
 	settings_vals_box := boxStyle.Render("")
 
-	instructions_str := "backspace - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   q - quit"
+	instructions_str := "backspace - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   enter - select   q - quit"
 	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
 
 	main_content := lipgloss.JoinHorizontal(lipgloss.Center, settings_box, settings_vals_box)

@@ -30,19 +30,19 @@ func (t ColorTheme) SetToCurrent(isDark bool) func() tea.Msg {
 
 func SetBorderStyle(style string) {
 	switch style {
-	case "normal":
+	case "Normal":
 		boxStyle = boxStyle.BorderStyle(lipgloss.NormalBorder())
-	case "rounded":
+	case "Rounded":
 		boxStyle = boxStyle.BorderStyle(lipgloss.RoundedBorder())
-	case "double":
+	case "Double":
 		boxStyle = boxStyle.BorderStyle(lipgloss.DoubleBorder())
-	case "block":
+	case "Block":
 		boxStyle = boxStyle.BorderStyle(lipgloss.BlockBorder())
-	case "inner_block":
+	case "Inner Block":
 		boxStyle = boxStyle.BorderStyle(lipgloss.InnerHalfBlockBorder())
-	case "outer_block":
+	case "Outer Block":
 		boxStyle = boxStyle.BorderStyle(lipgloss.OuterHalfBlockBorder())
-	case "thick":
+	case "Thick":
 		boxStyle = boxStyle.BorderStyle(lipgloss.ThickBorder())
 	default:
 		log.Println("! ! ! ! ! Unsupported border style:", style)

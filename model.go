@@ -50,7 +50,7 @@ func NewModel() Model {
 	m := Model{
 		BlockLength:    BL,
 		CurrentState:   Initializing,
-		Settings: LoadSettings(),
+		Settings: LoadSettingsSelections(),
 	}
 
 	m.ApplySettings()
