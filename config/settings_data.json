@@ -56,7 +56,7 @@
             ]
         }
     },
-    "themes": {
+    "color_themes": {
         "Nord": {
             "name": "Nord",
             "primary": "#88C0D0",
@@ -87,5 +87,15 @@
             "secondary": "#50FA7B",
             "tertiary": "#FF79C6"
         }
+    },
+    "border_styles": {
+        "None": "None",
+        "Normal": "Normal",
+        "Rounded": "Rounded",
+        "Double": "Double",
+        "Block": "Block",
+        "Inner Block": "Inner Block",
+        "Outer block": "Outer block",
+        "Thick": "Thick"
     }
 }

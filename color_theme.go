@@ -8,16 +8,16 @@ import (
 )
 
 type ColorTheme struct {
-	Name string `json:"name"`
-	Primary    string `json:"primary"`
-	Secondary  string `json:"secondary"`
-	Tertiary     string `json:"tertiary"`
+	Name      string `json:"name"`
+	Primary   string `json:"primary"`
+	Secondary string `json:"secondary"`
+	Tertiary  string `json:"tertiary"`
 }
 
 var (
-	boxStyle = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
+	boxStyle      = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
 	asciiArtStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff"))
-	ColorThemes map[string]ColorTheme
+	ColorThemes   map[string]ColorTheme
 )
 
 func (t ColorTheme) SetToCurrent(isDark bool) func() tea.Msg {

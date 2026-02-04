@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"tuner/tuning"
@@ -32,8 +31,6 @@ type AppSettings struct {
 	SelectedTuning   string `json:"selected_tuning"`
 	BorderStyle      string `json:"border_style"`
 	SelectedTheme    string `json:"selected_theme"`
-	// Tunings map[string]tuning.Tuning `json:"tunings"`
-	// ColorThemes map[string]ColorTheme `json:"themes"`
 }
 
 func DefineSettingsOptions(data SettingsData) []SettingsOptions {
@@ -123,7 +120,7 @@ func LoadSettingsData() SettingsData {
 
 	data, err := os.ReadFile(user_config_file_path)
 	if err != nil {
-		log.Println("Local settings data not found, reading default and writing to ", config_dir)
+		log.Println("Local settings data not found, reading default and writing to", config_dir)
 		data, err = os.ReadFile("./config/settings_data.json")
 		if err != nil {
 			log.Println("Error reading config file!!!!")
@@ -146,6 +143,12 @@ func LoadSettingsData() SettingsData {
 
 	res.AsciiArt = LoadAsciiArt()
 
+	log.Printf("After unmarshal - Tunings: %d items\n", len(res.Tunings))
+	log.Printf("After unmarshal - ColorThemes: %d items\n", len(res.ColorThemes))
+	log.Printf("After unmarshal - BorderStyles: %d items\n", len(res.BorderStyles))
+	log.Printf("After unmarshal - AsciiArt: %d items\n", len(res.AsciiArt))
+	log.Printf("Full struct: %+v\n", res)
+
 	return res
 }
 
@@ -165,10 +168,17 @@ func LoadAsciiArt() map[string]string {
 			log.Fatal(err)
 		}
 
-		cmd_str := "cp ./config/art/* " + user_art_dir_path
-		cmd := exec.Command(cmd_str)
-		if err := cmd.Run(); err != nil {
-			log.Fatal("Error copying art files to user config dir")
+		default_art_dir := "./config/art/"
+		default_files, err := os.ReadDir(default_art_dir)
+		if err != nil {
+			log.Fatal("Error reading art dir")
+		}
+		for _, f := range default_files {
+			data, err := os.ReadFile(filepath.Join(default_art_dir, f.Name()))
+			if err != nil {
+				log.Fatal("Error reading ", f.Name(), " :: ", err)
+			}
+			err = os.WriteFile(filepath.Join(user_art_dir_path, f.Name()), data, 0744)
 		}
 	}
 
@@ -179,7 +189,7 @@ func LoadAsciiArt() map[string]string {
 
 	ascii_art := make(map[string]string)
 	for _, f := range files {
-		data, err := os.ReadFile(f.Name())
+		data, err := os.ReadFile(filepath.Join(user_art_dir_path, f.Name()))
 		if err != nil {
 			log.Fatal("Error reading", f.Name())
 		}
@@ -212,7 +222,7 @@ func LoadSettingsSelections() AppSettings {
 
 	data, err := os.ReadFile(user_config_file_path)
 	if err != nil {
-		log.Println("Local config not found, reading default and writing to $HOME/.config/")
+		log.Println("Local config not found, reading default and writing to", config_dir)
 		data, err = os.ReadFile("./config/default.json")
 		if err != nil {
 			log.Println("Error reading config file!!!!")

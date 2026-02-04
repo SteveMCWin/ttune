@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 
 	"tuner/tuning"
 
@@ -42,7 +41,8 @@ type Model struct {
 
 	SelectedTuning tuning.Tuning
 
-	Settings AppSettings
+	Data SettingsData
+	SettingsSelected AppSettings
 	AsciiArt string
 }
 
@@ -50,8 +50,11 @@ func NewModel() Model {
 	m := Model{
 		BlockLength:    BL,
 		CurrentState:   Initializing,
-		Settings: LoadSettingsSelections(),
+		SettingsSelected: LoadSettingsSelections(),
+		Data: LoadSettingsData(),
 	}
+
+	log.Println(m.Data)
 
 	m.ApplySettings()
 
@@ -59,21 +62,18 @@ func NewModel() Model {
 }
 
 func (m *Model) ApplySettings() {
-	ascii_art, err := os.ReadFile(m.Settings.AsciiArtFileName) // NOTE: will have to change this to support ascii art from local .config, tho it's not all that important
-	if err != nil {
-		log.Println("Error reading ascii art file name")
-		panic(err)
-	}
-	m.AsciiArt = string(ascii_art)
+	m.SettingsSelected = LoadSettingsSelections()
 
-	SetBorderStyle(m.Settings.BorderStyle)
+	m.AsciiArt = m.Data.AsciiArt[m.SettingsSelected.AsciiArtFileName]
 
-	m.SelectedTuning = m.Settings.Tunings[m.Settings.SelectedTuning]
+	SetBorderStyle(m.Data.BorderStyles[m.SettingsSelected.BorderStyle])
 
-	m.Theme = m.Settings.ColorThemes[m.Settings.SelectedTheme]
+	m.SelectedTuning = m.Data.Tunings[m.SettingsSelected.SelectedTuning]
+
+	m.Theme = m.Data.ColorThemes[m.SettingsSelected.SelectedTheme]
 
 	// Store settings to json file
-	StoreSettings(m.Settings)
+	StoreSettings(m.SettingsSelected)
 }
 
 
