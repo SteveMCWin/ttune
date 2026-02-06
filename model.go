@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"tuner/tuning"
+	"ttune/tuning"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/gordonklaus/portaudio"
@@ -54,8 +54,6 @@ func NewModel() Model {
 		Data: LoadSettingsData(),
 	}
 
-	log.Println(m.Data)
-
 	m.ApplySettings()
 
 	return m
@@ -103,7 +101,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmds = append(cmds, seq)
 		case "?":
 			m.CurrentState = Help
-		case "backspace":
+		case "backspace", "esc":
 			m.CurrentState = Listening
 			cmds = append(cmds, CalculateNote())
 		case "s":
@@ -123,6 +121,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "l", "right":
 			if m.CurrentState == Settings || m.CurrentState == Help {
 				log.Println("RIGHT")
+			}
+		case "enter", "space":
+			if m.CurrentState == Settings || m.CurrentState == Help {
+				log.Println("Space/Enter pressed")
 			}
 		}
 	case tea.WindowSizeMsg:

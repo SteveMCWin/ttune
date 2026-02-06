@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"tuner/tuning"
+	"ttune/tuning"
 
 	"github.com/charmbracelet/lipgloss/v2"
 )
@@ -143,12 +143,6 @@ func LoadSettingsData() SettingsData {
 
 	res.AsciiArt = LoadAsciiArt()
 
-	log.Printf("After unmarshal - Tunings: %d items\n", len(res.Tunings))
-	log.Printf("After unmarshal - ColorThemes: %d items\n", len(res.ColorThemes))
-	log.Printf("After unmarshal - BorderStyles: %d items\n", len(res.BorderStyles))
-	log.Printf("After unmarshal - AsciiArt: %d items\n", len(res.AsciiArt))
-	log.Printf("Full struct: %+v\n", res)
-
 	return res
 }
 
@@ -194,7 +188,9 @@ func LoadAsciiArt() map[string]string {
 			log.Fatal("Error reading", f.Name())
 		}
 
-		ascii_art[f.Name()] = string(data)
+		// f.Name() returns the full path of the file, we want the actual name of the file
+		_, filename := filepath.Split(f.Name())
+		ascii_art[filename] = string(data)
 	}
 
 	return ascii_art

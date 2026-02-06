@@ -1,5 +1,5 @@
 {
-    "ascii_art_filename": "./config/art/utf_guitar",
+    "ascii_art_filename": "utf_guitar",
     "selected_tuning": "Standard",
     "border_style": "Double",
     "selected_theme": "Nord"

@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"math"
-	"tuner/tuning"
+	"ttune/tuning"
 
 	tea "charm.land/bubbletea/v2"
 	"github.com/gordonklaus/portaudio"
