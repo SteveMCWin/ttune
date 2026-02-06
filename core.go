@@ -196,7 +196,7 @@ func calculateFrequencyYIN() (float64, bool) {
 
 	// Check if we found a valid period
 	if tau == 0 || cmndf[tau] >= 1.0 {
-		log.Printf("YIN: No clear pitch detected (cmndf[%d] = %.3f)\n", tau, cmndf[tau])
+		// log.Printf("YIN: No clear pitch detected (cmndf[%d] = %.3f)\n", tau, cmndf[tau])
 		return 0, false
 	}
 
@@ -206,8 +206,8 @@ func calculateFrequencyYIN() (float64, bool) {
 	// Convert tau to frequency
 	frequency := float64(SAMPLE_RATE) / betterTau
 
-	log.Printf("YIN: tau=%d, interpolated=%.2f, freq=%.2f Hz, confidence=%.3f\n",
-		tau, betterTau, frequency, 1.0-cmndf[tau])
+	// log.Printf("YIN: tau=%d, interpolated=%.2f, freq=%.2f Hz, confidence=%.3f\n",
+	// 	tau, betterTau, frequency, 1.0-cmndf[tau])
 
 	return frequency, true
 }
@@ -250,7 +250,7 @@ func smoothFrequency(freq float64) float64 {
 		if ratio > 1.8 || ratio < 0.55 {
 			// Large jump detected, might be harmonic error
 			// Only reset if the jump is really significant
-			log.Printf("Frequency jump detected: %.2f -> %.2f (ratio: %.2f)\n", lastFreq, freq, ratio)
+			// log.Printf("Frequency jump detected: %.2f -> %.2f (ratio: %.2f)\n", lastFreq, freq, ratio)
 			frequencyHistory = []float64{freq}
 			return freq
 		}
@@ -304,7 +304,7 @@ func CalculateNote() tea.Cmd {
 
 		// Check signal strength before processing
 		if !checkSignalStrength() {
-			log.Println("Signal too weak, skipping...")
+			// log.Println("Signal too weak, skipping...")
 			return NoteReadingMsg(note)
 		}
 
@@ -312,13 +312,13 @@ func CalculateNote() tea.Cmd {
 		frequency, isValid := calculateFrequencyYIN()
 
 		if !isValid {
-			log.Println("Invalid frequency detection")
+			// log.Println("Invalid frequency detection")
 			return NoteReadingMsg(note)
 		}
 
 		// Apply smoothing
 		smoothedFreq := smoothFrequency(frequency)
-		log.Printf("Raw freq: %.2f Hz, Smoothed: %.2f Hz\n", frequency, smoothedFreq)
+		// log.Printf("Raw freq: %.2f Hz, Smoothed: %.2f Hz\n", frequency, smoothedFreq)
 
 		note = FrequencyToNote(smoothedFreq)
 

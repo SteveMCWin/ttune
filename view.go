@@ -144,16 +144,22 @@ func createSettingsContents(m Model) string {
 	}
 
 	boxStyle = boxStyle.Width(settings_width).Height(m.WindowHeight - title_height+1)
-	setting_names := []string{ "Ascii Art", "Color Scheme", "Selected Tuning", "Border Style"}
+	setting_names := make([]string, 0)
+	for _, s := range m.Options {
+		setting_names = append(setting_names, s.Name)
+	}
+
 	settings_box := boxStyle.Align(lipgloss.Left, lipgloss.Top).Render(lipgloss.JoinVertical(lipgloss.Left, setting_names...))
 
+	available_values := lipgloss.JoinVertical(lipgloss.Left, m.Options[m.SelectedOption].Options...)
+
 	boxStyle = boxStyle.Width(setting_val_box_width).Height(m.WindowHeight - title_height+1)
-	settings_vals_box := boxStyle.Render("")
+	settings_content := boxStyle.Render(available_values)
 
 	instructions_str := "backspace/esc - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   enter/space - select   q - quit"
 	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
 
-	main_content := lipgloss.JoinHorizontal(lipgloss.Center, settings_box, settings_vals_box)
+	main_content := lipgloss.JoinHorizontal(lipgloss.Center, settings_box, settings_content)
 
 	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
 	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)

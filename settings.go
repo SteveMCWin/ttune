@@ -24,6 +24,7 @@ type SettingsOptions struct {
 	Description string
 	Options     []string
 	Previews    []string
+	Selected    int // TODO??
 }
 
 type AppSettings struct {
@@ -86,7 +87,7 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 	}
 
 	for k, v := range data.Tunings {
-		themes.Options = append(themes.Options, k)
+		tunings.Options = append(tunings.Options, k)
 		var builder strings.Builder
 		builder.WriteByte('\n')
 		for _, note := range v.Notes {
@@ -188,9 +189,7 @@ func LoadAsciiArt() map[string]string {
 			log.Fatal("Error reading", f.Name())
 		}
 
-		// f.Name() returns the full path of the file, we want the actual name of the file
-		_, filename := filepath.Split(f.Name())
-		ascii_art[filename] = string(data)
+		ascii_art[f.Name()] = string(data)
 	}
 
 	return ascii_art
