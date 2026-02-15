@@ -49,6 +49,8 @@ func SetBorderStyle(style string) {
 		boxStyle = boxStyle.BorderStyle(lipgloss.OuterHalfBlockBorder())
 	case "Thick":
 		boxStyle = boxStyle.BorderStyle(lipgloss.ThickBorder())
+	case "None":
+		boxStyle = boxStyle.BorderStyle(lipgloss.HiddenBorder())
 	default:
 		log.Println("! ! ! ! ! Unsupported border style:", style)
 		boxStyle = boxStyle.BorderStyle(lipgloss.NormalBorder())

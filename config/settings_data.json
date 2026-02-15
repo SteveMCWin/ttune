@@ -1,6 +1,6 @@
 {
-    "tunings": {
-        "Standard": {
+    "tunings": [
+        {
             "name": "Standard",
             "notes": [
                 "E2 ",
@@ -11,7 +11,7 @@
                 "E4 "
             ]
         },
-        "Drop D": {
+        {
             "name": "Drop D",
             "notes": [
                 "D2 ",
@@ -22,7 +22,7 @@
                 "E4 "
             ]
         },
-        "Drop C": {
+        {
             "name": "Drop C",
             "notes": [
                 "C2 ",
@@ -33,7 +33,7 @@
                 "D4 "
             ]
         },
-        "Open G": {
+        {
             "name": "Open G",
             "notes": [
                 "D2 ",
@@ -44,7 +44,7 @@
                 "D4 "
             ]
         },
-        "Half Step Down": {
+        {
             "name": "Half Step Down",
             "notes": [
                 "D#2",
@@ -55,47 +55,47 @@
                 "D#4"
             ]
         }
-    },
-    "color_themes": {
-        "Nord": {
+    ],
+    "color_themes": [
+        {
             "name": "Nord",
             "primary": "#88C0D0",
             "secondary": "#A3BE8C",
             "tertiary": "#EBCB8B"
         },
-        "Catppuccin": {
+        {
             "name": "Catppuccin",
             "primary": "#89B4FA",
             "secondary": "#F38BA8",
             "tertiary": "#FAB387"
         },
-        "Gruvbox": {
+        {
             "name": "Gruvbox",
             "primary": "#D79921",
             "secondary": "#B8BB26",
             "tertiary": "#A89984"
         },
-        "Tokyo Night": {
+        {
             "name": "Tokyo Night",
             "primary": "#7AA2F7",
             "secondary": "#0DB9D7",
             "tertiary": "#BB9AF7"
         },
-        "Dracula": {
+        {
             "name": "Dracula",
             "primary": "#BD93F9",
             "secondary": "#50FA7B",
             "tertiary": "#FF79C6"
         }
-    },
-    "border_styles": {
-        "None": "None",
-        "Normal": "Normal",
-        "Rounded": "Rounded",
-        "Double": "Double",
-        "Block": "Block",
-        "Inner Block": "Inner Block",
-        "Outer block": "Outer block",
-        "Thick": "Thick"
-    }
+    ],
+    "border_styles": [
+        "None",
+        "Normal",
+        "Rounded",
+        "Double",
+        "Block",
+        "Inner Block",
+        "Outer block",
+        "Thick"
+    ]
 }

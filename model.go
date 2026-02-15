@@ -66,13 +66,13 @@ func NewModel() Model {
 func (m *Model) ApplySettings() {
 	m.SettingsSelected = LoadSettingsSelections()
 
-	m.AsciiArt = m.SettingsData.AsciiArt[m.SettingsSelected.AsciiArtFileName]
+	m.AsciiArt = m.SettingsData.AsciiArt[m.SettingsSelected.AsciiArt].FileContents
 
-	SetBorderStyle(m.SettingsData.BorderStyles[m.SettingsSelected.BorderStyle])
+	SetBorderStyle(m.SettingsData.BorderStyles[m.SettingsSelected.BorderTheme])
 
-	m.SelectedTuning = m.SettingsData.Tunings[m.SettingsSelected.SelectedTuning]
+	m.SelectedTuning = m.SettingsData.Tunings[m.SettingsSelected.Tuning]
 
-	m.Theme = m.SettingsData.ColorThemes[m.SettingsSelected.SelectedTheme]
+	m.Theme = m.SettingsData.ColorThemes[m.SettingsSelected.ColorTheme]
 
 	// Store settings to json file
 	StoreSettings(m.SettingsSelected)
@@ -119,19 +119,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "j", "down":
 			if !m.SelectingValues {
 				m.SelectedOption = (m.SelectedOption + 1) % len(m.Options)
-				log.Println("m.SelectedOption", m.Options[m.SelectedOption].Name)
+				m.SelectedOptionValue = 0
 			} else {
 				m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.Options[m.SelectedOption].Options)
-				log.Println("m.SelectedOptionValue", m.SelectedOptionValue)
 			}
 
 		case "k", "up":
 			if !m.SelectingValues {
 				m.SelectedOption = (m.SelectedOption - 1 + len(m.Options)) % len(m.Options)
-				log.Println("m.SelectedOption", m.Options[m.SelectedOption].Name)
+				m.SelectedOptionValue = 0
 			} else {
 				m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.Options[m.SelectedOption].Options)
-				log.Println("m.SelectedOptionValue", m.SelectedOptionValue)
 			}
 
 		case "l", "right":

@@ -16,7 +16,7 @@ type SettingsData struct {
 	Tunings      []tuning.Tuning `json:"tunings"`
 	ColorThemes  []ColorTheme    `json:"color_themes"`
 	BorderStyles []string        `json:"border_styles"`
-	AsciiArt     []AsciiArt        // NOTE: not loaded from json but by looking at the art dir
+	AsciiArt     []AsciiArt      // NOTE: not loaded from json but by looking at the art dir
 }
 
 type SettingsOptions struct {
@@ -24,14 +24,14 @@ type SettingsOptions struct {
 	Description string
 	Options     []string
 	Previews    []string
-	Selected    int // TODO??
+	// Selected    int // TODO??
 }
 
 type AppSettings struct {
-	AsciiArtFileName string `json:"ascii_art_filename"`
-	SelectedTuning   string `json:"selected_tuning"`
-	BorderStyle      string `json:"border_style"`
-	SelectedTheme    string `json:"selected_theme"`
+	AsciiArt    int `json:"ascii_art_filename"`
+	Tuning      int `json:"selected_tuning"`
+	BorderTheme int `json:"border_style"`
+	ColorTheme  int `json:"selected_theme"`
 }
 
 func DefineSettingsOptions(data SettingsData) []SettingsOptions {
@@ -94,7 +94,7 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 			builder.WriteString(note)
 			builder.WriteByte('\n')
 		}
-		themes.Previews = append(themes.Previews, builder.String())
+		tunings.Previews = append(tunings.Previews, builder.String())
 	}
 
 	return []SettingsOptions{ascii_art, borders, themes, tunings}
@@ -190,7 +190,6 @@ func LoadAsciiArt() []AsciiArt {
 		}
 
 		ascii_art = append(ascii_art, AsciiArt{FileName: f.Name(), FileContents: string(data)})
-		// ascii_art[f.Name()] = string(data)
 	}
 
 	return ascii_art

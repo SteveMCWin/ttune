@@ -1,6 +1,6 @@
 {
-    "ascii_art_filename": "utf_guitar",
-    "selected_tuning": "Standard",
-    "border_style": "Double",
-    "selected_theme": "Nord"
+    "ascii_art_filename": 1,
+    "selected_tuning": 0,
+    "border_style": 0,
+    "selected_theme": 0
 }
