@@ -14,6 +14,11 @@ type ColorTheme struct {
 	Tertiary  string `json:"tertiary"`
 }
 
+type AsciiArt struct {
+	FileName string
+	FileContents string
+}
+
 var (
 	boxStyle      = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
 	asciiArtStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff"))

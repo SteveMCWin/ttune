@@ -13,10 +13,10 @@ import (
 )
 
 type SettingsData struct {
-	Tunings      map[string]tuning.Tuning `json:"tunings"`
-	ColorThemes  map[string]ColorTheme    `json:"color_themes"`
-	BorderStyles map[string]string        `json:"border_styles"`
-	AsciiArt     map[string]string        // NOTE: not loaded from json but by looking at the art dir
+	Tunings      []tuning.Tuning `json:"tunings"`
+	ColorThemes  []ColorTheme    `json:"color_themes"`
+	BorderStyles []string        `json:"border_styles"`
+	AsciiArt     []AsciiArt        // NOTE: not loaded from json but by looking at the art dir
 }
 
 type SettingsOptions struct {
@@ -42,9 +42,9 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 		Previews:    make([]string, 0),
 	}
 
-	for k, v := range data.AsciiArt {
-		ascii_art.Options = append(ascii_art.Options, k)
-		ascii_art.Previews = append(ascii_art.Previews, v)
+	for _, v := range data.AsciiArt {
+		ascii_art.Options = append(ascii_art.Options, v.FileName)
+		ascii_art.Previews = append(ascii_art.Previews, v.FileContents)
 	}
 
 	borders := SettingsOptions{
@@ -54,8 +54,8 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 		Previews:    make([]string, 0),
 	}
 
-	for k, v := range data.BorderStyles {
-		borders.Options = append(borders.Options, k)
+	for _, v := range data.BorderStyles {
+		borders.Options = append(borders.Options, v)
 		borders.Previews = append(borders.Previews, v) // TODO: remember to add some border examples for the previews
 	}
 
@@ -66,8 +66,8 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 		Previews:    make([]string, 0),
 	}
 
-	for k, v := range data.ColorThemes {
-		themes.Options = append(themes.Options, k)
+	for _, v := range data.ColorThemes {
+		themes.Options = append(themes.Options, v.Name)
 		blocks := `
 		██████
 		██████
@@ -86,8 +86,8 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 		Previews:    make([]string, 0),
 	}
 
-	for k, v := range data.Tunings {
-		tunings.Options = append(tunings.Options, k)
+	for _, v := range data.Tunings {
+		tunings.Options = append(tunings.Options, v.Name)
 		var builder strings.Builder
 		builder.WriteByte('\n')
 		for _, note := range v.Notes {
@@ -147,7 +147,7 @@ func LoadSettingsData() SettingsData {
 	return res
 }
 
-func LoadAsciiArt() map[string]string {
+func LoadAsciiArt() []AsciiArt {
 	config_dir, err := os.UserConfigDir()
 	if err != nil {
 		log.Println("Error finding user config dir")
@@ -182,14 +182,15 @@ func LoadAsciiArt() map[string]string {
 		log.Fatal("Error reading art dir")
 	}
 
-	ascii_art := make(map[string]string)
+	ascii_art := make([]AsciiArt, 0)
 	for _, f := range files {
 		data, err := os.ReadFile(filepath.Join(user_art_dir_path, f.Name()))
 		if err != nil {
 			log.Fatal("Error reading", f.Name())
 		}
 
-		ascii_art[f.Name()] = string(data)
+		ascii_art = append(ascii_art, AsciiArt{FileName: f.Name(), FileContents: string(data)})
+		// ascii_art[f.Name()] = string(data)
 	}
 
 	return ascii_art
