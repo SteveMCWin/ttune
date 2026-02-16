@@ -96,6 +96,7 @@
         "Block",
         "Inner Block",
         "Outer Block",
-        "Thick"
+        "Thick",
+        "Ascii"
     ]
 }

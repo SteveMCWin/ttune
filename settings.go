@@ -86,8 +86,9 @@ func DefineSettingsOptions(data SettingsData, currentSettings AppSettings) []Set
 	for _, v := range data.ColorThemes {
 		themes.Options = append(themes.Options, v.Name)
 		blocks := `
-		██████
-		██████
+		████████
+		████████
+		████████
 		`
 		tmp_style := lipgloss.NewStyle()
 		preview := tmp_style.Foreground(lipgloss.Color(v.Primary)).Render(blocks)

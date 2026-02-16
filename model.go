@@ -66,14 +66,22 @@ func NewModel() Model {
 		SettingsData:     LoadSettingsData(),
 	}
 
+	log.Println("Got to here")
+
 	m.Options = DefineSettingsOptions(m.SettingsData, m.SettingsSelected)
+	log.Println("Also here")
 	m.ApplySettings()
+
+	log.Println("And to here")
+	// Force the tui to render the selected preview on startup
+	m.SelectedOptionValue = m.Options[0].Selected % len(m.Options[0].Options)
 
 	return m
 }
 
 func (m *Model) ApplySettings() {
-	m.AsciiArt = m.SettingsData.AsciiArt[m.SettingsSelected.AsciiArt].FileContents
+	ascii_selected := m.SettingsSelected.AsciiArt%len(m.Options[0].Options)
+	m.AsciiArt = m.SettingsData.AsciiArt[ascii_selected].FileContents
 
 	SetBorderStyle(m.SettingsData.BorderStyles[m.SettingsSelected.BorderStyle])
 
@@ -88,8 +96,8 @@ func (m *Model) ApplySettings() {
 
 func (m Model) Init() tea.Cmd {
 	cmds := []tea.Cmd{
-		// m.Theme.SetToCurrent(),
 		initAutioStream(),
+		ReRender,
 	}
 
 	return tea.Batch(cmds...)

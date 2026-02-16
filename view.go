@@ -40,7 +40,7 @@ func createListeningContents(m Model) string {
 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalMargins()
 	tuning_width := whole_widht / 4
 	if m.AsciiArt == "" {
-		tuning_width /= 2
+		tuning_width = tuning_width*2/3
 	}
 	meter_box_width := whole_widht - tuning_width - boxStyle.GetHorizontalMargins()
 
@@ -139,9 +139,6 @@ func createSettingsContents(m Model) string {
 	}
 
 	settings_width := whole_widht / 4
-	if m.AsciiArt == "" {
-		settings_width /= 2
-	}
 
 	options_box_width := whole_widht - settings_width
 
@@ -150,7 +147,7 @@ func createSettingsContents(m Model) string {
 	}
 
 	settings_box_style := boxStyle.Width(settings_width).Height(settings_height)
-	setting_names := make([]string, 0)
+	setting_names := []string{"Settings", ""}
 	for i, o := range m.Options {
 		var line string
 		if m.SelectedOption != i {
@@ -173,7 +170,7 @@ func createSettingsContents(m Model) string {
 	available_options_widht := (options_box_width - options_box_style.GetHorizontalFrameSize()) / 3
 	available_options_height := (settings_height - options_box_style.GetVerticalFrameSize()) / 2
 
-	options_names := make([]string, 0)
+	options_names := []string{"Options", ""}
 	for i, o := range m.Options[m.SelectedOption].Options {
 
 		prefix := "[ ] "
@@ -206,7 +203,7 @@ func createSettingsContents(m Model) string {
 
 	options_box := options_box_style.UnsetBorderStyle().Render(lipgloss.JoinHorizontal(lipgloss.Top, lipgloss.JoinVertical(lipgloss.Left, box_available_options, box_option_description), box_option_preview))
 
-	instructions_str := "backspace/esc - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   enter/space - select   q - quit"
+	instructions_str := "backspace/esc - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   enter/space - select   ? - help   q - quit"
 	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
 
 	settings_options := lipgloss.JoinHorizontal(lipgloss.Top, settings_box, options_box)

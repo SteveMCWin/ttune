@@ -59,6 +59,9 @@ func SetBorderStyle(style string) {
 	case "Thick":
 		boxStyle = boxStyle.BorderStyle(lipgloss.ThickBorder())
 		settingsBox = settingsBox.BorderStyle(lipgloss.ThickBorder())
+	case "Ascii":
+		boxStyle = boxStyle.BorderStyle(lipgloss.ASCIIBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.ASCIIBorder())
 	case "None":
 		boxStyle = boxStyle.BorderStyle(lipgloss.HiddenBorder())
 		settingsBox = settingsBox.BorderStyle(lipgloss.HiddenBorder())
@@ -88,6 +91,8 @@ func GetBorderStyleByName(style_name string) lipgloss.Style {
 		style = style.BorderStyle(lipgloss.ThickBorder())
 	case "None":
 		style = style.BorderStyle(lipgloss.HiddenBorder())
+	case "Ascii":
+		style = style.BorderStyle(lipgloss.ASCIIBorder())
 	default:
 		log.Println("! ! ! ! ! Unsupported border style:", style)
 		style = style.BorderStyle(lipgloss.NormalBorder())
