@@ -25,7 +25,7 @@ var (
 	// settingsBox   = lipgloss.NewStyle().Border(lipgloss.BlockBorder())
 	settingsBox   = lipgloss.NewStyle().Padding(1).Border(lipgloss.DoubleBorder())
 	selectedStyle = lipgloss.NewStyle()
-	asciiArtStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff"))
+	// asciiArtStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff"))
 	ColorThemes   map[string]ColorTheme
 )
 
@@ -43,23 +43,32 @@ func SetBorderStyle(style string) {
 	switch style {
 	case "Normal":
 		boxStyle = boxStyle.BorderStyle(lipgloss.NormalBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.NormalBorder())
 	case "Rounded":
 		boxStyle = boxStyle.BorderStyle(lipgloss.RoundedBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.RoundedBorder())
 	case "Double":
 		boxStyle = boxStyle.BorderStyle(lipgloss.DoubleBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.DoubleBorder())
 	case "Block":
 		boxStyle = boxStyle.BorderStyle(lipgloss.BlockBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.BlockBorder())
 	case "Inner Block":
 		boxStyle = boxStyle.BorderStyle(lipgloss.InnerHalfBlockBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.InnerHalfBlockBorder())
 	case "Outer Block":
 		boxStyle = boxStyle.BorderStyle(lipgloss.OuterHalfBlockBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.OuterHalfBlockBorder())
 	case "Thick":
 		boxStyle = boxStyle.BorderStyle(lipgloss.ThickBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.ThickBorder())
 	case "None":
 		boxStyle = boxStyle.BorderStyle(lipgloss.HiddenBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.HiddenBorder())
 	default:
 		log.Println("! ! ! ! ! Unsupported border style:", style)
 		boxStyle = boxStyle.BorderStyle(lipgloss.NormalBorder())
+		settingsBox = settingsBox.BorderStyle(lipgloss.NormalBorder())
 	}
 }
 

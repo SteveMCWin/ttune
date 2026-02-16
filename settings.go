@@ -24,7 +24,8 @@ type SettingsOptions struct {
 	Description string
 	Options     []string
 	Previews    []string
-	// Selected    int // TODO??
+	Selected    int
+	Apply       func(val int, current AppSettings) AppSettings
 }
 
 type AppSettings struct {
@@ -34,12 +35,17 @@ type AppSettings struct {
 	ColorTheme  int `json:"selected_theme"`
 }
 
-func DefineSettingsOptions(data SettingsData) []SettingsOptions {
+func DefineSettingsOptions(data SettingsData, currentSettings AppSettings) []SettingsOptions {
 	ascii_art := SettingsOptions{
 		Name:        "Ascii Art",
 		Description: "The character art displayed on the left side of the terminal when tuning is in progress. Purely for aesthetical purposes, but I spent a lot of time drawing it :^)",
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
+		Selected:    currentSettings.AsciiArt,
+		Apply: func(val int, s AppSettings) AppSettings {
+			s.AsciiArt = val
+			return s
+		},
 	}
 
 	for _, v := range data.AsciiArt {
@@ -49,9 +55,14 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 
 	borders := SettingsOptions{
 		Name:        "Border Style",
-		Description: "The appearance of displayed borders. The double borders are my favourite, that's why it's the default one hihi.",
+		Description: "The appearance of displayed borders. The double border is my favourite, that's why it's the default one hihi.",
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
+		Selected:    currentSettings.BorderStyle,
+		Apply: func(val int, s AppSettings) AppSettings {
+			s.BorderStyle = val
+			return s
+		},
 	}
 
 	for _, v := range data.BorderStyles {
@@ -65,6 +76,11 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 		Description: "Colors used for displaying the user interface. Comprised of 3 colors each. Affects only the foreground elements.",
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
+		Selected:    currentSettings.ColorTheme,
+		Apply: func(val int, s AppSettings) AppSettings {
+			s.ColorTheme = val
+			return s
+		},
 	}
 
 	for _, v := range data.ColorThemes {
@@ -85,6 +101,11 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 		Description: "A tuning that will be displayed along the ascii art. Mostly there for aesthetical reasons but also quite handy if you don't have them memorized exactly.",
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
+		Selected:    currentSettings.Tuning,
+		Apply: func(val int, s AppSettings) AppSettings {
+			s.Tuning = val
+			return s
+		},
 	}
 
 	for _, v := range data.Tunings {

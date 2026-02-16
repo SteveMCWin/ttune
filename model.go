@@ -8,9 +8,12 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/gordonklaus/portaudio"
 )
+
 type OpenStreamMsg *portaudio.Stream
 type NoteReadingMsg Note
 type State string
+
+type ReRenderMsg struct{}
 
 const (
 	Initializing State = "Initializing"
@@ -23,6 +26,10 @@ type Note struct {
 	Index    int
 	Octave   int
 	CentsOff int
+}
+
+func ReRender() tea.Msg {
+	return ReRenderMsg{}
 }
 
 type Model struct {
@@ -60,13 +67,13 @@ func NewModel() Model {
 	}
 
 	m.ApplySettings()
-	m.Options = DefineSettingsOptions(m.SettingsData)
+	m.Options = DefineSettingsOptions(m.SettingsData, m.SettingsSelected)
 
 	return m
 }
 
 func (m *Model) ApplySettings() {
-	m.SettingsSelected = LoadSettingsSelections()
+	// m.SettingsSelected = LoadSettingsSelections()
 
 	m.AsciiArt = m.SettingsData.AsciiArt[m.SettingsSelected.AsciiArt].FileContents
 
@@ -100,6 +107,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.CurrentState == Listening {
 			cmds = append(cmds, CalculateNote())
 		}
+	case ReRenderMsg:
+		m.Options = DefineSettingsOptions(m.SettingsData, m.SettingsSelected)
+		m.ApplySettings()
+		return m, nil
+
 	case tea.KeyMsg:
 		switch message.String() {
 		case "ctrl+c", "q":
@@ -111,6 +123,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "backspace", "esc":
 			m.CurrentState = Listening
+			m.SelectingValues = false
 			cmds = append(cmds, CalculateNote())
 
 		case "s":
@@ -122,7 +135,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "j", "down":
 			if !m.SelectingValues {
 				m.SelectedOption = (m.SelectedOption + 1) % len(m.Options)
-				m.SelectedOptionValue = 0
+				// UX fix: hover over the currently saved option when switching categories
+				m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
 			} else {
 				m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.Options[m.SelectedOption].Options)
 			}
@@ -130,7 +144,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "k", "up":
 			if !m.SelectingValues {
 				m.SelectedOption = (m.SelectedOption - 1 + len(m.Options)) % len(m.Options)
-				m.SelectedOptionValue = 0
+				// UX fix: hover over the currently saved option when switching categories
+				m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
 			} else {
 				m.SelectedOptionValue = (m.SelectedOptionValue - 1 + len(m.Options[m.SelectedOption].Options)) % len(m.Options[m.SelectedOption].Options)
 			}
@@ -139,6 +154,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.SelectingValues = true
 
 		case "enter", "space":
+			if m.CurrentState == Settings && m.SelectingValues {
+				m.SettingsSelected = m.Options[m.SelectedOption].Apply(m.SelectedOptionValue, m.SettingsSelected)
+
+				cmds = append(cmds, ReRender)
+			}
 		}
 
 	case tea.WindowSizeMsg:
