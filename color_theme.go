@@ -24,6 +24,7 @@ var (
 	// settingsBox   = lipgloss.NewStyle().Border(lipgloss.HiddenBorder())
 	// settingsBox   = lipgloss.NewStyle().Border(lipgloss.BlockBorder())
 	settingsBox   = lipgloss.NewStyle().Padding(1).Border(lipgloss.DoubleBorder())
+	selectedStyle = lipgloss.NewStyle()
 	asciiArtStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff"))
 	ColorThemes   map[string]ColorTheme
 )
@@ -32,6 +33,7 @@ func (t ColorTheme) SetToCurrent() func() tea.Msg {
 	return func() tea.Msg {
 		boxStyle = boxStyle.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Tertiary))
 		settingsBox = settingsBox.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Tertiary))
+		selectedStyle = selectedStyle.Foreground(lipgloss.Color(t.Secondary))
 		// asciiArtStyle = asciiArtStyle.Foreground(lightDark())
 		return nil
 	}

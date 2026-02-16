@@ -182,7 +182,7 @@ func createSettingsContents(m Model) string {
 	title_box := title_box_style.Render("tTuner - " + string(m.CurrentState))
 
 	whole_title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
-	options_height := m.WindowHeight - whole_title_height + 1
+	settings_height := m.WindowHeight - whole_title_height + 1
 
 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalMargins()
 
@@ -191,47 +191,73 @@ func createSettingsContents(m Model) string {
 	}
 
 	settings_width := whole_widht/4
-	// available_values_width := settings_width
 	if m.AsciiArt == "" {
 		settings_width /= 2
 	}
-	options_box_width := whole_widht - settings_width - boxStyle.GetHorizontalMargins()
+
+	options_box_width := whole_widht - settings_width
 
 	if options_box_width <= 0 {
 		return ""
 	}
 
-	settings_box_style := boxStyle.Width(settings_width).Height(options_height)
+	settings_box_style := boxStyle.Width(settings_width).Height(settings_height)
 	setting_names := make([]string, 0)
-	for _, s := range m.Options {
-		setting_names = append(setting_names, s.Name)
+	for i, o := range m.Options {
+		var line string
+		if m.SelectedOption != i {
+			selection_box := "[ ] "
+			line = selection_box + o.Name
+		} else {
+			selection_box := "[o] "
+			line = selection_box+o.Name
+			if !m.SelectingValues {
+				line = selectedStyle.Render(line)
+			}
+		}
+		setting_names = append(setting_names, line)
 	}
 
-	settings_box := settings_box_style.Align(lipgloss.Left, lipgloss.Top).Render(lipgloss.JoinVertical(lipgloss.Left, setting_names...))
+	settings_box := settings_box_style.Align(lipgloss.Left, lipgloss.Top).PaddingLeft(2).Render(lipgloss.JoinVertical(lipgloss.Left, setting_names...))
 
-	options_box_style := boxStyle.Width(options_box_width).Height(options_height).Align(lipgloss.Left, lipgloss.Top).Padding(0)
+	options_box_style := boxStyle.UnsetBorderStyle().Width(options_box_width).Height(settings_height).Align(lipgloss.Left, lipgloss.Top).Padding(0)
 
-	available_options_widht := (options_box_width - options_box_style.GetHorizontalFrameSize() + options_box_style.GetHorizontalBorderSize())/2
-	available_options_height := (options_height - options_box_style.GetVerticalFrameSize() + options_box_style.GetHorizontalBorderSize())/2
+	available_options_widht := (options_box_width - options_box_style.GetHorizontalFrameSize())/3
+	available_options_height := (settings_height - options_box_style.GetVerticalFrameSize())/2
 
-	available_options := lipgloss.JoinVertical(lipgloss.Left, m.Options[m.SelectedOption].Options...)
+	options_names := make([]string, 0)
+	for i, o := range m.Options[m.SelectedOption].Options {
+		var line string
+		if m.SelectedOptionValue != i {
+			selection_box := "[ ] "
+			line = selection_box + o
+		} else {
+			selection_box := "[o] "
+			line = selection_box+o
+			if m.SelectingValues {
+				line = selectedStyle.Render(line)
+			}
+		}
+		options_names = append(options_names, line)
+	}
+	available_options := lipgloss.JoinVertical(lipgloss.Left, options_names...)
 	box_available_options := settingsBox.Align(lipgloss.Left, lipgloss.Top).PaddingLeft(2).Width(available_options_widht).Height(available_options_height).Render(available_options)
 
 	
 	options_description_width := available_options_widht
-	options_description_height := options_height-available_options_height - settingsBox.GetVerticalFrameSize()
+	options_description_height := settings_height-available_options_height
 
-	option_description := m.Options[m.SelectedOption].Description
+	option_description := lipgloss.JoinVertical(lipgloss.Left, "Description", "", m.Options[m.SelectedOption].Description)
 	box_option_description := settingsBox.Align(lipgloss.Left, lipgloss.Top).Padding(1, 2).Width(options_description_width).Height(options_description_height).Render(option_description)
 
 
 	preview_width := options_box_width - available_options_widht - options_box_style.GetHorizontalFrameSize()
-	preview_height := options_height - settingsBox.GetVerticalFrameSize()
+	preview_height := settings_height
 
 	option_preview := lipgloss.JoinVertical(lipgloss.Center, "Preview", "", "", lipgloss.JoinHorizontal(lipgloss.Center, "", m.Options[m.SelectedOption].Previews[m.SelectedOptionValue]))
-	box_option_preview := settingsBox.Align(lipgloss.Center, lipgloss.Top).Width(preview_width).Height(preview_height).Render(option_preview)
+	box_option_preview := settingsBox.Align(lipgloss.Center, lipgloss.Center).MarginLeft(2).Width(preview_width-2).Height(preview_height).Render(option_preview)
 
-	options_box := options_box_style.Render(lipgloss.JoinHorizontal(lipgloss.Top, lipgloss.JoinVertical(lipgloss.Left, box_available_options, box_option_description), box_option_preview))
+	options_box := options_box_style.UnsetBorderStyle().Render(lipgloss.JoinHorizontal(lipgloss.Top, lipgloss.JoinVertical(lipgloss.Left, box_available_options, box_option_description), box_option_preview))
 
 	instructions_str := "backspace/esc - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   enter/space - select   q - quit"
 	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
