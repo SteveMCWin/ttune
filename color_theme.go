@@ -62,3 +62,30 @@ func SetBorderStyle(style string) {
 		boxStyle = boxStyle.BorderStyle(lipgloss.NormalBorder())
 	}
 }
+
+func GetBorderStyleByName(style_name string) lipgloss.Style {
+	style := lipgloss.NewStyle()
+	switch style_name {
+	case "Normal":
+		style = style.BorderStyle(lipgloss.NormalBorder())
+	case "Rounded":
+		style = style.BorderStyle(lipgloss.RoundedBorder())
+	case "Double":
+		style = style.BorderStyle(lipgloss.DoubleBorder())
+	case "Block":
+		style = style.BorderStyle(lipgloss.BlockBorder())
+	case "Inner Block":
+		style = style.BorderStyle(lipgloss.InnerHalfBlockBorder())
+	case "Outer Block":
+		style = style.BorderStyle(lipgloss.OuterHalfBlockBorder())
+	case "Thick":
+		style = style.BorderStyle(lipgloss.ThickBorder())
+	case "None":
+		style = style.BorderStyle(lipgloss.HiddenBorder())
+	default:
+		log.Println("! ! ! ! ! Unsupported border style:", style)
+		style = style.BorderStyle(lipgloss.NormalBorder())
+	}
+
+	return style
+}

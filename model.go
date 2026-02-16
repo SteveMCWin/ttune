@@ -70,7 +70,7 @@ func (m *Model) ApplySettings() {
 
 	m.AsciiArt = m.SettingsData.AsciiArt[m.SettingsSelected.AsciiArt].FileContents
 
-	SetBorderStyle(m.SettingsData.BorderStyles[m.SettingsSelected.BorderTheme])
+	SetBorderStyle(m.SettingsData.BorderStyles[m.SettingsSelected.BorderStyle])
 
 	m.SelectedTuning = m.SettingsData.Tunings[m.SettingsSelected.Tuning]
 

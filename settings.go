@@ -30,7 +30,7 @@ type SettingsOptions struct {
 type AppSettings struct {
 	AsciiArt    int `json:"ascii_art_filename"`
 	Tuning      int `json:"selected_tuning"`
-	BorderTheme int `json:"border_style"`
+	BorderStyle int `json:"border_style"`
 	ColorTheme  int `json:"selected_theme"`
 }
 
@@ -56,7 +56,8 @@ func DefineSettingsOptions(data SettingsData) []SettingsOptions {
 
 	for _, v := range data.BorderStyles {
 		borders.Options = append(borders.Options, v)
-		borders.Previews = append(borders.Previews, v) // TODO: remember to add some border examples for the previews
+
+		borders.Previews = append(borders.Previews, GetBorderStyleByName(v).Width(12).Height(6).Render(""))
 	}
 
 	themes := SettingsOptions{
