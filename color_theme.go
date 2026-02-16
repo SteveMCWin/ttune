@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	tea "charm.land/bubbletea/v2"
+	// tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
 )
 
@@ -29,14 +29,11 @@ var (
 	ColorThemes   map[string]ColorTheme
 )
 
-func (t ColorTheme) SetToCurrent() func() tea.Msg {
-	return func() tea.Msg {
-		boxStyle = boxStyle.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Tertiary))
-		settingsBox = settingsBox.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Tertiary))
-		selectedStyle = selectedStyle.Foreground(lipgloss.Color(t.Secondary))
-		// asciiArtStyle = asciiArtStyle.Foreground(lightDark())
-		return nil
-	}
+func (t ColorTheme) SetToCurrent() {
+	boxStyle = boxStyle.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Tertiary))
+	settingsBox = settingsBox.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Tertiary))
+	selectedStyle = selectedStyle.Foreground(lipgloss.Color(t.Secondary))
+	// asciiArtStyle = asciiArtStyle.Foreground(lightDark())
 }
 
 func SetBorderStyle(style string) {

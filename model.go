@@ -66,15 +66,13 @@ func NewModel() Model {
 		SettingsData:     LoadSettingsData(),
 	}
 
-	m.ApplySettings()
 	m.Options = DefineSettingsOptions(m.SettingsData, m.SettingsSelected)
+	m.ApplySettings()
 
 	return m
 }
 
 func (m *Model) ApplySettings() {
-	// m.SettingsSelected = LoadSettingsSelections()
-
 	m.AsciiArt = m.SettingsData.AsciiArt[m.SettingsSelected.AsciiArt].FileContents
 
 	SetBorderStyle(m.SettingsData.BorderStyles[m.SettingsSelected.BorderStyle])
@@ -90,7 +88,7 @@ func (m *Model) ApplySettings() {
 
 func (m Model) Init() tea.Cmd {
 	cmds := []tea.Cmd{
-		m.Theme.SetToCurrent(),
+		// m.Theme.SetToCurrent(),
 		initAutioStream(),
 	}
 
@@ -130,12 +128,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.CurrentState = Settings
 
 		case "h", "left":
-			m.SelectingValues = false
+			if m.CurrentState == Settings {
+				m.SelectingValues = false
+			}
 
 		case "j", "down":
 			if !m.SelectingValues {
 				m.SelectedOption = (m.SelectedOption + 1) % len(m.Options)
-				// UX fix: hover over the currently saved option when switching categories
 				m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
 			} else {
 				m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.Options[m.SelectedOption].Options)
@@ -144,14 +143,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "k", "up":
 			if !m.SelectingValues {
 				m.SelectedOption = (m.SelectedOption - 1 + len(m.Options)) % len(m.Options)
-				// UX fix: hover over the currently saved option when switching categories
 				m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
 			} else {
 				m.SelectedOptionValue = (m.SelectedOptionValue - 1 + len(m.Options[m.SelectedOption].Options)) % len(m.Options[m.SelectedOption].Options)
 			}
 
 		case "l", "right":
-			m.SelectingValues = true
+			if m.CurrentState == Settings {
+				m.SelectingValues = true
+			}
 
 		case "enter", "space":
 			if m.CurrentState == Settings && m.SelectingValues {
@@ -162,15 +162,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case tea.WindowSizeMsg:
-		// log.Println("Terminal width:", message.Width)
-		// log.Println("Terminal height:", message.Height)
 		m.WindowWidth = message.Width
 		m.WindowHeight = message.Height
-	case OpenStreamMsg:
 
+	case OpenStreamMsg:
 		log.Println("Opened stream")
 		m.CurrentState = Listening
 		cmds = append(cmds, CalculateNote())
+
 	default:
 	}
 
