@@ -75,6 +75,7 @@ func (m *Model) ApplySettings() {
 	m.SelectedTuning = m.SettingsData.Tunings[m.SettingsSelected.Tuning]
 
 	m.Theme = m.SettingsData.ColorThemes[m.SettingsSelected.ColorTheme]
+	m.Theme.SetToCurrent()
 
 	// Store settings to json file
 	StoreSettings(m.SettingsSelected)
@@ -82,7 +83,7 @@ func (m *Model) ApplySettings() {
 
 func (m Model) Init() tea.Cmd {
 	cmds := []tea.Cmd{
-		m.Theme.SetToCurrent(true),
+		m.Theme.SetToCurrent(),
 		initAutioStream(),
 	}
 

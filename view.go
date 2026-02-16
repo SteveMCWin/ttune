@@ -195,8 +195,7 @@ func createSettingsContents(m Model) string {
 	if m.AsciiArt == "" {
 		settings_width /= 2
 	}
-	options_box_width := settings_width
-	preview_box_widht := whole_widht - settings_width - options_box_width - boxStyle.GetHorizontalFrameSize()+2
+	options_box_width := whole_widht - settings_width - boxStyle.GetHorizontalMargins()
 
 	if options_box_width <= 0 {
 		return ""
@@ -212,24 +211,32 @@ func createSettingsContents(m Model) string {
 
 	options_box_style := boxStyle.Width(options_box_width).Height(options_height).Align(lipgloss.Left, lipgloss.Top).Padding(0)
 
-	// available_options_widht := (options_box_width - options_box_style.GetHorizontalFrameSize() + options_box_style.GetHorizontalBorderSize())/3
-	// available_options_height := (options_height - options_box_style.GetVerticalFrameSize() + options_box_style.GetHorizontalBorderSize())*3/4
-	// available_options := lipgloss.JoinVertical(lipgloss.Left, m.Options[m.SelectedOption].Options...)
-	// box_available_options := settingsBox.Align(lipgloss.Left, lipgloss.Top).PaddingLeft(2).Width(available_options_widht).Height(available_options_height).Render(available_options)
-	// option_description := m.Options[m.SelectedOption].Description
-	// box_option_description := settingsBox.Align(lipgloss.Left, lipgloss.Top).Width(setting_val_box_width-available_values_width).Height(contents_height*3/4).Render(option_description)
+	available_options_widht := (options_box_width - options_box_style.GetHorizontalFrameSize() + options_box_style.GetHorizontalBorderSize())/2
+	available_options_height := (options_height - options_box_style.GetVerticalFrameSize() + options_box_style.GetHorizontalBorderSize())/2
 
-	options_box := options_box_style.Render(lipgloss.JoinVertical(lipgloss.Left, "", ""))
+	available_options := lipgloss.JoinVertical(lipgloss.Left, m.Options[m.SelectedOption].Options...)
+	box_available_options := settingsBox.Align(lipgloss.Left, lipgloss.Top).PaddingLeft(2).Width(available_options_widht).Height(available_options_height).Render(available_options)
 
-	preview_box_style := boxStyle.Width(preview_box_widht).Height(options_height).Padding(2, 1).Align(lipgloss.Center, lipgloss.Top)
-	option_preview := m.Options[m.SelectedOption].Previews[m.SelectedOptionValue]
-	preview_box_contents := lipgloss.JoinVertical(lipgloss.Center, "Preview:", " ", " ", lipgloss.JoinHorizontal(lipgloss.Top, "", option_preview))
-	preview_box := preview_box_style.Render(preview_box_contents)
+	
+	options_description_width := available_options_widht
+	options_description_height := options_height-available_options_height - settingsBox.GetVerticalFrameSize()
+
+	option_description := m.Options[m.SelectedOption].Description
+	box_option_description := settingsBox.Align(lipgloss.Left, lipgloss.Top).Padding(1, 2).Width(options_description_width).Height(options_description_height).Render(option_description)
+
+
+	preview_width := options_box_width - available_options_widht - options_box_style.GetHorizontalFrameSize()
+	preview_height := options_height - settingsBox.GetVerticalFrameSize()
+
+	option_preview := lipgloss.JoinVertical(lipgloss.Center, "Preview", "", "", lipgloss.JoinHorizontal(lipgloss.Center, "", m.Options[m.SelectedOption].Previews[m.SelectedOptionValue]))
+	box_option_preview := settingsBox.Align(lipgloss.Center, lipgloss.Top).Width(preview_width).Height(preview_height).Render(option_preview)
+
+	options_box := options_box_style.Render(lipgloss.JoinHorizontal(lipgloss.Top, lipgloss.JoinVertical(lipgloss.Left, box_available_options, box_option_description), box_option_preview))
 
 	instructions_str := "backspace/esc - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   enter/space - select   q - quit"
 	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
 
-	settings_options := lipgloss.JoinHorizontal(lipgloss.Top, settings_box, options_box, preview_box)
+	settings_options := lipgloss.JoinHorizontal(lipgloss.Top, settings_box, options_box)
 	main_contents := lipgloss.JoinVertical(lipgloss.Center, settings_options, instructions)
 	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_contents)
 

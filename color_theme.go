@@ -22,15 +22,16 @@ type AsciiArt struct {
 var (
 	boxStyle      = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
 	// settingsBox   = lipgloss.NewStyle().Border(lipgloss.HiddenBorder())
-	settingsBox   = lipgloss.NewStyle().Border(lipgloss.BlockBorder())
-	// settingsBox   = lipgloss.NewStyle().Padding(1).Border(lipgloss.RoundedBorder())
+	// settingsBox   = lipgloss.NewStyle().Border(lipgloss.BlockBorder())
+	settingsBox   = lipgloss.NewStyle().Padding(1).Border(lipgloss.DoubleBorder())
 	asciiArtStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff"))
 	ColorThemes   map[string]ColorTheme
 )
 
-func (t ColorTheme) SetToCurrent(isDark bool) func() tea.Msg {
+func (t ColorTheme) SetToCurrent() func() tea.Msg {
 	return func() tea.Msg {
 		boxStyle = boxStyle.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Tertiary))
+		settingsBox = settingsBox.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Tertiary))
 		// asciiArtStyle = asciiArtStyle.Foreground(lightDark())
 		return nil
 	}
