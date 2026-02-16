@@ -33,22 +33,22 @@ func (m Model) View() tea.View {
 
 func createListeningContents(m Model) string {
 
-	boxStyle = boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
-	title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
-	title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
+	title_box_style := boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
+	title_height := TITLE_HEIGHT + title_box_style.GetVerticalFrameSize()
+	title_box := title_box_style.Render("tTuner - " + string(m.CurrentState))
 
-	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
+	whole_widht := m.WindowWidth - boxStyle.GetHorizontalMargins()
 	tuning_width := whole_widht/4
 	if m.AsciiArt == "" {
 		tuning_width /= 2
 	}
-	meter_box_width := whole_widht - tuning_width + 2
+	meter_box_width := whole_widht - tuning_width - boxStyle.GetHorizontalMargins()
 
 	if meter_box_width <= 0 {
 		return ""
 	}
 
-	boxStyle = boxStyle.Width(tuning_width).Height(m.WindowHeight - title_height+1)
+	tuning_box_style := boxStyle.Width(tuning_width).Height(m.WindowHeight - title_height+1)
 	tuning_name := "Tuning: " + m.SelectedTuning.Name + "\n\n\n"
 	var tuning_contents string
 	if m.AsciiArt != "" {
@@ -65,7 +65,7 @@ func createListeningContents(m Model) string {
 		tuning_notes = tuning_notes[:len(tuning_notes)-2]
 		tuning_contents = lipgloss.JoinVertical(lipgloss.Center, tuning_name, tuning_notes)
 	}
-	tuning_box := boxStyle.Render(tuning_contents)
+	tuning_box := tuning_box_style.Render(tuning_contents)
 
 
 	meter_content_width := (int)(0.8 * (float32)(meter_box_width - boxStyle.GetHorizontalFrameSize()))
@@ -113,8 +113,8 @@ func createListeningContents(m Model) string {
 
 	meter_content := lipgloss.JoinVertical(lipgloss.Center, string(meter_notes_arr), string(meter_bar_arr), string(acc_indicator_arr))
 
-	boxStyle = boxStyle.Width(meter_box_width).Height(m.WindowHeight - title_height+1)
-	meter_box := boxStyle.Render(meter_content)
+	meter_box_style := boxStyle.Width(meter_box_width).Height(m.WindowHeight - title_height+1)
+	meter_box := meter_box_style.Render(meter_content)
 
 	main_content := lipgloss.JoinHorizontal(lipgloss.Center, tuning_box, meter_box)
 
@@ -126,48 +126,112 @@ func createListeningContents(m Model) string {
 	return all_contents
 }
 
+// func createSettingsContents(m Model) string {
+//
+// 	title_box_style := boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
+// 	title_height := TITLE_HEIGHT + title_box_style.GetVerticalFrameSize()
+// 	title_box := title_box_style.Render("tTuner - " + string(m.CurrentState))
+//
+// 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
+// 	settings_width := whole_widht/4
+// 	available_values_width := settings_width
+// 	if m.AsciiArt == "" {
+// 		settings_width /= 2
+// 	}
+// 	setting_val_box_width := whole_widht - settings_width
+//
+// 	if setting_val_box_width <= 0 {
+// 		return ""
+// 	}
+//
+// 	contents_height := m.WindowHeight - title_height+1
+// 	settings_box_style := boxStyle.Width(settings_width).Height(contents_height)
+// 	setting_names := make([]string, 0)
+// 	for _, s := range m.Options {
+// 		setting_names = append(setting_names, s.Name)
+// 	}
+//
+// 	settings_box := settings_box_style.Align(lipgloss.Left, lipgloss.Top).Render(lipgloss.JoinVertical(lipgloss.Left, setting_names...))
+//
+// 	// TODO: Gotta put these in their own boxes
+// 	available_options := lipgloss.JoinVertical(lipgloss.Left, m.Options[m.SelectedOption].Options...)
+// 	box_available_options := settingsBox.Align(lipgloss.Left, lipgloss.Top).Width(available_values_width).Height(contents_height*3/4).Render(available_options)
+// 	option_description := m.Options[m.SelectedOption].Description
+// 	box_option_description := settingsBox.Align(lipgloss.Left, lipgloss.Top).Width(setting_val_box_width-available_values_width).Height(contents_height*3/4).Render(option_description)
+// 	option_preview := m.Options[m.SelectedOption].Previews[m.SelectedOptionValue]
+// 	box_option_preview := settingsBox.Align(lipgloss.Center, lipgloss.Top).Width(setting_val_box_width-3).Height(contents_height/4).Render(option_preview)
+//
+// 	val_prev := lipgloss.JoinHorizontal(lipgloss.Top, box_available_options, box_option_preview)
+//
+// 	boxStyle = boxStyle.Width(setting_val_box_width).Height(m.WindowHeight - title_height+1)
+// 	settings_content := boxStyle.Render(lipgloss.JoinVertical(lipgloss.Left, val_prev, box_option_description))
+//
+// 	instructions_str := "backspace/esc - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   enter/space - select   q - quit"
+// 	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
+//
+// 	main_content := lipgloss.JoinHorizontal(lipgloss.Center, settings_box, settings_content)
+//
+// 	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
+// 	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)
+//
+// 	return all_contents
+// }
+
 func createSettingsContents(m Model) string {
+	title_box_style := boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
+	title_box := title_box_style.Render("tTuner - " + string(m.CurrentState))
 
-	boxStyle = boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
-	title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
-	title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
+	whole_title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
+	options_height := m.WindowHeight - whole_title_height + 1
 
-	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
-	settings_width := whole_widht/4
-	if m.AsciiArt == "" {
-		settings_width /= 2
-	}
-	setting_val_box_width := whole_widht - settings_width + 2
+	whole_widht := m.WindowWidth - boxStyle.GetHorizontalMargins()
 
-	if setting_val_box_width <= 0 {
+	if whole_widht <= 0 {
 		return ""
 	}
 
-	boxStyle = boxStyle.Width(settings_width).Height(m.WindowHeight - title_height+1)
+	settings_width := whole_widht/4
+	// available_values_width := settings_width
+	if m.AsciiArt == "" {
+		settings_width /= 2
+	}
+	options_box_width := settings_width
+	preview_box_widht := whole_widht - settings_width - options_box_width - boxStyle.GetHorizontalFrameSize()+2
+
+	if options_box_width <= 0 {
+		return ""
+	}
+
+	settings_box_style := boxStyle.Width(settings_width).Height(options_height)
 	setting_names := make([]string, 0)
 	for _, s := range m.Options {
 		setting_names = append(setting_names, s.Name)
 	}
 
-	settings_box := boxStyle.Align(lipgloss.Left, lipgloss.Top).Render(lipgloss.JoinVertical(lipgloss.Left, setting_names...))
+	settings_box := settings_box_style.Align(lipgloss.Left, lipgloss.Top).Render(lipgloss.JoinVertical(lipgloss.Left, setting_names...))
 
-	// TODO: Gotta put these in their own boxes
-	available_values := lipgloss.JoinVertical(lipgloss.Left, m.Options[m.SelectedOption].Options...)
-	option_description := m.Options[m.SelectedOption].Description
+	options_box_style := boxStyle.Width(options_box_width).Height(options_height).Align(lipgloss.Left, lipgloss.Top).Padding(0)
+
+	// available_options_widht := (options_box_width - options_box_style.GetHorizontalFrameSize() + options_box_style.GetHorizontalBorderSize())/3
+	// available_options_height := (options_height - options_box_style.GetVerticalFrameSize() + options_box_style.GetHorizontalBorderSize())*3/4
+	// available_options := lipgloss.JoinVertical(lipgloss.Left, m.Options[m.SelectedOption].Options...)
+	// box_available_options := settingsBox.Align(lipgloss.Left, lipgloss.Top).PaddingLeft(2).Width(available_options_widht).Height(available_options_height).Render(available_options)
+	// option_description := m.Options[m.SelectedOption].Description
+	// box_option_description := settingsBox.Align(lipgloss.Left, lipgloss.Top).Width(setting_val_box_width-available_values_width).Height(contents_height*3/4).Render(option_description)
+
+	options_box := options_box_style.Render(lipgloss.JoinVertical(lipgloss.Left, "", ""))
+
+	preview_box_style := boxStyle.Width(preview_box_widht).Height(options_height).Padding(2, 1).Align(lipgloss.Center, lipgloss.Top)
 	option_preview := m.Options[m.SelectedOption].Previews[m.SelectedOptionValue]
-
-	val_prev := lipgloss.JoinHorizontal(lipgloss.Top, available_values, option_preview)
-
-	boxStyle = boxStyle.Width(setting_val_box_width).Height(m.WindowHeight - title_height+1)
-	settings_content := boxStyle.Render(lipgloss.JoinVertical(lipgloss.Left, val_prev, option_description))
+	preview_box_contents := lipgloss.JoinVertical(lipgloss.Center, "Preview:", " ", " ", lipgloss.JoinHorizontal(lipgloss.Top, "", option_preview))
+	preview_box := preview_box_style.Render(preview_box_contents)
 
 	instructions_str := "backspace/esc - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   enter/space - select   q - quit"
 	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
 
-	main_content := lipgloss.JoinHorizontal(lipgloss.Center, settings_box, settings_content)
-
-	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
-	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)
+	settings_options := lipgloss.JoinHorizontal(lipgloss.Top, settings_box, options_box, preview_box)
+	main_contents := lipgloss.JoinVertical(lipgloss.Center, settings_options, instructions)
+	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_contents)
 
 	return all_contents
 }

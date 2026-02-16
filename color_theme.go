@@ -21,6 +21,9 @@ type AsciiArt struct {
 
 var (
 	boxStyle      = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
+	// settingsBox   = lipgloss.NewStyle().Border(lipgloss.HiddenBorder())
+	settingsBox   = lipgloss.NewStyle().Border(lipgloss.BlockBorder())
+	// settingsBox   = lipgloss.NewStyle().Padding(1).Border(lipgloss.RoundedBorder())
 	asciiArtStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff"))
 	ColorThemes   map[string]ColorTheme
 )

@@ -36,6 +36,8 @@ type Model struct {
 
 	CurrentState State
 
+	// perhaps these should be maps
+	// make the map while reading the data so it points the name to the index while reading
 	Theme          ColorTheme
 	AsciiArt       string
 	SelectedTuning tuning.Tuning
@@ -129,7 +131,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.SelectedOption = (m.SelectedOption - 1 + len(m.Options)) % len(m.Options)
 				m.SelectedOptionValue = 0
 			} else {
-				m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.Options[m.SelectedOption].Options)
+				m.SelectedOptionValue = (m.SelectedOptionValue - 1 + len(m.Options[m.SelectedOption].Options)) % len(m.Options[m.SelectedOption].Options)
 			}
 
 		case "l", "right":
