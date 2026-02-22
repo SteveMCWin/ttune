@@ -73,6 +73,7 @@
             ]
         }
     ],
+
     "color_themes": [
         {
             "name": "Nord",
@@ -82,29 +83,30 @@
         },
         {
             "name": "Catppuccin",
-            "primary": "#89B4FA",
-            "secondary": "#FAB387",
-            "tertiary": "#F38BA8"
+            "primary": "#94B4E3",
+            "secondary": "#E3AF91",
+            "tertiary": "#D997A8"
         },
         {
             "name": "Gruvbox",
-            "primary": "#D79921",
-            "secondary": "#A89984",
-            "tertiary": "#B8BB26"
+            "primary": "#B58928",
+            "secondary": "#A29384",
+            "tertiary": "#98971A"
         },
         {
             "name": "Tokyo Night",
-            "primary": "#7AA2F7",
-            "secondary": "#BB9AF7",
-            "tertiary": "#0DB9D7"
+            "primary": "#7E97CC",
+            "secondary": "#9D8FBD",
+            "tertiary": "#60A5B0"
         },
         {
             "name": "Dracula",
-            "primary": "#BD93F9",
-            "secondary": "#FF79C6",
-            "tertiary": "#50FA7B"
+            "primary": "#9B8ABB",
+            "secondary": "#C98BB0",
+            "tertiary": "#84BA90"
         }
     ],
+
     "border_styles": [
         "None",
         "Normal",
