@@ -1,3 +1,5 @@
+![Cool banner :D](screenshots/banner.png?raw=true)
+
 # tTune
 tTune is a stylized, keyboard oriented guitar tuning app right in your terminal!
 
