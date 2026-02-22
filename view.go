@@ -118,7 +118,7 @@ func createListeningContents(m Model) string {
 	main_content := lipgloss.JoinHorizontal(lipgloss.Center, tuning_box, meter_box)
 
 	instructions_str := "? - help   s - settings   q - quit"
-	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
+	instructions := instructionsStyle.Render(instructions_str)
 	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
 	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)
 
@@ -198,13 +198,13 @@ func createSettingsContents(m Model) string {
 	preview_width := options_box_width - available_options_widht - options_box_style.GetHorizontalFrameSize()
 	preview_height := settings_height
 
-	option_preview := lipgloss.JoinVertical(lipgloss.Center, "Preview", "", "", lipgloss.JoinHorizontal(lipgloss.Center, "", m.Options[m.SelectedOption].Previews[m.SelectedOptionValue]))
+	option_preview := lipgloss.JoinVertical(lipgloss.Center, "Preview", "", "", m.Options[m.SelectedOption].Previews[m.SelectedOptionValue])
 	box_option_preview := settingsBox.Align(lipgloss.Center, lipgloss.Center).MarginLeft(2).Width(preview_width - 2).Height(preview_height).Render(option_preview)
 
 	options_box := options_box_style.UnsetBorderStyle().Render(lipgloss.JoinHorizontal(lipgloss.Top, lipgloss.JoinVertical(lipgloss.Left, box_available_options, box_option_description), box_option_preview))
 
 	instructions_str := "backspace/esc - back   ↓/j - down   ↑/k - up   ←/h - left   →/l - right   enter/space - select   ? - help   q - quit"
-	instructions := lipgloss.NewStyle().Foreground(lipgloss.Color(m.Theme.Secondary)).Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0).Render(instructions_str)
+	instructions := instructionsStyle.Render(instructions_str)
 
 	settings_options := lipgloss.JoinHorizontal(lipgloss.Top, settings_box, options_box)
 	main_contents := lipgloss.JoinVertical(lipgloss.Center, settings_options, instructions)
@@ -215,20 +215,49 @@ func createSettingsContents(m Model) string {
 
 func createHelpContents(m Model) string {
 
-	boxStyle = boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
-	// title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
-	// title_box := boxStyle.Render("tTuner - " + string(m.CurrentState))
+	title_box_style := boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
+	title_height := TITLE_HEIGHT + title_box_style.GetVerticalFrameSize()
+	title_box := title_box_style.Render("tTuner - " + string(m.CurrentState))
 
-	whole_widht := m.WindowWidth - boxStyle.GetHorizontalFrameSize()
-	tuning_width := whole_widht / 4
+	whole_widht := m.WindowWidth - boxStyle.GetHorizontalMargins()
+	help_list_width := whole_widht / 4
 	if m.AsciiArt == "" {
-		tuning_width /= 2
+		help_list_width = help_list_width*2/3
 	}
-	meter_box_width := whole_widht - tuning_width + 2
+	help_contents_width := whole_widht - help_list_width - boxStyle.GetHorizontalMargins()
 
-	if meter_box_width <= 0 {
+	if help_contents_width <= 0 {
 		return ""
 	}
 
-	return ""
+	help_list_box_style := boxStyle.Width(help_list_width).Height(m.WindowHeight - title_height + 1).Align(lipgloss.Left, lipgloss.Top).Padding(1, 2)
+	help_list_contents := []string{"Help", ""}
+	for i, o := range m.HelpItems {
+		var line string
+		if m.SelectedHelpItem != i {
+			selection_box := "[ ] "
+			line = selection_box + o.Name
+		} else {
+			selection_box := "[o] "
+			line = selection_box + o.Name
+			if !m.SelectingValues {
+				line = selectedStyle.Render(line)
+			}
+		}
+		help_list_contents = append(help_list_contents, line)
+	}
+
+	help_list_box := help_list_box_style.Render(lipgloss.JoinVertical(lipgloss.Left, help_list_contents...))
+
+	help_contents_box_style := boxStyle.Width(help_contents_width).Height(m.WindowHeight - title_height + 1).Padding(0, 2).Align(lipgloss.Left)
+	help_contents_box := help_contents_box_style.Render(m.HelpItems[m.SelectedHelpItem].Contents)
+
+	main_content := lipgloss.JoinHorizontal(lipgloss.Center, help_list_box, help_contents_box)
+
+	instructions_str := "backspace/esc - back   s - settings   q - quit"
+	instructions := instructionsStyle.Render(instructions_str)
+	all_contents := lipgloss.JoinVertical(lipgloss.Left, title_box, main_content)
+	all_contents = lipgloss.JoinVertical(lipgloss.Center, all_contents, instructions)
+
+	return all_contents
 }

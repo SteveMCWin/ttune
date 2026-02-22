@@ -56,6 +56,10 @@ type Model struct {
 	SelectedOption      int
 	SelectedOptionValue int
 	SelectingValues     bool
+
+	HelpItems []HelpItem
+
+	SelectedHelpItem int
 }
 
 func NewModel() Model {
@@ -64,15 +68,12 @@ func NewModel() Model {
 		CurrentState:     Initializing,
 		SettingsSelected: LoadSettingsSelections(),
 		SettingsData:     LoadSettingsData(),
+		HelpItems:        InitHelpItems(),
 	}
 
-	log.Println("Got to here")
-
 	m.Options = DefineSettingsOptions(m.SettingsData, m.SettingsSelected)
-	log.Println("Also here")
 	m.ApplySettings()
 
-	log.Println("And to here")
 	// Force the tui to render the selected preview on startup
 	m.SelectedOptionValue = m.Options[0].Selected % len(m.Options[0].Options)
 
@@ -80,7 +81,7 @@ func NewModel() Model {
 }
 
 func (m *Model) ApplySettings() {
-	ascii_selected := m.SettingsSelected.AsciiArt%len(m.Options[0].Options)
+	ascii_selected := m.SettingsSelected.AsciiArt % len(m.Options[0].Options)
 	m.AsciiArt = m.SettingsData.AsciiArt[ascii_selected].FileContents
 
 	SetBorderStyle(m.SettingsData.BorderStyles[m.SettingsSelected.BorderStyle])
@@ -141,19 +142,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "j", "down":
-			if !m.SelectingValues {
-				m.SelectedOption = (m.SelectedOption + 1) % len(m.Options)
-				m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
-			} else {
-				m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.Options[m.SelectedOption].Options)
+			if m.CurrentState == Settings {
+				if !m.SelectingValues {
+					m.SelectedOption = (m.SelectedOption + 1) % len(m.Options)
+					m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
+				} else {
+					m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.Options[m.SelectedOption].Options)
+				}
+			} else if m.CurrentState == Help {
+				m.SelectedHelpItem = (m.SelectedHelpItem + 1) % len(m.HelpItems)
 			}
 
 		case "k", "up":
-			if !m.SelectingValues {
-				m.SelectedOption = (m.SelectedOption - 1 + len(m.Options)) % len(m.Options)
-				m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
-			} else {
-				m.SelectedOptionValue = (m.SelectedOptionValue - 1 + len(m.Options[m.SelectedOption].Options)) % len(m.Options[m.SelectedOption].Options)
+			if m.CurrentState == Settings {
+				if !m.SelectingValues {
+					m.SelectedOption = (m.SelectedOption - 1 + len(m.Options)) % len(m.Options)
+					m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
+				} else {
+					m.SelectedOptionValue = (m.SelectedOptionValue - 1 + len(m.Options[m.SelectedOption].Options)) % len(m.Options[m.SelectedOption].Options)
+				}
+			} else if m.CurrentState == Help {
+				m.SelectedHelpItem = (m.SelectedHelpItem - 1 + len(m.HelpItems)) % len(m.HelpItems)
 			}
 
 		case "l", "right":

@@ -50,7 +50,8 @@ func DefineSettingsOptions(data SettingsData, currentSettings AppSettings) []Set
 
 	for _, v := range data.AsciiArt {
 		ascii_art.Options = append(ascii_art.Options, v.FileName)
-		ascii_art.Previews = append(ascii_art.Previews, v.FileContents)
+		// Note: JoinHorizontal is needed for some reason so the rows don't auto align for some reason
+		ascii_art.Previews = append(ascii_art.Previews, lipgloss.JoinHorizontal(lipgloss.Center, "", v.FileContents))
 	}
 
 	borders := SettingsOptions{
@@ -86,10 +87,10 @@ func DefineSettingsOptions(data SettingsData, currentSettings AppSettings) []Set
 	for _, v := range data.ColorThemes {
 		themes.Options = append(themes.Options, v.Name)
 		blocks := `
-		████████
-		████████
-		████████
-		`
+███████
+███████
+███████
+`
 		tmp_style := lipgloss.NewStyle()
 		preview := tmp_style.Foreground(lipgloss.Color(v.Primary)).Render(blocks)
 		preview += tmp_style.Foreground(lipgloss.Color(v.Secondary)).Render(blocks)

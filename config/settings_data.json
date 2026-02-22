@@ -60,32 +60,32 @@
         {
             "name": "Nord",
             "primary": "#88C0D0",
-            "secondary": "#A3BE8C",
-            "tertiary": "#EBCB8B"
+            "secondary": "#EBCB8B",
+            "tertiary": "#A3BE8C"
         },
         {
             "name": "Catppuccin",
             "primary": "#89B4FA",
-            "secondary": "#F38BA8",
-            "tertiary": "#FAB387"
+            "secondary": "#FAB387",
+            "tertiary": "#F38BA8"
         },
         {
             "name": "Gruvbox",
             "primary": "#D79921",
-            "secondary": "#B8BB26",
-            "tertiary": "#A89984"
+            "secondary": "#A89984",
+            "tertiary": "#B8BB26"
         },
         {
             "name": "Tokyo Night",
             "primary": "#7AA2F7",
-            "secondary": "#0DB9D7",
-            "tertiary": "#BB9AF7"
+            "secondary": "#BB9AF7",
+            "tertiary": "#0DB9D7"
         },
         {
             "name": "Dracula",
             "primary": "#BD93F9",
-            "secondary": "#50FA7B",
-            "tertiary": "#FF79C6"
+            "secondary": "#FF79C6",
+            "tertiary": "#50FA7B"
         }
     ],
     "border_styles": [
