@@ -1,4 +1,4 @@
-module tuner
+module ttune
 
 go 1.25.5
 

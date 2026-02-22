@@ -1,0 +1,119 @@
+{
+    "tunings": [
+        {
+            "name": "Standard",
+            "notes": [
+                "E2 ",
+                "A2 ",
+                "D3 ",
+                "G3 ",
+                "B3 ",
+                "E4 "
+            ]
+        },
+        {
+            "name": "Drop D",
+            "notes": [
+                "D2 ",
+                "A2 ",
+                "D3 ",
+                "G3 ",
+                "B3 ",
+                "E4 "
+            ]
+        },
+        {
+            "name": "Drop C",
+            "notes": [
+                "C2 ",
+                "G2 ",
+                "C3 ",
+                "F3 ",
+                "A3 ",
+                "D4 "
+            ]
+        },
+        {
+            "name": "Open G",
+            "notes": [
+                "D2 ",
+                "G2 ",
+                "D3 ",
+                "G3 ",
+                "B3 ",
+                "D4 "
+            ]
+        },
+        {
+            "name": "Half Step Down",
+            "notes": [
+                "D#2",
+                "G#2",
+                "C#3",
+                "F#3",
+                "A#3",
+                "D#4"
+            ]
+        },
+        {
+            "name": "None",
+            "notes": [
+                "   ",
+                "   ",
+                "   ",
+                "   ",
+                "   ",
+                "   ",
+                "   ",
+                "   ",
+                "   ",
+                "   ",
+                "   ",
+                "   "
+            ]
+        }
+    ],
+    "color_themes": [
+        {
+            "name": "Nord",
+            "primary": "#88C0D0",
+            "secondary": "#EBCB8B",
+            "tertiary": "#A3BE8C"
+        },
+        {
+            "name": "Catppuccin",
+            "primary": "#89B4FA",
+            "secondary": "#FAB387",
+            "tertiary": "#F38BA8"
+        },
+        {
+            "name": "Gruvbox",
+            "primary": "#D79921",
+            "secondary": "#A89984",
+            "tertiary": "#B8BB26"
+        },
+        {
+            "name": "Tokyo Night",
+            "primary": "#7AA2F7",
+            "secondary": "#BB9AF7",
+            "tertiary": "#0DB9D7"
+        },
+        {
+            "name": "Dracula",
+            "primary": "#BD93F9",
+            "secondary": "#FF79C6",
+            "tertiary": "#50FA7B"
+        }
+    ],
+    "border_styles": [
+        "None",
+        "Normal",
+        "Rounded",
+        "Double",
+        "Block",
+        "Inner Block",
+        "Outer Block",
+        "Thick",
+        "Ascii"
+    ]
+}
