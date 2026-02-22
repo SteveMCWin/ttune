@@ -35,7 +35,7 @@ func createListeningContents(m Model) string {
 
 	title_box_style := boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
 	title_height := TITLE_HEIGHT + title_box_style.GetVerticalFrameSize()
-	title_box := title_box_style.Render("tTuner - " + string(m.CurrentState))
+	title_box := title_box_style.Render("tTune - " + string(m.CurrentState))
 
 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalMargins()
 	tuning_width := whole_widht / 4
@@ -127,7 +127,7 @@ func createListeningContents(m Model) string {
 
 func createSettingsContents(m Model) string {
 	title_box_style := boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
-	title_box := title_box_style.Render("tTuner - " + string(m.CurrentState))
+	title_box := title_box_style.Render("tTune - " + string(m.CurrentState))
 
 	whole_title_height := TITLE_HEIGHT + boxStyle.GetVerticalFrameSize()
 	settings_height := m.WindowHeight - whole_title_height + 1
@@ -217,7 +217,7 @@ func createHelpContents(m Model) string {
 
 	title_box_style := boxStyle.Width(m.WindowWidth - boxStyle.GetHorizontalMargins()).Height(TITLE_HEIGHT)
 	title_height := TITLE_HEIGHT + title_box_style.GetVerticalFrameSize()
-	title_box := title_box_style.Render("tTuner - " + string(m.CurrentState))
+	title_box := title_box_style.Render("tTune - " + string(m.CurrentState))
 
 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalMargins()
 	help_list_width := whole_widht / 4
