@@ -148,7 +148,7 @@ func createSettingsContents(m Model) string {
 
 	settings_box_style := boxStyle.Width(settings_width).Height(settings_height)
 	setting_names := []string{"Settings", ""}
-	for i, o := range m.Options {
+	for i, o := range m.VisualOptions {
 		var line string
 		if m.SelectedOption != i {
 			selection_box := "[ ] "
@@ -171,10 +171,10 @@ func createSettingsContents(m Model) string {
 	available_options_height := (settings_height - options_box_style.GetVerticalFrameSize()) / 2
 
 	options_names := []string{"Options", ""}
-	for i, o := range m.Options[m.SelectedOption].Options {
+	for i, o := range m.VisualOptions[m.SelectedOption].Options {
 
 		prefix := "[ ] "
-		if m.Options[m.SelectedOption].Selected == i {
+		if m.VisualOptions[m.SelectedOption].Selected == i {
 			prefix = "[o] "
 		}
 		line := prefix + o
@@ -192,13 +192,13 @@ func createSettingsContents(m Model) string {
 	options_description_width := available_options_widht
 	options_description_height := settings_height - available_options_height
 
-	option_description := lipgloss.JoinVertical(lipgloss.Left, "Description", "", m.Options[m.SelectedOption].Description)
+	option_description := lipgloss.JoinVertical(lipgloss.Left, "Description", "", m.VisualOptions[m.SelectedOption].Description)
 	box_option_description := settingsBox.Align(lipgloss.Left, lipgloss.Top).Padding(1, 2).Width(options_description_width).Height(options_description_height).Render(option_description)
 
 	preview_width := options_box_width - available_options_widht - options_box_style.GetHorizontalFrameSize()
 	preview_height := settings_height
 
-	option_preview := lipgloss.JoinVertical(lipgloss.Center, "Preview", "", "", m.Options[m.SelectedOption].Previews[m.SelectedOptionValue])
+	option_preview := lipgloss.JoinVertical(lipgloss.Center, "Preview", "", "", m.VisualOptions[m.SelectedOption].Previews[m.SelectedOptionValue])
 	box_option_preview := settingsBox.Align(lipgloss.Center, lipgloss.Center).MarginLeft(2).Width(preview_width - 2).Height(preview_height).Render(option_preview)
 
 	options_box := options_box_style.UnsetBorderStyle().Render(lipgloss.JoinHorizontal(lipgloss.Top, lipgloss.JoinVertical(lipgloss.Left, box_available_options, box_option_description), box_option_preview))
@@ -221,9 +221,6 @@ func createHelpContents(m Model) string {
 
 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalMargins()
 	help_list_width := whole_widht / 4
-	if m.AsciiArt == "" {
-		help_list_width = help_list_width*2/3
-	}
 	help_contents_width := whole_widht - help_list_width - boxStyle.GetHorizontalMargins()
 
 	if help_contents_width <= 0 {

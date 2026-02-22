@@ -35,7 +35,7 @@ type AppSettings struct {
 	ColorTheme  int `json:"selected_theme"`
 }
 
-func DefineSettingsOptions(data SettingsData, currentSettings AppSettings) []SettingsOptions {
+func DefineVisualSettingsOptions(data SettingsData, currentSettings AppSettings) []SettingsOptions {
 	ascii_art := SettingsOptions{
 		Name:        "Ascii Art",
 		Description: "The character art displayed on the left side of the terminal when tuning is in progress. Purely for aesthetical purposes, but I spent a lot of time drawing it :^)",

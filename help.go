@@ -41,6 +41,7 @@ The existing settings are modifiable and extensible, mostly through JSON. Here's
 		Contents:
 `
 I have a goal of one of my repos reaching at least 10 stars by the end of 2026, so if you have one to spare, you can do your magic at https://github.com/SteveMCWin/ttune
+
 If that's too much to ask for, you can always send me a tip at https://ko-fi.com/stevemcwin instead :^]
 `,
 	}

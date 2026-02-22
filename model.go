@@ -49,9 +49,10 @@ type Model struct {
 	AsciiArt       string
 	SelectedTuning tuning.Tuning
 
-	Options          []SettingsOptions
-	SettingsData     SettingsData
-	SettingsSelected AppSettings
+	VisualOptions     []SettingsOptions
+	FunctionalOptions []SettingsOptions // TODO
+	SettingsData      SettingsData
+	SettingsSelected  AppSettings
 
 	SelectedOption      int
 	SelectedOptionValue int
@@ -71,17 +72,18 @@ func NewModel() Model {
 		HelpItems:        InitHelpItems(),
 	}
 
-	m.Options = DefineSettingsOptions(m.SettingsData, m.SettingsSelected)
+	m.VisualOptions = DefineVisualSettingsOptions(m.SettingsData, m.SettingsSelected)
+	// m.FunctionalOptions = DefineFunctionalSettingsOptions(m.SettingsData, m.SettingsSelected) // TODO
 	m.ApplySettings()
 
 	// Force the tui to render the selected preview on startup
-	m.SelectedOptionValue = m.Options[0].Selected % len(m.Options[0].Options)
+	m.SelectedOptionValue = m.VisualOptions[0].Selected % len(m.VisualOptions[0].Options)
 
 	return m
 }
 
 func (m *Model) ApplySettings() {
-	ascii_selected := m.SettingsSelected.AsciiArt % len(m.Options[0].Options)
+	ascii_selected := m.SettingsSelected.AsciiArt % len(m.VisualOptions[0].Options)
 	m.AsciiArt = m.SettingsData.AsciiArt[ascii_selected].FileContents
 
 	SetBorderStyle(m.SettingsData.BorderStyles[m.SettingsSelected.BorderStyle])
@@ -115,7 +117,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmds = append(cmds, CalculateNote())
 		}
 	case ReRenderMsg:
-		m.Options = DefineSettingsOptions(m.SettingsData, m.SettingsSelected)
+		m.VisualOptions = DefineVisualSettingsOptions(m.SettingsData, m.SettingsSelected)
 		m.ApplySettings()
 		return m, nil
 
@@ -129,9 +131,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.CurrentState = Help
 
 		case "backspace", "esc":
-			m.CurrentState = Listening
-			m.SelectingValues = false
-			cmds = append(cmds, CalculateNote())
+			// if statement needed to prevent race condition
+			if m.CurrentState != Listening {
+				m.CurrentState = Listening
+				m.SelectingValues = false
+				cmds = append(cmds, CalculateNote())
+			}
 
 		case "s":
 			m.CurrentState = Settings
@@ -144,10 +149,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "j", "down":
 			if m.CurrentState == Settings {
 				if !m.SelectingValues {
-					m.SelectedOption = (m.SelectedOption + 1) % len(m.Options)
-					m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
+					m.SelectedOption = (m.SelectedOption + 1) % len(m.VisualOptions)
+					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].Selected
 				} else {
-					m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.Options[m.SelectedOption].Options)
+					m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.VisualOptions[m.SelectedOption].Options)
 				}
 			} else if m.CurrentState == Help {
 				m.SelectedHelpItem = (m.SelectedHelpItem + 1) % len(m.HelpItems)
@@ -156,10 +161,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "k", "up":
 			if m.CurrentState == Settings {
 				if !m.SelectingValues {
-					m.SelectedOption = (m.SelectedOption - 1 + len(m.Options)) % len(m.Options)
-					m.SelectedOptionValue = m.Options[m.SelectedOption].Selected
+					m.SelectedOption = (m.SelectedOption - 1 + len(m.VisualOptions)) % len(m.VisualOptions)
+					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].Selected
 				} else {
-					m.SelectedOptionValue = (m.SelectedOptionValue - 1 + len(m.Options[m.SelectedOption].Options)) % len(m.Options[m.SelectedOption].Options)
+					m.SelectedOptionValue = (m.SelectedOptionValue - 1 + len(m.VisualOptions[m.SelectedOption].Options)) % len(m.VisualOptions[m.SelectedOption].Options)
 				}
 			} else if m.CurrentState == Help {
 				m.SelectedHelpItem = (m.SelectedHelpItem - 1 + len(m.HelpItems)) % len(m.HelpItems)
@@ -172,7 +177,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "enter", "space":
 			if m.CurrentState == Settings && m.SelectingValues {
-				m.SettingsSelected = m.Options[m.SelectedOption].Apply(m.SelectedOptionValue, m.SettingsSelected)
+				m.SettingsSelected = m.VisualOptions[m.SelectedOption].Apply(m.SelectedOptionValue, m.SettingsSelected)
 
 				cmds = append(cmds, ReRender)
 			}
