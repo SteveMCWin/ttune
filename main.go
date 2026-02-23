@@ -1,16 +1,28 @@
 package main
 
 import (
-	"os"
 	"log"
+	"os"
+	"path/filepath"
 	"syscall"
-	"github.com/gordonklaus/portaudio"
+
 	tea "charm.land/bubbletea/v2"
+	"github.com/gordonklaus/portaudio"
 )
+
+func logFilePath() string {
+    cacheDir, err := os.UserCacheDir()
+    if err != nil {
+        return "debug.log" // fallback
+    }
+    appCache := filepath.Join(cacheDir, "ttune")
+    os.MkdirAll(appCache, 0755)
+    return filepath.Join(appCache, "debug.log")
+}
 
 func main() {
 
-	f, err := tea.LogToFile("debug.log", "debug")
+	f, err := tea.LogToFile(logFilePath(), "debug")
 	if err != nil {
 		log.Fatalf("failed setting the debug log file: %v", err)
 	}

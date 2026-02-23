@@ -9,8 +9,12 @@ import (
 	"strings"
 	"ttune/tuning"
 
+	"embed"
 	"github.com/charmbracelet/lipgloss/v2"
 )
+
+//go:embed config
+var configFS embed.FS
 
 type SettingsData struct {
 	Tunings      []tuning.Tuning `json:"tunings"`
@@ -146,7 +150,7 @@ func LoadSettingsData() SettingsData {
 	data, err := os.ReadFile(user_config_file_path)
 	if err != nil {
 		log.Println("Local settings data not found, reading default and writing to", config_dir)
-		data, err = os.ReadFile("./config/settings_data.json")
+		data, err = configFS.ReadFile("config/settings_data.json")
 		if err != nil {
 			log.Println("Error reading config file!!!!")
 			panic(err)
@@ -187,13 +191,12 @@ func LoadAsciiArt() []AsciiArt {
 			log.Fatal(err)
 		}
 
-		default_art_dir := "./config/art/"
-		default_files, err := os.ReadDir(default_art_dir)
+		default_files, err := configFS.ReadDir("config/art")
 		if err != nil {
 			log.Fatal("Error reading art dir")
 		}
 		for _, f := range default_files {
-			data, err := os.ReadFile(filepath.Join(default_art_dir, f.Name()))
+			data, err := configFS.ReadFile("config/art/"+f.Name())
 			if err != nil {
 				log.Fatal("Error reading ", f.Name(), " :: ", err)
 			}
@@ -242,7 +245,7 @@ func LoadSettingsSelections() AppSettings {
 	data, err := os.ReadFile(user_config_file_path)
 	if err != nil {
 		log.Println("Local config not found, reading default and writing to", config_dir)
-		data, err = os.ReadFile("./config/default.json")
+		data, err = configFS.ReadFile("config/default.json")
 		if err != nil {
 			log.Println("Error reading config file!!!!")
 			panic(err)
