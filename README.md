@@ -1,6 +1,5 @@
-![Cool banner :D](screenshots/banner.png?raw=true)
-
 # tTune
+![Cool banner :D](screenshots/banner.png?raw=true)
 tTune is a stylized, keyboard oriented guitar tuning app right in your terminal!
 
 ## Screenshots
@@ -43,22 +42,53 @@ go build
 
 ## Customization
 
-The existing settings are modifiable, you can edit the settings_data.json file that will be created once you start the app for the first time.\
-You can also add your own settings options in the settings_data.json file, as long as you follow the format.\
-Note that if you break something, you can delete the file you edited or the whole ~/.config/ttune directory, and the defaults will be re-generated the next time you run ttune.\
-Here's how to add more options to the settings:
+The existing settings are modifiable via `settings_data.json`, which is created on first launch. You can also add your own options to this file as long as you follow the existing format.
+
+> **Note:** If something breaks, delete the edited file or the entire `~/.config/ttune/` directory — defaults will be regenerated on the next run.
+
+---
 
 ### Ascii Art
-		In your ~/.config/ttune/art direcotry you can add your own ascii art as a file. Note that for a tuning to be displayed along your ascii art, place '%%%' where you wish the notes to appear (check out the ~/.config/ttune/art/utf_guitar file for reference). Also I recommend you keep the art no more than 24 characters wide and 20 lines tall. Ascii art that is too big will not be rendered properly.
+
+Place your own ASCII art files in `~/.config/ttune/art/`. To display a tuning alongside your art, insert `%%%` where you'd like the notes to appear (see `~/.config/ttune/art/utf_guitar` for reference).
+
+> **Recommended size:** no wider than **24 characters** and no taller than **20 lines**. Oversized art will not render properly.
+
+---
 
 ### Border Style
-		Not extensible at the moment :^/. In case you want this to be moddable, open an issue at https://github.com/SteveMCWin/ttune/issues.
+
+Not extensible at the moment `:^/`
+
+Want this to be moddable? [Open an issue](https://github.com/SteveMCWin/ttune/issues).
+
+---
 
 ### Color Theme
-		To add a new color theme, go into the file located at ~/.config/ttune/settings_data.json where you will see a list of color themes. Add an item containing the name of the color theme you want and three colors in hex code. The primary color is used for the borders, secondary for the text and tertiary for selections. Note that the background of your terminal will not change colors.
+
+To add a new color theme, open `~/.config/ttune/settings_data.json` and find the list of color themes. Add an entry with:
+
+| Field | Description |
+|---|---|
+| `name` | Name of the color theme |
+| `primary` | Hex color for borders |
+| `secondary` | Hex color for text |
+| `tertiary` | Hex color for selections |
+
+> **Note:** Your terminal's background color will not be affected.
+
+---
 
 ### Displayed Tuning
-		To add a new tuning that will be displayed next to the ascii art, go into the file located at ~/.config/ttune/settings_data.json where you will see a list of tunings. Add an item containing the name of the tuning you want and a list of notes it is comprised of. Note that the notes should be exactly 3 characters long. For notes that require less characters, fill out the rest of the string with spaces.
+
+To add a new tuning, open `~/.config/ttune/settings_data.json` and find the list of tunings. Add an entry with:
+
+| Field | Description |
+|---|---|
+| `name` | Name of the tuning |
+| `notes` | List of notes it contains |
+
+> **Note:** Each note must be **exactly 3 characters long**. Pad shorter note names with spaces (e.g., `"E  "`).
 
 ## Planned features
 - ~Frequency detection~
