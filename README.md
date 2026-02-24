@@ -21,42 +21,30 @@ tTune is a stylized, keyboard oriented guitar tuning app right in your terminal!
 - Go `1.24`
 - Portaudio `19.7.0`
 
-<details>
-<summary><b>Arch Linux</b></summary>
+### Arch Linux
 ```bash
 sudo pacman -S pkgconf portaudio go
 ```
 
-</details>
-
-<details>
-<summary><b>Debian</b></summary>
+### Debian
 ```bash
 sudo apt-get install pkg-config portaudio19-dev golang-go
 ```
 
-</details>
-
 ## Installation
 
-<details>
-<summary><b>Arch Linux</b></summary>
+### Arch Linux
 ```bash
 yay -S ttune
 ```
 
-</details>
-
-<details>
-<summary><b>Build From Source</b></summary>
+### Build From Source
 ```bash
 # get dependencies first
 git clone https://github.com/SteveMCWin/ttune.git
 cd ttune
 go build
 ```
-
-</details>
 
 ## Customization
 
