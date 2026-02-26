@@ -48,7 +48,7 @@ go build
 
 ## Customization
 
-The existing settings are modifiable via `settings_data.json`, which is created on first launch. You can also add your own options to this file as long as you follow the existing format.
+The existing settings are modifiable via `default_options.json`, which is created on first launch. You can also add your own options to `custom_options.json` as long as you follow the existing format.
 
 > **Note:** If something breaks, delete the edited file or the entire `~/.config/ttune/` directory — defaults will be regenerated on the next run.
 
@@ -72,7 +72,7 @@ Want this to be moddable? [Open an issue](https://github.com/SteveMCWin/ttune/is
 
 ### Color Theme
 
-To add a new color theme, open `~/.config/ttune/settings_data.json` and find the list of color themes. Add an entry with:
+To add a new color theme, open `~/.config/ttune/custom_options.json` and find the list of color themes. Add an entry with:
 
 | Field | Description |
 |---|---|
@@ -87,7 +87,7 @@ To add a new color theme, open `~/.config/ttune/settings_data.json` and find the
 
 ### Displayed Tuning
 
-To add a new tuning, open `~/.config/ttune/settings_data.json` and find the list of tunings. Add an entry with:
+To add a new tuning, open `~/.config/ttune/custom_options.json` and find the list of tunings. Add an entry with:
 
 | Field | Description |
 |---|---|
@@ -100,7 +100,7 @@ To add a new tuning, open `~/.config/ttune/settings_data.json` and find the list
 
 - [x] Frequency detection
 - [x] Customizable settings
-- [ ] Separate user settings
+- [x] Separate user settings
 - [ ] Improve pitch detection
 - [ ] Scrollable settings options
 - [ ] Options for frequency detection

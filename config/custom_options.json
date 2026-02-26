@@ -1,0 +1,24 @@
+{
+    "tunings": [
+        {
+            "name": "Standard",
+            "notes": [
+                "E2 ",
+                "A2 ",
+                "D3 ",
+                "G3 ",
+                "B3 ",
+                "E4 "
+            ]
+        }
+    ],
+
+    "color_themes": [
+        {
+            "name": "Nord",
+            "primary": "#88C0D0",
+            "secondary": "#EBCB8B",
+            "tertiary": "#A3BE8C"
+        }
+    ]
+}

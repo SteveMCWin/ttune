@@ -52,7 +52,8 @@ type Model struct {
 	VisualOptions     []SettingsOptions
 	FunctionalOptions []SettingsOptions // TODO
 	SettingsData      SettingsData
-	SettingsSelected  AppSettings
+	UserSettingsData  SettingsData
+	SettingsSelected  SettingsSelections
 
 	SelectedOption      int
 	SelectedOptionValue int
@@ -67,8 +68,8 @@ func NewModel() Model {
 	m := Model{
 		BlockLength:      BL,
 		CurrentState:     Initializing,
-		SettingsSelected: LoadSettingsSelections(),
-		SettingsData:     LoadSettingsData(),
+		SettingsSelected: LoadSettingsSelections("selections.json"),
+		SettingsData:     LoadSettingsData("custom_options.json", "default_options.json"), // loads custom options first so they appear at the top
 		HelpItems:        InitHelpItems(),
 	}
 
@@ -94,7 +95,7 @@ func (m *Model) ApplySettings() {
 	m.Theme.SetToCurrent()
 
 	// Store settings to json file
-	StoreSettings(m.SettingsSelected)
+	StoreSettings(m.SettingsSelected, "selections.json")
 }
 
 func (m Model) Init() tea.Cmd {
