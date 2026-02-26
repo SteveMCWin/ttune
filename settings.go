@@ -29,24 +29,24 @@ type SettingsOptions struct {
 	Options     []string
 	Previews    []string
 	Selected    int
-	Apply       func(val int, current AppSettings) AppSettings
+	Apply       func(val int, current SettingsSelections) SettingsSelections
 }
 
-type AppSettings struct {
+type SettingsSelections struct {
 	AsciiArt    int `json:"ascii_art_filename"`
 	Tuning      int `json:"selected_tuning"`
 	BorderStyle int `json:"border_style"`
 	ColorTheme  int `json:"selected_theme"`
 }
 
-func DefineVisualSettingsOptions(data SettingsData, currentSettings AppSettings) []SettingsOptions {
+func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSelections) []SettingsOptions {
 	ascii_art := SettingsOptions{
 		Name:        "Ascii Art",
 		Description: "The character art displayed on the left side of the terminal when tuning is in progress. Purely for aesthetical purposes, but I spent a lot of time drawing it :^)",
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.AsciiArt,
-		Apply: func(val int, s AppSettings) AppSettings {
+		Apply: func(val int, s SettingsSelections) SettingsSelections {
 			s.AsciiArt = val
 			return s
 		},
@@ -64,7 +64,7 @@ func DefineVisualSettingsOptions(data SettingsData, currentSettings AppSettings)
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.BorderStyle,
-		Apply: func(val int, s AppSettings) AppSettings {
+		Apply: func(val int, s SettingsSelections) SettingsSelections {
 			s.BorderStyle = val
 			return s
 		},
@@ -82,7 +82,7 @@ func DefineVisualSettingsOptions(data SettingsData, currentSettings AppSettings)
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.ColorTheme,
-		Apply: func(val int, s AppSettings) AppSettings {
+		Apply: func(val int, s SettingsSelections) SettingsSelections {
 			s.ColorTheme = val
 			return s
 		},
@@ -108,7 +108,7 @@ func DefineVisualSettingsOptions(data SettingsData, currentSettings AppSettings)
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.Tuning,
-		Apply: func(val int, s AppSettings) AppSettings {
+		Apply: func(val int, s SettingsSelections) SettingsSelections {
 			s.Tuning = val
 			return s
 		},
@@ -128,8 +128,7 @@ func DefineVisualSettingsOptions(data SettingsData, currentSettings AppSettings)
 	return []SettingsOptions{ascii_art, borders, themes, tunings}
 }
 
-func LoadSettingsData() SettingsData {
-	// Get path of user config dir
+func LoadOrWriteConfigFile(config_file_name string) ([]byte, error) {
 	config_dir, err := os.UserConfigDir()
 	if err != nil {
 		log.Println("Error finding user config dir")
@@ -137,38 +136,60 @@ func LoadSettingsData() SettingsData {
 	}
 
 	user_config_dir_path := filepath.Join(config_dir, "ttune")
-	user_config_file_path := filepath.Join(user_config_dir_path, "settings_data.json")
+	user_config_file_path := filepath.Join(user_config_dir_path,config_file_name)
 
 	// if ttune folder doesn't already exist in the config dir, create it
 	if _, err := os.Stat(user_config_dir_path); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(user_config_dir_path, 0744)
 		if err != nil && !os.IsExist(err) {
-			log.Fatal(err)
+			log.Println("Error while making config dir", err)
+			return []byte{}, err
 		}
 	}
 
 	data, err := os.ReadFile(user_config_file_path)
 	if err != nil {
-		log.Println("Local settings data not found, reading default and writing to", config_dir)
-		data, err = configFS.ReadFile("config/settings_data.json")
+		log.Println(config_file_name, "not found, reading default and writing to", config_dir)
+		data, err = configFS.ReadFile("config/"+config_file_name)
 		if err != nil {
 			log.Println("Error reading config file!!!!")
-			panic(err)
+			return []byte{}, err
 		}
 
 		err = os.WriteFile(user_config_file_path, data, 0744)
 		if err != nil {
 			log.Println("Error saving config file!!!!")
-			panic(err)
+			return []byte{}, err
 		}
 	}
 
+	return data, nil
+}
+
+func LoadSettingsData(config_file_names ...string) SettingsData {
+	// Get path of user config dir
+
 	var res SettingsData
-	err = json.Unmarshal(data, &res)
-	if err != nil {
-		log.Println("Error unmarshaling settings data")
-		panic(err)
+
+	for _, filename := range config_file_names {
+		data, err := LoadOrWriteConfigFile(filename)
+		if err != nil {
+			return SettingsData{}
+		}
+
+		var formatted SettingsData
+
+		err = json.Unmarshal(data, &formatted)
+		if err != nil {
+			log.Println("Error unmarshaling settings data")
+			panic(err)
+		}
+
+		res.BorderStyles = append(res.BorderStyles, formatted.BorderStyles...)
+		res.ColorThemes = append(res.ColorThemes, formatted.ColorThemes...)
+		res.Tunings = append(res.Tunings, formatted.Tunings...)
 	}
+
 
 	res.AsciiArt = LoadAsciiArt()
 
@@ -222,43 +243,14 @@ func LoadAsciiArt() []AsciiArt {
 	return ascii_art
 }
 
-func LoadSettingsSelections() AppSettings {
+func LoadSettingsSelections(config_file_name string) SettingsSelections {
 
-	// Get path of user config dir
-	config_dir, err := os.UserConfigDir()
+	data, err := LoadOrWriteConfigFile(config_file_name)
 	if err != nil {
-		log.Println("Error finding user config dir")
-		panic(err)
+		return SettingsSelections{}
 	}
 
-	user_config_dir_path := filepath.Join(config_dir, "ttune")
-	user_config_file_path := filepath.Join(user_config_dir_path, "config.json")
-
-	// if ttune folder doesn't already exist in the config dir, create it
-	if _, err := os.Stat(user_config_dir_path); errors.Is(err, os.ErrNotExist) {
-		err := os.Mkdir(user_config_dir_path, 0744)
-		if err != nil && !os.IsExist(err) {
-			log.Fatal(err)
-		}
-	}
-
-	data, err := os.ReadFile(user_config_file_path)
-	if err != nil {
-		log.Println("Local config not found, reading default and writing to", config_dir)
-		data, err = configFS.ReadFile("config/default.json")
-		if err != nil {
-			log.Println("Error reading config file!!!!")
-			panic(err)
-		}
-
-		err = os.WriteFile(user_config_file_path, data, 0744)
-		if err != nil {
-			log.Println("Error saving config file!!!!")
-			panic(err)
-		}
-	}
-
-	var settings AppSettings
+	var settings SettingsSelections
 	err = json.Unmarshal(data, &settings)
 	if err != nil {
 		log.Println("Error parsing json data")
@@ -268,7 +260,7 @@ func LoadSettingsSelections() AppSettings {
 	return settings
 }
 
-func StoreSettings(settings AppSettings) {
+func StoreSettings(settings SettingsSelections, config_file_name string) {
 	config_dir, err := os.UserConfigDir()
 	if err != nil {
 		log.Println("Error finding user config dir")
@@ -276,7 +268,7 @@ func StoreSettings(settings AppSettings) {
 	}
 
 	user_config_dir_path := filepath.Join(config_dir, "ttune")
-	user_config_file_path := filepath.Join(user_config_dir_path, "config.json")
+	user_config_file_path := filepath.Join(user_config_dir_path, config_file_name)
 
 	if _, err := os.Stat(user_config_dir_path); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(user_config_dir_path, 0744)
