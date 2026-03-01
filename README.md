@@ -6,11 +6,11 @@ tTune is a stylized, keyboard oriented guitar tuning app right in your terminal!
 
 ---
 
-- [Showcase](#showcase)\
-- [Features](#features)\
-- [Dependencies](#dependencies)\
-- [Installation](#installation)\
-- [Customization](#customization)\
+- [Showcase](#showcase)
+- [Features](#features)
+- [Dependencies](#dependencies)
+- [Installation](#installation)
+- [Customization](#customization)
 - [Planned Features](#planned-features)
 
 ---
