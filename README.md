@@ -9,10 +9,11 @@ tTune is a stylized, keyboard oriented guitar tuning app right in your terminal!
 ## Showcase
 
 ![Tuning G string demo](screenshots/ttune_demo.gif?raw=true)
+*Tuning G string demo*
 
-| Tuning view | Settings view |
-|---|---|
-| ![Tuning view](screenshots/nord_example.png?raw=true) | ![Settings view](screenshots/gruvbox_example.png?raw=true) |
+<img src="screenshots/nord_example.png" width="49%" />&nbsp;<img src="screenshots/gruvbox_example.png" width="49%" />
+
+*Tuning view* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *Settings view*
 
 ## Features
 
