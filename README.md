@@ -6,6 +6,15 @@ tTune is a stylized, keyboard oriented guitar tuning app right in your terminal!
 
 ---
 
+[Showcase](#showcase)\
+[Features](#features)\
+[Dependencies](#dependencies)\
+[Installation](#installation)\
+[Customization](#customization)\
+[Planned Features](#planned-features)
+
+---
+
 ## Showcase
 
 <div align="center">
@@ -13,15 +22,18 @@ tTune is a stylized, keyboard oriented guitar tuning app right in your terminal!
   <em>Tuning G string demo</em>
 </div>
 
+<br/>
+
 <div align="center">
-  <div style="display: inline-block; width: 49%; text-align: center;">
-    <img src="screenshots/nord_example.png?raw=true" width="100%" /><br/>
-    <em>Tuning view</em>
-  </div>
-  <div style="display: inline-block; width: 49%; text-align: center;">
-    <img src="screenshots/gruvbox_example.png?raw=true" width="100%" /><br/>
-    <em>Settings view</em>
-  </div>
+  <img src="screenshots/nord_example.png?raw=true" /><br/>
+  <em>Tuning view</em>
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="screenshots/gruvbox_example.png?raw=true" /><br/>
+  <em>Settings view</em>
 </div>
 
 ## Features
