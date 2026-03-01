@@ -8,12 +8,21 @@ tTune is a stylized, keyboard oriented guitar tuning app right in your terminal!
 
 ## Showcase
 
-![Tuning G string demo](screenshots/ttune_demo.gif?raw=true)
-*Tuning G string demo*
+<div align="center">
+  <img src="screenshots/ttune_demo.gif?raw=true" /><br/>
+  <em>Tuning G string demo</em>
+</div>
 
-<img src="screenshots/nord_example.png" width="49%" />&nbsp;<img src="screenshots/gruvbox_example.png" width="49%" />
-
-*Tuning view* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *Settings view*
+<div align="center">
+  <div style="display: inline-block; width: 49%; text-align: center;">
+    <img src="screenshots/nord_example.png?raw=true" width="100%" /><br/>
+    <em>Tuning view</em>
+  </div>
+  <div style="display: inline-block; width: 49%; text-align: center;">
+    <img src="screenshots/gruvbox_example.png?raw=true" width="100%" /><br/>
+    <em>Settings view</em>
+  </div>
+</div>
 
 ## Features
 
