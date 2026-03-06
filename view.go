@@ -170,14 +170,36 @@ func createSettingsContents(m Model) string {
 	available_options_widht := (options_box_width - options_box_style.GetHorizontalFrameSize()) / 3
 	available_options_height := (settings_height - options_box_style.GetVerticalFrameSize()) / 2
 
-	options_names := []string{"Options", ""}
-	for i, o := range m.VisualOptions[m.SelectedOption].Options {
+	// the "-2" is there because of the title "Options" and an empty space below it
+	// the other "-2" is there because of the "^" and "v"
+	num_of_options_displayable := available_options_height - settingsBoxStyle.GetVerticalFrameSize() - 2 - 2 
+
+	var settings_options_up_arrow string
+	// display up arrow only if there are pages above the current one
+	if m.SelectedOptionValue >= num_of_options_displayable {
+		settings_options_up_arrow = arrow_style.Render(" ^")
+	}
+
+	var settings_options_down_arrow string
+	// display down arrow only if there are pages below the current one
+	if m.SelectedOptionValue/num_of_options_displayable != (len(m.VisualOptions[m.SelectedOption].Options)-1)/num_of_options_displayable {
+		settings_options_down_arrow = arrow_style.Render(" v")
+	}
+
+	options_names := []string{"Options", "", settings_options_up_arrow}
+
+	// dividing and multiplying by num_of_options_displayable won't just cancle out, remember integer division
+	start_idx := (m.SelectedOptionValue/num_of_options_displayable) * num_of_options_displayable
+	end_idx := min(start_idx + num_of_options_displayable, len(m.VisualOptions[m.SelectedOption].Options))
+
+	for i := start_idx; i < end_idx; i++ {
+		option_name := m.VisualOptions[m.SelectedOption].Options[i]
 
 		prefix := "[ ] "
 		if m.VisualOptions[m.SelectedOption].Selected == i {
 			prefix = "[o] "
 		}
-		line := prefix + o
+		line := prefix + option_name
 
 		// Is the user currently hovering over this setting?
 		if m.SelectedOptionValue == i && m.SelectingValues {
@@ -186,20 +208,40 @@ func createSettingsContents(m Model) string {
 
 		options_names = append(options_names, line)
 	}
+
+	options_names = append(options_names, settings_options_down_arrow)
+
+
+	// for i, o := range m.VisualOptions[m.SelectedOption].Options {
+	//
+	// 	prefix := "[ ] "
+	// 	if m.VisualOptions[m.SelectedOption].Selected == i {
+	// 		prefix = "[o] "
+	// 	}
+	// 	line := prefix + o
+	//
+	// 	// Is the user currently hovering over this setting?
+	// 	if m.SelectedOptionValue == i && m.SelectingValues {
+	// 		line = selectedStyle.Render(line)
+	// 	}
+	//
+	// 	options_names = append(options_names, line)
+	// }
+
 	available_options := lipgloss.JoinVertical(lipgloss.Left, options_names...)
-	box_available_options := settingsBox.Align(lipgloss.Left, lipgloss.Top).PaddingLeft(2).Width(available_options_widht).Height(available_options_height).Render(available_options)
+	box_available_options := settingsBoxStyle.Align(lipgloss.Left, lipgloss.Top).PaddingLeft(2).Width(available_options_widht).Height(available_options_height).Render(available_options)
 
 	options_description_width := available_options_widht
 	options_description_height := settings_height - available_options_height
 
 	option_description := lipgloss.JoinVertical(lipgloss.Left, "Description", "", m.VisualOptions[m.SelectedOption].Description)
-	box_option_description := settingsBox.Align(lipgloss.Left, lipgloss.Top).Padding(1, 2).Width(options_description_width).Height(options_description_height).Render(option_description)
+	box_option_description := settingsBoxStyle.Align(lipgloss.Left, lipgloss.Top).Padding(1, 2).Width(options_description_width).Height(options_description_height).Render(option_description)
 
 	preview_width := options_box_width - available_options_widht - options_box_style.GetHorizontalFrameSize()
 	preview_height := settings_height
 
 	option_preview := lipgloss.JoinVertical(lipgloss.Center, "Preview", "", "", m.VisualOptions[m.SelectedOption].Previews[m.SelectedOptionValue])
-	box_option_preview := settingsBox.Align(lipgloss.Center, lipgloss.Center).MarginLeft(2).Width(preview_width - 2).Height(preview_height).Render(option_preview)
+	box_option_preview := settingsBoxStyle.Align(lipgloss.Center, lipgloss.Center).MarginLeft(2).Width(preview_width - 2).Height(preview_height).Render(option_preview)
 
 	options_box := options_box_style.UnsetBorderStyle().Render(lipgloss.JoinHorizontal(lipgloss.Top, lipgloss.JoinVertical(lipgloss.Left, box_available_options, box_option_description), box_option_preview))
 
