@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"strings"
 	"ttune/tuning"
 
@@ -174,41 +173,24 @@ func createSettingsContents(m Model) string {
 	// the "-2" is there because of the title "Options" and an empty space below it
 	// the other "-2" is there because of the "^" and "v"
 	num_of_options_displayable := available_options_height - settingsBoxStyle.GetVerticalFrameSize() - 2 - 2 
-	log.Println("num_of_options_displayable", num_of_options_displayable)
 
-	var up_arrow_style lipgloss.Style
-	var up_arrow_char string
-	if m.SelectedOptionValue < num_of_options_displayable {
-		up_arrow_style = inactive_arrow_style
-		up_arrow_char = " "
-	} else {
-		up_arrow_style = active_arrow_style
-		up_arrow_char = " ^"
+	var settings_options_up_arrow string
+	// display up arrow only if there are pages above the current one
+	if m.SelectedOptionValue >= num_of_options_displayable {
+		settings_options_up_arrow = arrow_style.Render(" ^")
 	}
 
-	settings_options_up_arrow := up_arrow_style.Render(up_arrow_char)
-
-	var down_arrow_style lipgloss.Style
-	var down_arrow_char string
-	if m.SelectedOptionValue/num_of_options_displayable == (len(m.VisualOptions[m.SelectedOption].Options)-1)/num_of_options_displayable {
-		down_arrow_style = inactive_arrow_style
-		down_arrow_char = " "
-	} else {
-		down_arrow_style = active_arrow_style
-		down_arrow_char = " v"
+	var settings_options_down_arrow string
+	// display down arrow only if there are pages below the current one
+	if m.SelectedOptionValue/num_of_options_displayable != (len(m.VisualOptions[m.SelectedOption].Options)-1)/num_of_options_displayable {
+		settings_options_down_arrow = arrow_style.Render(" v")
 	}
-
-	settings_options_down_arrow := down_arrow_style.Render(down_arrow_char)
 
 	options_names := []string{"Options", "", settings_options_up_arrow}
 
 	// dividing and multiplying by num_of_options_displayable won't just cancle out, remember integer division
 	start_idx := (m.SelectedOptionValue/num_of_options_displayable) * num_of_options_displayable
 	end_idx := min(start_idx + num_of_options_displayable, len(m.VisualOptions[m.SelectedOption].Options))
-
-	log.Println("curr_idx", m.SelectedOptionValue)
-	log.Println("start_idx", start_idx)
-	log.Println("end_idx", end_idx)
 
 	for i := start_idx; i < end_idx; i++ {
 		option_name := m.VisualOptions[m.SelectedOption].Options[i]

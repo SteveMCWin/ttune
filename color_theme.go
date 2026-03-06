@@ -23,11 +23,10 @@ var (
 	boxStyle = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
 	// settingsBoxStyle   = lipgloss.NewStyle().Border(lipgloss.HiddenBorder())
 	// settingsBoxStyle   = lipgloss.NewStyle().Border(lipgloss.BlockBorder())
-	settingsBoxStyle     = lipgloss.NewStyle().Padding(1).Border(lipgloss.DoubleBorder())
-	selectedStyle        = lipgloss.NewStyle()
-	instructionsStyle    = lipgloss.NewStyle().Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0)
-	inactive_arrow_style = lipgloss.NewStyle().Faint(true).Faint(true)
-	active_arrow_style   = lipgloss.NewStyle().Faint(false)
+	settingsBoxStyle  = lipgloss.NewStyle().Padding(1).Border(lipgloss.DoubleBorder())
+	selectedStyle     = lipgloss.NewStyle()
+	instructionsStyle = lipgloss.NewStyle().Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0)
+	arrow_style       = lipgloss.NewStyle().Faint(false)
 	// asciiArtStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff"))
 	ColorThemes map[string]ColorTheme
 )
@@ -37,8 +36,7 @@ func (t ColorTheme) SetToCurrent() {
 	settingsBoxStyle = settingsBoxStyle.BorderForeground(lipgloss.Color(t.Primary)).Foreground(lipgloss.Color(t.Secondary))
 	selectedStyle = selectedStyle.Foreground(lipgloss.Color(t.Tertiary))
 	instructionsStyle = instructionsStyle.Foreground(lipgloss.Color(t.Tertiary))
-	inactive_arrow_style = inactive_arrow_style.Foreground(lipgloss.Color(t.Tertiary))
-	active_arrow_style = active_arrow_style.Foreground(lipgloss.Color(t.Tertiary))
+	arrow_style = arrow_style.Foreground(lipgloss.Color(t.Tertiary))
 	// asciiArtStyle = asciiArtStyle.Foreground(lightDark())
 }
 
