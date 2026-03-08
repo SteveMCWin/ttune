@@ -69,7 +69,7 @@ func NewModel() Model {
 		BlockLength:      BL,
 		CurrentState:     Initializing,
 		SettingsSelected: LoadSettingsSelections("selections.json"),
-		SettingsData:     LoadSettingsData("custom_options.json", "default_options.json"), // loads custom options first so they appear at the top
+		SettingsData:     LoadSettingsData(), // a bit messy but I had to compromise because of bad design initially (and because of windows)
 		HelpItems:        InitHelpItems(),
 	}
 

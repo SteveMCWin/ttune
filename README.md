@@ -66,9 +66,9 @@ go build
 
 ## Customization
 
-You can add your own options to `custom_options.json` as long as you follow the existing format. You could also modify the existing settings are via `default_options.json`, which is created on first launch, however if you do so, make sure to make a backup of the modified `default_options.json` file since it may be overwritten in future releases of the app. 
+You can add your own options to `custom_options.json` as long as you follow the existing format.
 
-> **Note:** If something breaks, delete the edited file or the entire `~/.config/ttune/` directory — defaults will be regenerated on the next run.
+> **Note:** If something breaks, back up and delete the edited files or the entire `~/.config/ttune/` directory - the defaults will be regenerated on the next run.
 
 ---
 
@@ -119,6 +119,6 @@ To add a new tuning, open `~/.config/ttune/custom_options.json` and find the lis
 - [x] Frequency detection
 - [x] Customizable settings
 - [x] Separate user settings
-- [ ] Improve pitch detection
-- [ ] Scrollable settings options
+- [x] Scrollable settings options
 - [ ] Options for frequency detection
+- [ ] Improve pitch detection
