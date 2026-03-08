@@ -69,7 +69,7 @@ func NewModel() Model {
 		BlockLength:      BL,
 		CurrentState:     Initializing,
 		SettingsSelected: LoadSettingsSelections("selections.json"),
-		SettingsData:     LoadSettingsData("custom_options.json", "default_options.json"), // loads custom options first so they appear at the top
+		SettingsData:     LoadSettingsData(), // a bit messy but I had to compromise because of bad design initially (and because of windows)
 		HelpItems:        InitHelpItems(),
 	}
 
@@ -150,25 +150,25 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "j", "down":
 			if m.CurrentState == Settings {
 				if !m.SelectingValues {
-					m.SelectedOption = (m.SelectedOption + 1) % len(m.VisualOptions)
+					m.SelectedOption = min(m.SelectedOption + 1, len(m.VisualOptions)-1)
 					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].Selected
 				} else {
-					m.SelectedOptionValue = (m.SelectedOptionValue + 1) % len(m.VisualOptions[m.SelectedOption].Options)
+					m.SelectedOptionValue = min(m.SelectedOptionValue + 1, len(m.VisualOptions[m.SelectedOption].Options)-1)
 				}
 			} else if m.CurrentState == Help {
-				m.SelectedHelpItem = (m.SelectedHelpItem + 1) % len(m.HelpItems)
+				m.SelectedHelpItem = min(m.SelectedHelpItem + 1, len(m.HelpItems)-1)
 			}
 
 		case "k", "up":
 			if m.CurrentState == Settings {
 				if !m.SelectingValues {
-					m.SelectedOption = (m.SelectedOption - 1 + len(m.VisualOptions)) % len(m.VisualOptions)
+					m.SelectedOption = max(m.SelectedOption - 1, 0)
 					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].Selected
 				} else {
-					m.SelectedOptionValue = (m.SelectedOptionValue - 1 + len(m.VisualOptions[m.SelectedOption].Options)) % len(m.VisualOptions[m.SelectedOption].Options)
+					m.SelectedOptionValue = max(m.SelectedOptionValue - 1, 0)
 				}
 			} else if m.CurrentState == Help {
-				m.SelectedHelpItem = (m.SelectedHelpItem - 1 + len(m.HelpItems)) % len(m.HelpItems)
+				m.SelectedHelpItem = max(m.SelectedHelpItem - 1, 0)
 			}
 
 		case "l", "right":

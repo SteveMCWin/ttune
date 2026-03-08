@@ -2,7 +2,7 @@
 
 ![Cool banner :D](screenshots/banner.png?raw=true)
 
-tTune is a stylized, keyboard oriented guitar tuning app right in your terminal!
+tTune is a stylized, extendable, keyboard oriented guitar tuning app right in your terminal!
 
 ---
 
@@ -66,9 +66,9 @@ go build
 
 ## Customization
 
-The existing settings are modifiable via `default_options.json`, which is created on first launch. You can also add your own options to `custom_options.json` as long as you follow the existing format.
+You can add your own options to `custom_options.json` as long as you follow the existing format.
 
-> **Note:** If something breaks, delete the edited file or the entire `~/.config/ttune/` directory — defaults will be regenerated on the next run.
+> **Note:** If something breaks, back up and delete the edited files or the entire `~/.config/ttune/` directory - the defaults will be regenerated on the next run.
 
 ---
 
@@ -119,6 +119,6 @@ To add a new tuning, open `~/.config/ttune/custom_options.json` and find the lis
 - [x] Frequency detection
 - [x] Customizable settings
 - [x] Separate user settings
-- [ ] Improve pitch detection
-- [ ] Scrollable settings options
+- [x] Scrollable settings options
 - [ ] Options for frequency detection
+- [ ] Improve pitch detection

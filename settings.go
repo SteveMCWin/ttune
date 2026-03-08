@@ -136,7 +136,7 @@ func LoadOrWriteConfigFile(config_file_name string) ([]byte, error) {
 	}
 
 	user_config_dir_path := filepath.Join(config_dir, "ttune")
-	user_config_file_path := filepath.Join(user_config_dir_path,config_file_name)
+	user_config_file_path := filepath.Join(user_config_dir_path, config_file_name)
 
 	// if ttune folder doesn't already exist in the config dir, create it
 	if _, err := os.Stat(user_config_dir_path); errors.Is(err, os.ErrNotExist) {
@@ -150,7 +150,7 @@ func LoadOrWriteConfigFile(config_file_name string) ([]byte, error) {
 	data, err := os.ReadFile(user_config_file_path)
 	if err != nil {
 		log.Println(config_file_name, "not found, reading default and writing to", config_dir)
-		data, err = configFS.ReadFile("config/"+config_file_name)
+		data, err = configFS.ReadFile("config/" + config_file_name)
 		if err != nil {
 			log.Println("Error reading config file!!!!")
 			return []byte{}, err
@@ -166,81 +166,92 @@ func LoadOrWriteConfigFile(config_file_name string) ([]byte, error) {
 	return data, nil
 }
 
-func LoadSettingsData(config_file_names ...string) SettingsData {
-	// Get path of user config dir
+func LoadSettingsData() SettingsData {
+    var res SettingsData
 
-	var res SettingsData
-
-	for _, filename := range config_file_names {
-		data, err := LoadOrWriteConfigFile(filename)
-		if err != nil {
-			return SettingsData{}
-		}
-
-		var formatted SettingsData
-
-		err = json.Unmarshal(data, &formatted)
-		if err != nil {
-			log.Println("Error unmarshaling settings data")
-			panic(err)
-		}
-
-		res.BorderStyles = append(res.BorderStyles, formatted.BorderStyles...)
-		res.ColorThemes = append(res.ColorThemes, formatted.ColorThemes...)
-		res.Tunings = append(res.Tunings, formatted.Tunings...)
+    // Load user settings
+	user_options_filename := "custom_options.json"
+	data, err := LoadOrWriteConfigFile(user_options_filename)
+	if err != nil {
+		return SettingsData{}
 	}
+	var formatted SettingsData
+	if err := json.Unmarshal(data, &formatted); err != nil {
+		log.Println("Error unmarshaling settings data")
+		panic(err)
+	}
+	res.BorderStyles = append(res.BorderStyles, formatted.BorderStyles...)
+	res.ColorThemes = append(res.ColorThemes, formatted.ColorThemes...)
+	res.Tunings = append(res.Tunings, formatted.Tunings...)
 
+	// Load default options
+    defaultData, err := configFS.ReadFile("config/default_options.json")
+    if err != nil {
+        log.Println("Error reading embedded default_options.json")
+        panic(err)
+    }
+    var defaults SettingsData
+    if err := json.Unmarshal(defaultData, &defaults); err != nil {
+        log.Println("Error unmarshaling default settings data")
+        panic(err)
+    }
+    res.BorderStyles = append(res.BorderStyles, defaults.BorderStyles...)
+    res.ColorThemes = append(res.ColorThemes, defaults.ColorThemes...)
+    res.Tunings = append(res.Tunings, defaults.Tunings...)
 
-	res.AsciiArt = LoadAsciiArt()
-
-	return res
+    res.AsciiArt = LoadAsciiArt()
+    return res
 }
 
 func LoadAsciiArt() []AsciiArt {
-	config_dir, err := os.UserConfigDir()
-	if err != nil {
-		log.Println("Error finding user config dir")
-		panic(err)
-	}
+    config_dir, err := os.UserConfigDir()
+    if err != nil {
+        log.Println("Error finding user config dir")
+        panic(err)
+    }
 
-	user_art_dir_path := filepath.Join(filepath.Join(config_dir, "ttune"), "art")
+    user_art_dir_path := filepath.Join(config_dir, "ttune", "art")
 
-	// if art folder doesn't already exist in the ttune config dir, create it
-	if _, err := os.Stat(user_art_dir_path); errors.Is(err, os.ErrNotExist) {
-		err := os.Mkdir(user_art_dir_path, 0744)
-		if err != nil && !os.IsExist(err) {
-			log.Fatal(err)
-		}
+    // Create art dir if it doesn't exist
+    if err := os.MkdirAll(user_art_dir_path, 0744); err != nil {
+        log.Fatal("Error creating art dir: ", err)
+    }
 
-		default_files, err := configFS.ReadDir("config/art")
-		if err != nil {
-			log.Fatal("Error reading art dir")
-		}
-		for _, f := range default_files {
-			data, err := configFS.ReadFile("config/art/"+f.Name())
-			if err != nil {
-				log.Fatal("Error reading ", f.Name(), " :: ", err)
-			}
-			err = os.WriteFile(filepath.Join(user_art_dir_path, f.Name()), data, 0744)
-		}
-	}
+    // Sync embedded art files
+    default_files, err := configFS.ReadDir("config/art")
+    if err != nil {
+        log.Fatal("Error reading embedded art dir")
+    }
 
-	files, err := os.ReadDir(user_art_dir_path)
-	if err != nil {
-		log.Fatal("Error reading art dir")
-	}
+    for _, f := range default_files {
+        dest := filepath.Join(user_art_dir_path, f.Name())
+        if _, err := os.Stat(dest); errors.Is(err, os.ErrNotExist) {
+            data, err := configFS.ReadFile("config/art/" + f.Name())
+            if err != nil {
+                log.Fatal("Error reading embedded file ", f.Name(), " :: ", err)
+            }
+            if err := os.WriteFile(dest, data, 0744); err != nil {
+                log.Fatal("Error writing art file ", f.Name(), " :: ", err)
+            }
+        }
+    }
 
-	ascii_art := make([]AsciiArt, 0)
-	for _, f := range files {
-		data, err := os.ReadFile(filepath.Join(user_art_dir_path, f.Name()))
-		if err != nil {
-			log.Fatal("Error reading", f.Name())
-		}
+    // Load all art from the user's dir (includes both defaults and any user-added files)
+    files, err := os.ReadDir(user_art_dir_path)
+    if err != nil {
+        log.Fatal("Error reading user art dir")
+    }
 
-		ascii_art = append(ascii_art, AsciiArt{FileName: f.Name(), FileContents: string(data)})
-	}
+    ascii_art := make([]AsciiArt, 0)
+    for _, f := range files {
+        data, err := os.ReadFile(filepath.Join(user_art_dir_path, f.Name()))
+        if err != nil {
+            log.Fatal("Error reading ", f.Name())
+        }
+        ascii_art = append(ascii_art, AsciiArt{FileName: f.Name(), FileContents: string(data)})
+    }
 
-	return ascii_art
+    return ascii_art
 }
 
 func LoadSettingsSelections(config_file_name string) SettingsSelections {

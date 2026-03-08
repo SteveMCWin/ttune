@@ -20,7 +20,7 @@ Why a TUI? I was learning golang for backend web development and somehow stumble
 		Name: "⚙ Modding",
 		Contents:
 `
-The existing settings are modifiable and extensible, mostly through JSON. Here's how to add more options to the settings:
+The existing settings are extensible, mostly through JSON. Here's how to add more options to the settings:
 
 - Ascii Art
 		In your ~/.config/ttune/art direcotry you can add your own ascii art as a file. Note that for a tuning to be displayed along your ascii art, place '%%%' where you wish the notes to appear (check out the ~/.config/ttune/art/utf_guitar file for reference). Also I recommend you keep the art no more than 24 characters wide and 20 lines tall.
@@ -29,10 +29,10 @@ The existing settings are modifiable and extensible, mostly through JSON. Here's
 		Not extensible at the moment :^/. In case you want this to be moddable, open an issue at https://github.com/SteveMCWin/ttune/issues.
 
 - Color Theme
-		To add a new color theme, go into the file located at ~/.config/ttune/settings_data.json where you will see a list of color themes. Add an item containing the name of the color theme you want and three colors in hex code. The primary color is used for the borders, secondary for the text and tertiary for selections. Note that the background of your terminal will not change colors.
+		To add a new color theme, go into the file located at ~/.config/ttune/custom_options.json where you will see a list of color themes. Add an item containing the name of the color theme you want and three colors in hex code. The primary color is used for the borders, secondary for the text and tertiary for selections. Note that the background of your terminal will not change colors.
 
 - Displayed Tuning
-		To add a new tuning that will be displayed next to the ascii art, go into the file located at ~/.config/ttune/settings_data.json where you will see a list of tunings. Add an item containing the name of the tuning you want and a list of notes it is comprised of. Note that the notes should be exactly 3 characters long. For notes that require less characters, fill out the rest of the string with spaces.
+		To add a new tuning that will be displayed next to the ascii art, go into the file located at ~/.config/ttune/custom_options.json where you will see a list of tunings. Add an item containing the name of the tuning you want and a list of notes it is comprised of. Note that the notes should be exactly 3 characters long. For notes that require less characters, fill out the rest of the string with spaces.
 `,
 	}
 
@@ -40,7 +40,7 @@ The existing settings are modifiable and extensible, mostly through JSON. Here's
 		Name: "★ Support",
 		Contents:
 `
-I have a goal of one of my repos reaching at least 10 stars by the end of 2026, so if you have one to spare, you can do your magic at https://github.com/SteveMCWin/ttune
+I had a goal of one of my repos reaching at least 10 stars by the end of 2026, which I accomplished by the 2nd of March, thanks a lot!!! The next goal is 100 stars, which I doubt this project can reach, but feel free to make me re-think that at https://github.com/SteveMCWin/ttune
 
 If that's too much to ask for, you can always send me a tip at https://ko-fi.com/stevemcwin instead :^]
 `,

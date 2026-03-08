@@ -62,7 +62,6 @@
             ]
         }
     ],
-
     "color_themes": [
         {
             "name": "Catppuccin",
@@ -87,9 +86,56 @@
             "primary": "#9B8ABB",
             "secondary": "#C98BB0",
             "tertiary": "#84BA90"
+        },
+        {
+            "name": "One Dark",
+            "primary": "#61AFEF",
+            "secondary": "#C678DD",
+            "tertiary": "#E06C75"
+        },
+        {
+            "name": "Solarized",
+            "primary": "#268BD2",
+            "secondary": "#2AA198",
+            "tertiary": "#D33682"
+        },
+        {
+            "name": "Everforest",
+            "primary": "#A7C080",
+            "secondary": "#7DB88B",
+            "tertiary": "#DBBC7F"
+        },
+        {
+            "name": "Rose Pine",
+            "primary": "#31748F",
+            "secondary": "#9CCFD8",
+            "tertiary": "#EB6F92"
+        },
+        {
+            "name": "Monokai Pro",
+            "primary": "#78DCE8",
+            "secondary": "#A9DC76",
+            "tertiary": "#FFD866"
+        },
+        {
+            "name": "Monochrome Slate",
+            "primary": "#647B91",
+            "secondary": "#4E5D6C",
+            "tertiary": "#A9C1D9"
+        },
+        {
+            "name": "Monochrome Sepia",
+            "primary": "#A68B75",
+            "secondary": "#7D6958",
+            "tertiary": "#E6C5AC"
+        },
+        {
+            "name": "Monochrome Silver",
+            "primary": "#A9A9A9",
+            "secondary": "#757575",
+            "tertiary": "#F0F0F0"
         }
     ],
-
     "border_styles": [
         "None",
         "Normal",
