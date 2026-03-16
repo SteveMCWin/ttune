@@ -40,7 +40,7 @@ func createListeningContents(m Model) string {
 	whole_widht := m.WindowWidth - boxStyle.GetHorizontalMargins()
 	tuning_width := whole_widht / 4
 	if m.AsciiArt == "" {
-		tuning_width = tuning_width*2/3
+		tuning_width = tuning_width * 2 / 3
 	}
 	meter_box_width := whole_widht - tuning_width - boxStyle.GetHorizontalMargins()
 
@@ -172,7 +172,7 @@ func createSettingsContents(m Model) string {
 
 	// the "-2" is there because of the title "Options" and an empty space below it
 	// the other "-2" is there because of the "^" and "v"
-	num_of_options_displayable := available_options_height - settingsBoxStyle.GetVerticalFrameSize() - 2 - 2 
+	num_of_options_displayable := available_options_height - settingsBoxStyle.GetVerticalFrameSize() - 2 - 2
 
 	var settings_options_up_arrow string
 	// display up arrow only if there are pages above the current one
@@ -189,8 +189,8 @@ func createSettingsContents(m Model) string {
 	options_names := []string{"Options", "", settings_options_up_arrow}
 
 	// dividing and multiplying by num_of_options_displayable won't just cancle out, remember integer division
-	start_idx := (m.SelectedOptionValue/num_of_options_displayable) * num_of_options_displayable
-	end_idx := min(start_idx + num_of_options_displayable, len(m.VisualOptions[m.SelectedOption].Options))
+	start_idx := (m.SelectedOptionValue / num_of_options_displayable) * num_of_options_displayable
+	end_idx := min(start_idx+num_of_options_displayable, len(m.VisualOptions[m.SelectedOption].Options))
 
 	for i := start_idx; i < end_idx; i++ {
 		option_name := m.VisualOptions[m.SelectedOption].Options[i]
@@ -210,7 +210,6 @@ func createSettingsContents(m Model) string {
 	}
 
 	options_names = append(options_names, settings_options_down_arrow)
-
 
 	// for i, o := range m.VisualOptions[m.SelectedOption].Options {
 	//
@@ -269,7 +268,7 @@ func createHelpContents(m Model) string {
 		return ""
 	}
 
-	help_list_box_style := boxStyle.Width(help_list_width).Height(m.WindowHeight - title_height + 1).Align(lipgloss.Left, lipgloss.Top).Padding(1, 2)
+	help_list_box_style := boxStyle.Width(help_list_width).Height(m.WindowHeight-title_height+1).Align(lipgloss.Left, lipgloss.Top).Padding(1, 2)
 	help_list_contents := []string{"Help", ""}
 	for i, o := range m.HelpItems {
 		var line string
@@ -288,7 +287,7 @@ func createHelpContents(m Model) string {
 
 	help_list_box := help_list_box_style.Render(lipgloss.JoinVertical(lipgloss.Left, help_list_contents...))
 
-	help_contents_box_style := boxStyle.Width(help_contents_width).Height(m.WindowHeight - title_height + 1).Padding(0, 2).Align(lipgloss.Left)
+	help_contents_box_style := boxStyle.Width(help_contents_width).Height(m.WindowHeight-title_height+1).Padding(0, 2).Align(lipgloss.Left)
 	help_contents_box := help_contents_box_style.Render(m.HelpItems[m.SelectedHelpItem].Contents)
 
 	main_content := lipgloss.JoinHorizontal(lipgloss.Center, help_list_box, help_contents_box)

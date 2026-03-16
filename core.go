@@ -74,8 +74,11 @@ func closeAudioStream() tea.Cmd {
 			return nil
 		}
 
-		AudioStream.Stop()
-		err := AudioStream.Close()
+		err := AudioStream.Stop()
+		if err != nil {
+			log.Println("ERROR stopping audio stream")
+		}
+		err = AudioStream.Close()
 		if err != nil {
 			log.Println("FAILED TO CLOSE THE AUDIO STREAM")
 		}

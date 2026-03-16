@@ -1,15 +1,14 @@
 package main
 
 type HelpItem struct {
-	Name string
+	Name     string
 	Contents string
 }
 
 func InitHelpItems() []HelpItem {
 	about := HelpItem{
 		Name: "ℹ About",
-		Contents:
-`
+		Contents: `
 This is a small personal project (that took about 10x longer to complete than expected hihi).
 I once complained to my cousin about burnout, so he gave me a guitar, saying a creative hobby is a really good way to combat fatigue. After a couple of months of actually trying to learn how to play the thing, I got the idea to make this little program :^). I haven't played the guitar since, except for plucking a few strings to check if the tuning is accurate, but that counts too, right?
 Why a TUI? I was learning golang for backend web development and somehow stumbled accross the bubbletea TUI framework, and was impressed with how good terminal apps can look, and wanted to make something. The first project idea I started working on had too big of a scope, so I decided to go and make something in a weekend or two, and this is where that led me.
@@ -18,8 +17,7 @@ Why a TUI? I was learning golang for backend web development and somehow stumble
 
 	modding := HelpItem{
 		Name: "⚙ Modding",
-		Contents:
-`
+		Contents: `
 The existing settings are extensible, mostly through JSON. Here's how to add more options to the settings:
 
 - Ascii Art
@@ -38,8 +36,7 @@ The existing settings are extensible, mostly through JSON. Here's how to add mor
 
 	support := HelpItem{
 		Name: "★ Support",
-		Contents:
-`
+		Contents: `
 I had a goal of one of my repos reaching at least 10 stars by the end of 2026, which I accomplished by the 2nd of March, thanks a lot!!! The next goal is 100 stars, which I doubt this project can reach, but feel free to make me re-think that at https://github.com/SteveMCWin/ttune
 
 If that's too much to ask for, you can always send me a tip at https://ko-fi.com/stevemcwin instead :^]

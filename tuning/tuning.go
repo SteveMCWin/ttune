@@ -1,7 +1,7 @@
 package tuning
 
 type Tuning struct {
-	Name string `json:"name"`
+	Name  string   `json:"name"`
 	Notes []string `json:"notes"`
 }
 

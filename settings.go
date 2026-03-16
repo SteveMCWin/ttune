@@ -10,6 +10,7 @@ import (
 	"ttune/tuning"
 
 	"embed"
+
 	"github.com/charmbracelet/lipgloss/v2"
 )
 
@@ -39,7 +40,10 @@ type SettingsSelections struct {
 	ColorTheme  int `json:"selected_theme"`
 }
 
-func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSelections) []SettingsOptions {
+func DefineVisualSettingsOptions(
+	data SettingsData,
+	currentSettings SettingsSelections,
+) []SettingsOptions {
 	ascii_art := SettingsOptions{
 		Name:        "Ascii Art",
 		Description: "The character art displayed on the left side of the terminal when tuning is in progress. Purely for aesthetical purposes, but I spent a lot of time drawing it :^)",
@@ -55,7 +59,10 @@ func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSele
 	for _, v := range data.AsciiArt {
 		ascii_art.Options = append(ascii_art.Options, v.FileName)
 		// Note: JoinHorizontal is needed for some reason so the rows don't auto align for some reason
-		ascii_art.Previews = append(ascii_art.Previews, lipgloss.JoinHorizontal(lipgloss.Center, "", v.FileContents))
+		ascii_art.Previews = append(
+			ascii_art.Previews,
+			lipgloss.JoinHorizontal(lipgloss.Center, "", v.FileContents),
+		)
 	}
 
 	borders := SettingsOptions{
@@ -73,7 +80,10 @@ func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSele
 	for _, v := range data.BorderStyles {
 		borders.Options = append(borders.Options, v)
 
-		borders.Previews = append(borders.Previews, GetBorderStyleByName(v).Width(12).Height(6).Render(""))
+		borders.Previews = append(
+			borders.Previews,
+			GetBorderStyleByName(v).Width(12).Height(6).Render(""),
+		)
 	}
 
 	themes := SettingsOptions{
@@ -167,9 +177,9 @@ func LoadOrWriteConfigFile(config_file_name string) ([]byte, error) {
 }
 
 func LoadSettingsData() SettingsData {
-    var res SettingsData
+	var res SettingsData
 
-    // Load user settings
+	// Load user settings
 	user_options_filename := "custom_options.json"
 	data, err := LoadOrWriteConfigFile(user_options_filename)
 	if err != nil {
@@ -185,73 +195,73 @@ func LoadSettingsData() SettingsData {
 	res.Tunings = append(res.Tunings, formatted.Tunings...)
 
 	// Load default options
-    defaultData, err := configFS.ReadFile("config/default_options.json")
-    if err != nil {
-        log.Println("Error reading embedded default_options.json")
-        panic(err)
-    }
-    var defaults SettingsData
-    if err := json.Unmarshal(defaultData, &defaults); err != nil {
-        log.Println("Error unmarshaling default settings data")
-        panic(err)
-    }
-    res.BorderStyles = append(res.BorderStyles, defaults.BorderStyles...)
-    res.ColorThemes = append(res.ColorThemes, defaults.ColorThemes...)
-    res.Tunings = append(res.Tunings, defaults.Tunings...)
+	defaultData, err := configFS.ReadFile("config/default_options.json")
+	if err != nil {
+		log.Println("Error reading embedded default_options.json")
+		panic(err)
+	}
+	var defaults SettingsData
+	if err := json.Unmarshal(defaultData, &defaults); err != nil {
+		log.Println("Error unmarshaling default settings data")
+		panic(err)
+	}
+	res.BorderStyles = append(res.BorderStyles, defaults.BorderStyles...)
+	res.ColorThemes = append(res.ColorThemes, defaults.ColorThemes...)
+	res.Tunings = append(res.Tunings, defaults.Tunings...)
 
-    res.AsciiArt = LoadAsciiArt()
-    return res
+	res.AsciiArt = LoadAsciiArt()
+	return res
 }
 
 func LoadAsciiArt() []AsciiArt {
-    config_dir, err := os.UserConfigDir()
-    if err != nil {
-        log.Println("Error finding user config dir")
-        panic(err)
-    }
+	config_dir, err := os.UserConfigDir()
+	if err != nil {
+		log.Println("Error finding user config dir")
+		panic(err)
+	}
 
-    user_art_dir_path := filepath.Join(config_dir, "ttune", "art")
+	user_art_dir_path := filepath.Join(config_dir, "ttune", "art")
 
-    // Create art dir if it doesn't exist
-    if err := os.MkdirAll(user_art_dir_path, 0744); err != nil {
-        log.Fatal("Error creating art dir: ", err)
-    }
+	// Create art dir if it doesn't exist
+	if err := os.MkdirAll(user_art_dir_path, 0744); err != nil {
+		log.Fatal("Error creating art dir: ", err)
+	}
 
-    // Sync embedded art files
-    default_files, err := configFS.ReadDir("config/art")
-    if err != nil {
-        log.Fatal("Error reading embedded art dir")
-    }
+	// Sync embedded art files
+	default_files, err := configFS.ReadDir("config/art")
+	if err != nil {
+		log.Fatal("Error reading embedded art dir")
+	}
 
-    for _, f := range default_files {
-        dest := filepath.Join(user_art_dir_path, f.Name())
-        if _, err := os.Stat(dest); errors.Is(err, os.ErrNotExist) {
-            data, err := configFS.ReadFile("config/art/" + f.Name())
-            if err != nil {
-                log.Fatal("Error reading embedded file ", f.Name(), " :: ", err)
-            }
-            if err := os.WriteFile(dest, data, 0744); err != nil {
-                log.Fatal("Error writing art file ", f.Name(), " :: ", err)
-            }
-        }
-    }
+	for _, f := range default_files {
+		dest := filepath.Join(user_art_dir_path, f.Name())
+		if _, err := os.Stat(dest); errors.Is(err, os.ErrNotExist) {
+			data, err := configFS.ReadFile("config/art/" + f.Name())
+			if err != nil {
+				log.Fatal("Error reading embedded file ", f.Name(), " :: ", err)
+			}
+			if err := os.WriteFile(dest, data, 0744); err != nil {
+				log.Fatal("Error writing art file ", f.Name(), " :: ", err)
+			}
+		}
+	}
 
-    // Load all art from the user's dir (includes both defaults and any user-added files)
-    files, err := os.ReadDir(user_art_dir_path)
-    if err != nil {
-        log.Fatal("Error reading user art dir")
-    }
+	// Load all art from the user's dir (includes both defaults and any user-added files)
+	files, err := os.ReadDir(user_art_dir_path)
+	if err != nil {
+		log.Fatal("Error reading user art dir")
+	}
 
-    ascii_art := make([]AsciiArt, 0)
-    for _, f := range files {
-        data, err := os.ReadFile(filepath.Join(user_art_dir_path, f.Name()))
-        if err != nil {
-            log.Fatal("Error reading ", f.Name())
-        }
-        ascii_art = append(ascii_art, AsciiArt{FileName: f.Name(), FileContents: string(data)})
-    }
+	ascii_art := make([]AsciiArt, 0)
+	for _, f := range files {
+		data, err := os.ReadFile(filepath.Join(user_art_dir_path, f.Name()))
+		if err != nil {
+			log.Fatal("Error reading ", f.Name())
+		}
+		ascii_art = append(ascii_art, AsciiArt{FileName: f.Name(), FileContents: string(data)})
+	}
 
-    return ascii_art
+	return ascii_art
 }
 
 func LoadSettingsSelections(config_file_name string) SettingsSelections {
@@ -289,6 +299,11 @@ func StoreSettings(settings SettingsSelections, config_file_name string) {
 	}
 
 	data, err := json.MarshalIndent(settings, "", "  ")
+	if err != nil {
+		log.Println("Error marshaling config settings")
+		panic(err)
+	}
+
 	err = os.WriteFile(user_config_file_path, data, 0744)
 	if err != nil {
 		log.Println("Error saving config file!!!!")
