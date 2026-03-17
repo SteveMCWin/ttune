@@ -10,8 +10,8 @@ import (
 	"ttune/tuning"
 
 	"embed"
-
-	"github.com/charmbracelet/lipgloss/v2"
+	"charm.land/lipgloss/v2"
+	"charm.land/bubbles/v2/textinput"
 )
 
 //go:embed config
@@ -27,10 +27,52 @@ type SettingsData struct {
 type SettingsOptions struct {
 	Name        string
 	Description string
-	Options     []string
+	Options     []Option
 	Previews    []string
 	Selected    int
 	Apply       func(val int, current SettingsSelections) SettingsSelections
+}
+
+type Option interface {
+	GetValue() string
+	HanldeSelect() string
+	Render() string
+}
+
+type MultiChoiceOption string
+
+func (o MultiChoiceOption) GetValue() string {
+	return string(o)
+}
+
+func (o MultiChoiceOption) HanldeSelect() string {
+	return o.GetValue()
+}
+
+func (o MultiChoiceOption) Render() string {
+	return o.GetValue()
+}
+
+type InputFieldOption struct {
+	Input textinput.Model
+}
+
+func (o InputFieldOption) GetValue() string {
+	return o.Input.Value()
+}
+
+func (o InputFieldOption) HanldeSelect() string {
+	if o.Input.Focused() {
+		o.Input.Blur()
+	} else {
+		o.Input.Focus()
+	}
+
+	return o.GetValue()
+}
+
+func (o InputFieldOption) Render() string {
+	return o.Input.View()
 }
 
 type SettingsSelections struct {
@@ -47,7 +89,7 @@ func DefineVisualSettingsOptions(
 	ascii_art := SettingsOptions{
 		Name:        "Ascii Art",
 		Description: "The character art displayed on the left side of the terminal when tuning is in progress. Purely for aesthetical purposes, but I spent a lot of time drawing it :^)",
-		Options:     make([]string, 0),
+		Options:     make([]Option, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.AsciiArt,
 		Apply: func(val int, s SettingsSelections) SettingsSelections {
@@ -57,7 +99,7 @@ func DefineVisualSettingsOptions(
 	}
 
 	for _, v := range data.AsciiArt {
-		ascii_art.Options = append(ascii_art.Options, v.FileName)
+		ascii_art.Options = append(ascii_art.Options, MultiChoiceOption(v.FileName))
 		// Note: JoinHorizontal is needed for some reason so the rows don't auto align for some reason
 		ascii_art.Previews = append(
 			ascii_art.Previews,
@@ -68,7 +110,7 @@ func DefineVisualSettingsOptions(
 	borders := SettingsOptions{
 		Name:        "Border Style",
 		Description: "The appearance of displayed borders. The double border is my favourite, that's why it's the default one hihi.",
-		Options:     make([]string, 0),
+		Options:     make([]Option, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.BorderStyle,
 		Apply: func(val int, s SettingsSelections) SettingsSelections {
@@ -78,7 +120,7 @@ func DefineVisualSettingsOptions(
 	}
 
 	for _, v := range data.BorderStyles {
-		borders.Options = append(borders.Options, v)
+		borders.Options = append(borders.Options, MultiChoiceOption(v))
 
 		borders.Previews = append(
 			borders.Previews,
@@ -89,7 +131,7 @@ func DefineVisualSettingsOptions(
 	themes := SettingsOptions{
 		Name:        "Color Theme",
 		Description: "Colors used for displaying the user interface. Comprised of 3 colors each. Affects only the foreground elements.",
-		Options:     make([]string, 0),
+		Options:     make([]Option, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.ColorTheme,
 		Apply: func(val int, s SettingsSelections) SettingsSelections {
@@ -99,7 +141,7 @@ func DefineVisualSettingsOptions(
 	}
 
 	for _, v := range data.ColorThemes {
-		themes.Options = append(themes.Options, v.Name)
+		themes.Options = append(themes.Options, MultiChoiceOption(v.Name))
 		blocks := `
 ███████
 ███████
@@ -115,7 +157,7 @@ func DefineVisualSettingsOptions(
 	tunings := SettingsOptions{
 		Name:        "Displayed Tuning",
 		Description: "A tuning that will be displayed along the ascii art. Mostly there for aesthetical reasons but also quite handy if you don't have them memorized exactly.",
-		Options:     make([]string, 0),
+		Options:     make([]Option, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.Tuning,
 		Apply: func(val int, s SettingsSelections) SettingsSelections {
@@ -125,7 +167,7 @@ func DefineVisualSettingsOptions(
 	}
 
 	for _, v := range data.Tunings {
-		tunings.Options = append(tunings.Options, v.Name)
+		tunings.Options = append(tunings.Options, MultiChoiceOption(v.Name))
 		var builder strings.Builder
 		builder.WriteByte('\n')
 		for _, note := range v.Notes {
