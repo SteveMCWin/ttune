@@ -11,13 +11,13 @@ import (
 )
 
 func logFilePath() string {
-    cacheDir, err := os.UserCacheDir()
-    if err != nil {
-        return "debug.log" // fallback
-    }
-    appCache := filepath.Join(cacheDir, "ttune")
-    os.MkdirAll(appCache, 0755)
-    return filepath.Join(appCache, "debug.log")
+	cacheDir, err := os.UserCacheDir()
+	if err != nil {
+		return "debug.log" // fallback
+	}
+	appCache := filepath.Join(cacheDir, "ttune")
+	_ = os.MkdirAll(appCache, 0755)
+	return filepath.Join(appCache, "debug.log")
 }
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed setting the debug log file: %v", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	// should check for commandline args
 	m := NewModel()
 
@@ -37,16 +37,21 @@ func main() {
 	// Suppress ALSA warnings during cleanup by redirecting stderr
 	oldStderr, _ := syscall.Dup(int(os.Stderr.Fd()))
 	devNull, _ := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
-	syscall.Dup2(int(devNull.Fd()), int(os.Stderr.Fd()))
-		
-	portaudio.Initialize()
+	_ = syscall.Dup2(int(devNull.Fd()), int(os.Stderr.Fd()))
+
+	err = portaudio.Initialize()
+	if err != nil {
+		log.Fatalf("Portaudio couldn't initialized.")
+	}
 	defer func() {
-		portaudio.Terminate()
-		
+		err = portaudio.Terminate()
+		if err != nil {
+			log.Fatalf("Portaudio couldn't terminated.")
+		}
 		// Restore stderr
-		syscall.Dup2(oldStderr, int(os.Stderr.Fd()))
-		syscall.Close(oldStderr)
-		devNull.Close()
+		_ = syscall.Dup2(oldStderr, int(os.Stderr.Fd()))
+		_ = syscall.Close(oldStderr)
+		_ = devNull.Close()
 	}()
 
 	p := tea.NewProgram(m)

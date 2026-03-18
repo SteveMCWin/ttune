@@ -148,27 +148,32 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "j", "down":
-			if m.CurrentState == Settings {
+			switch m.CurrentState {
+			case Settings:
 				if !m.SelectingValues {
-					m.SelectedOption = min(m.SelectedOption + 1, len(m.VisualOptions)-1)
+					m.SelectedOption = min(m.SelectedOption+1, len(m.VisualOptions)-1)
 					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].Selected
 				} else {
-					m.SelectedOptionValue = min(m.SelectedOptionValue + 1, len(m.VisualOptions[m.SelectedOption].Options)-1)
+					m.SelectedOptionValue = min(
+						m.SelectedOptionValue+1,
+						len(m.VisualOptions[m.SelectedOption].Options)-1,
+					)
 				}
-			} else if m.CurrentState == Help {
-				m.SelectedHelpItem = min(m.SelectedHelpItem + 1, len(m.HelpItems)-1)
+			case Help:
+				m.SelectedHelpItem = min(m.SelectedHelpItem+1, len(m.HelpItems)-1)
 			}
 
 		case "k", "up":
-			if m.CurrentState == Settings {
+			switch m.CurrentState {
+			case Settings:
 				if !m.SelectingValues {
-					m.SelectedOption = max(m.SelectedOption - 1, 0)
+					m.SelectedOption = max(m.SelectedOption-1, 0)
 					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].Selected
 				} else {
-					m.SelectedOptionValue = max(m.SelectedOptionValue - 1, 0)
+					m.SelectedOptionValue = max(m.SelectedOptionValue-1, 0)
 				}
-			} else if m.CurrentState == Help {
-				m.SelectedHelpItem = max(m.SelectedHelpItem - 1, 0)
+			case Help:
+				m.SelectedHelpItem = max(m.SelectedHelpItem-1, 0)
 			}
 
 		case "l", "right":
@@ -178,7 +183,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "enter", "space":
 			if m.CurrentState == Settings && m.SelectingValues {
-				m.SettingsSelected = m.VisualOptions[m.SelectedOption].Apply(m.SelectedOptionValue, m.SettingsSelected)
+				m.SettingsSelected = m.VisualOptions[m.SelectedOption].Apply(
+					m.SelectedOptionValue,
+					m.SettingsSelected,
+				)
 
 				cmds = append(cmds, ReRender)
 			}

@@ -1,6 +1,6 @@
 # tTune
 
-![Cool banner :D](screenshots/banner.png?raw=true)
+![Cool banner :D](.github/extra/screenshots/banner.png?raw=true)
 
 tTune is a stylized, extendable, keyboard oriented guitar tuning app right in your terminal!
 
@@ -9,21 +9,21 @@ tTune is a stylized, extendable, keyboard oriented guitar tuning app right in yo
 ## Showcase
 
 <div align="center">
-  <img src="screenshots/ttune_demo.gif?raw=true" /><br/>
+  <img src=".github/extra/screenshots/ttune_demo.gif?raw=true" /><br/>
   <em>Tuning G string demo</em>
 </div>
 
 <br/>
 
 <div align="center">
-  <img src="screenshots/nord_example.png?raw=true" /><br/>
+  <img src=".github/extra/screenshots/nord_example.png?raw=true" /><br/>
   <em>Tuning view</em>
 </div>
 
 <br/>
 
 <div align="center">
-  <img src="screenshots/gruvbox_example.png?raw=true" /><br/>
+  <img src=".github/extra/screenshots/gruvbox_example.png?raw=true" /><br/>
   <em>Settings view</em>
 </div>
 
@@ -40,11 +40,13 @@ tTune is a stylized, extendable, keyboard oriented guitar tuning app right in yo
 - Portaudio `19.7.0`
 
 ### Arch Linux
+
 ```bash
 sudo pacman -S pkgconf portaudio go
 ```
 
 ### Debian
+
 ```bash
 sudo apt-get install pkg-config portaudio19-dev golang-go
 ```
@@ -52,11 +54,13 @@ sudo apt-get install pkg-config portaudio19-dev golang-go
 ## Installation
 
 ### Arch Linux
+
 ```bash
 yay -S ttune
 ```
 
 ### Build From Source
+
 ```bash
 # get dependencies first
 git clone https://github.com/SteveMCWin/ttune.git
@@ -92,12 +96,12 @@ Want this to be moddable? [Open an issue](https://github.com/SteveMCWin/ttune/is
 
 To add a new color theme, open `~/.config/ttune/custom_options.json` and find the list of color themes. Add an entry with:
 
-| Field | Description |
-|---|---|
-| `name` | Name of the color theme |
-| `primary` | Hex color for borders |
-| `secondary` | Hex color for text |
-| `tertiary` | Hex color for selections |
+| Field       | Description              |
+| ----------- | ------------------------ |
+| `name`      | Name of the color theme  |
+| `primary`   | Hex color for borders    |
+| `secondary` | Hex color for text       |
+| `tertiary`  | Hex color for selections |
 
 > **Note:** Your terminal's background color will not be affected.
 
@@ -107,9 +111,9 @@ To add a new color theme, open `~/.config/ttune/custom_options.json` and find th
 
 To add a new tuning, open `~/.config/ttune/custom_options.json` and find the list of tunings. Add an entry with:
 
-| Field | Description |
-|---|---|
-| `name` | Name of the tuning |
+| Field   | Description               |
+| ------- | ------------------------- |
+| `name`  | Name of the tuning        |
 | `notes` | List of notes it contains |
 
 > **Note:** Each note must be **exactly 3 characters long**. Pad shorter note names with spaces (e.g., `"E4 "`).
