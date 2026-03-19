@@ -50,7 +50,7 @@ type Model struct {
 	SelectedTuning tuning.Tuning
 
 	VisualOptions     []SettingsOptions
-	FunctionalOptions []SettingsOptions // TODO
+	// FunctionalOptions []SettingsOptions // TODO
 	SettingsData      SettingsData
 	UserSettingsData  SettingsData
 	SettingsSelected  SettingsSelections

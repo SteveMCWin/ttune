@@ -9,14 +9,31 @@ import (
 	"strings"
 	"ttune/tuning"
 
-	"embed"
-	"charm.land/lipgloss/v2"
 	"charm.land/bubbles/v2/textinput"
+	"charm.land/lipgloss/v2"
+	"embed"
 )
 
 //go:embed config
 var configFS embed.FS
 
+type SettingsSelections struct {
+	AsciiArt    int `json:"ascii_art_filename"`
+	Tuning      int `json:"selected_tuning"`
+	BorderStyle int `json:"border_style"`
+	ColorTheme  int `json:"selected_theme"`
+
+	BufferLength   int     `json:"buffer_length"`
+	SampleRate     int     `json:"sample_rate"`
+	MinFrequency   int     `json:"min_frequency"`
+	MaxFrequency   int     `json:"max_frequency"`
+	AmplTreshold   float32 `json:"amplitude_treshold"`
+	YinMinTreshold float32 `json:"yin_min_treshold"`
+	YinMaxTreshold float32 `json:"yin_max_treshold"`
+	HistorySize    int     `json:"history_size"`
+}
+
+// Data that is meant to be configured in json files
 type SettingsData struct {
 	Tunings      []tuning.Tuning `json:"tunings"`
 	ColorThemes  []ColorTheme    `json:"color_themes"`
@@ -24,6 +41,7 @@ type SettingsData struct {
 	AsciiArt     []AsciiArt      // NOTE: not loaded from json but by looking at the art dir
 }
 
+// Defines a single settings option that you see on the side of the settings view
 type SettingsOptions struct {
 	Name        string
 	Description string
@@ -33,6 +51,7 @@ type SettingsOptions struct {
 	Apply       func(val int, current SettingsSelections) SettingsSelections
 }
 
+// Since an option can be an input field and a multi-choice selection, I made it an interface you interract through these functions
 type Option interface {
 	GetValue() string
 	HanldeSelect() string
@@ -75,6 +94,7 @@ func (o InputFieldOption) Render() string {
 	return o.Input.View()
 }
 
+<<<<<<< HEAD
 type SettingsSelections struct {
 	AsciiArt    int `json:"ascii_art_filename"`
 	Tuning      int `json:"selected_tuning"`
@@ -86,6 +106,9 @@ func DefineVisualSettingsOptions(
 	data SettingsData,
 	currentSettings SettingsSelections,
 ) []SettingsOptions {
+=======
+func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSelections) []SettingsOptions {
+>>>>>>> c6cf86a (man it's just getting more and more complicated, might have to rework all fo this fr)
 	ascii_art := SettingsOptions{
 		Name:        "Ascii Art",
 		Description: "The character art displayed on the left side of the terminal when tuning is in progress. Purely for aesthetical purposes, but I spent a lot of time drawing it :^)",
@@ -175,6 +198,17 @@ func DefineVisualSettingsOptions(
 			builder.WriteByte('\n')
 		}
 		tunings.Previews = append(tunings.Previews, builder.String())
+	}
+
+	functional := SettingsOptions{
+		Name: "Functional Settings",
+		Description: "Settings that affect the pitch detection algorithm. Mess around with these to get the optimal tuning for your setup!",
+		Options: make([]Option, 0),
+		Previews: make([]string, 0),
+		Selected: 0,
+		Apply: func(val int, s SettingsSelections) SettingsSelections {
+
+		}
 	}
 
 	return []SettingsOptions{ascii_art, borders, themes, tunings}
