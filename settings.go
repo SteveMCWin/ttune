@@ -9,9 +9,10 @@ import (
 	"strings"
 	"ttune/tuning"
 
+	"embed"
+
 	"charm.land/bubbles/v2/textinput"
 	"charm.land/lipgloss/v2"
-	"embed"
 )
 
 //go:embed config
