@@ -49,8 +49,8 @@ type Model struct {
 	AsciiArt       string
 	SelectedTuning tuning.Tuning
 
-	VisualOptions     []SettingsOptions
-	FunctionalOptions []SettingsOptions // TODO
+	VisualOptions     []Setting
+	FunctionalOptions []Setting // TODO
 	SettingsData      SettingsData
 	UserSettingsData  SettingsData
 	SettingsSelected  SettingsSelections
@@ -65,11 +65,12 @@ type Model struct {
 }
 
 func NewModel() Model {
+	settingsData := LoadSettingsData()
 	m := Model{
 		BlockLength:      BL,
 		CurrentState:     Initializing,
-		SettingsSelected: LoadSettingsSelections("selections.json"),
-		SettingsData:     LoadSettingsData(), // a bit messy but I had to compromise because of bad design initially (and because of windows)
+		SettingsData:     settingsData,
+		SettingsSelected: LoadSettingsSelections("selections.json", settingsData),
 		HelpItems:        InitHelpItems(),
 	}
 
@@ -78,20 +79,16 @@ func NewModel() Model {
 	m.ApplySettings()
 
 	// Force the tui to render the selected preview on startup
-	m.SelectedOptionValue = m.VisualOptions[0].Selected % len(m.VisualOptions[0].Options)
+	m.SelectedOptionValue = m.VisualOptions[0].SelectedIdx()
 
 	return m
 }
 
 func (m *Model) ApplySettings() {
-	ascii_selected := m.SettingsSelected.AsciiArt % len(m.VisualOptions[0].Options)
-	m.AsciiArt = m.SettingsData.AsciiArt[ascii_selected].FileContents
-
-	SetBorderStyle(m.SettingsData.BorderStyles[m.SettingsSelected.BorderStyle])
-
-	m.SelectedTuning = m.SettingsData.Tunings[m.SettingsSelected.Tuning]
-
-	m.Theme = m.SettingsData.ColorThemes[m.SettingsSelected.ColorTheme]
+	m.AsciiArt = m.SettingsData.AsciiArt[m.VisualOptions[0].SelectedIdx()].FileContents
+	SetBorderStyle(m.SettingsData.BorderStyles[m.VisualOptions[1].SelectedIdx()])
+	m.SelectedTuning = m.SettingsData.Tunings[m.VisualOptions[2].SelectedIdx()]
+	m.Theme = m.SettingsData.ColorThemes[m.VisualOptions[3].SelectedIdx()]
 	m.Theme.SetToCurrent()
 
 	// Store settings to json file
@@ -118,7 +115,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmds = append(cmds, CalculateNote())
 		}
 	case ReRenderMsg:
-		m.VisualOptions = DefineVisualSettingsOptions(m.SettingsData, m.SettingsSelected)
 		m.ApplySettings()
 		return m, nil
 
@@ -152,7 +148,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case Settings:
 				if !m.SelectingValues {
 					m.SelectedOption = min(m.SelectedOption+1, len(m.VisualOptions)-1)
-					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].Selected
+					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].SelectedIdx()
 				} else {
 					m.SelectedOptionValue = min(
 						m.SelectedOptionValue+1,
@@ -168,7 +164,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case Settings:
 				if !m.SelectingValues {
 					m.SelectedOption = max(m.SelectedOption-1, 0)
-					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].Selected
+					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].SelectedIdx()
 				} else {
 					m.SelectedOptionValue = max(m.SelectedOptionValue-1, 0)
 				}
@@ -183,10 +179,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "enter", "space":
 			if m.CurrentState == Settings && m.SelectingValues {
+				option_selected := m.VisualOptions[m.SelectedOption].Options[m.SelectedOptionValue]
 				m.SettingsSelected = m.VisualOptions[m.SelectedOption].Apply(
-					m.SelectedOptionValue,
+					option_selected,
 					m.SettingsSelected,
 				)
+				m.VisualOptions[m.SelectedOption].Selected = option_selected
 
 				cmds = append(cmds, ReRender)
 			}

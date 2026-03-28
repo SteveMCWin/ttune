@@ -1,6 +1,6 @@
 {
-    "ascii_art_filename": 3,
-    "selected_tuning": 0,
-    "border_style": 3,
-    "selected_theme": 0
+  "ascii_art_filename": "electric_utf8",
+  "selected_tuning": "Standard",
+  "border_style": "Double",
+  "selected_theme": "Nord"
 }
