@@ -192,11 +192,12 @@ func createSettingsContents(m Model) string {
 	start_idx := (m.SelectedOptionValue / num_of_options_displayable) * num_of_options_displayable
 	end_idx := min(start_idx+num_of_options_displayable, len(m.VisualOptions[m.SelectedOption].Options))
 
+	selected_idx := m.VisualOptions[m.SelectedOption].SelectedIdx()
 	for i := start_idx; i < end_idx; i++ {
 		option_name := m.VisualOptions[m.SelectedOption].Options[i]
 
 		prefix := "[ ] "
-		if m.VisualOptions[m.SelectedOption].Selected == i {
+		if selected_idx == i {
 			prefix = "[o] "
 		}
 		line := prefix + option_name

@@ -24,35 +24,45 @@ type SettingsData struct {
 	AsciiArt     []AsciiArt      // NOTE: not loaded from json but by looking at the art dir
 }
 
-type SettingsOptions struct {
-	Name        string
-	Description string
-	Options     []string
-	Previews    []string
-	Selected    int
-	Apply       func(val int, current SettingsSelections) SettingsSelections
+type Setting struct {
+	Name           string
+	Description    string
+	Options        []string
+	Previews       []string
+	Selected       string
+	Apply          func(selection string, current SettingsSelections) SettingsSelections
+	GetIdxFromName func(selection string) int
+}
+
+func (s Setting) SelectedIdx() int {
+	return s.GetIdxFromName(s.Selected)
 }
 
 type SettingsSelections struct {
-	AsciiArt    int `json:"ascii_art_filename"`
-	Tuning      int `json:"selected_tuning"`
-	BorderStyle int `json:"border_style"`
-	ColorTheme  int `json:"selected_theme"`
+	AsciiArt    string `json:"ascii_art_filename"`
+	Tuning      string `json:"selected_tuning"`
+	BorderStyle string `json:"border_style"`
+	ColorTheme  string `json:"selected_theme"`
 }
 
-func DefineVisualSettingsOptions(
-	data SettingsData,
-	currentSettings SettingsSelections,
-) []SettingsOptions {
-	ascii_art := SettingsOptions{
+func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSelections) []Setting {
+	ascii_art := Setting{
 		Name:        "Ascii Art",
 		Description: "The character art displayed on the left side of the terminal when tuning is in progress. Purely for aesthetical purposes, but I spent a lot of time drawing it :^)",
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.AsciiArt,
-		Apply: func(val int, s SettingsSelections) SettingsSelections {
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
 			s.AsciiArt = val
 			return s
+		},
+		GetIdxFromName: func(selection string) int {
+			for i, v := range data.AsciiArt {
+				if v.FileName == selection {
+					return i
+				}
+			}
+			return 0
 		},
 	}
 
@@ -65,15 +75,24 @@ func DefineVisualSettingsOptions(
 		)
 	}
 
-	borders := SettingsOptions{
+	borders := Setting{
 		Name:        "Border Style",
 		Description: "The appearance of displayed borders. The double border is my favourite, that's why it's the default one hihi.",
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.BorderStyle,
-		Apply: func(val int, s SettingsSelections) SettingsSelections {
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
 			s.BorderStyle = val
 			return s
+		},
+		GetIdxFromName: func(selection string) int {
+			for i, v := range data.BorderStyles {
+				if v == selection {
+					return i
+				}
+			}
+
+			return 0
 		},
 	}
 
@@ -86,15 +105,24 @@ func DefineVisualSettingsOptions(
 		)
 	}
 
-	themes := SettingsOptions{
+	themes := Setting{
 		Name:        "Color Theme",
 		Description: "Colors used for displaying the user interface. Comprised of 3 colors each. Affects only the foreground elements.",
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.ColorTheme,
-		Apply: func(val int, s SettingsSelections) SettingsSelections {
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
 			s.ColorTheme = val
 			return s
+		},
+		GetIdxFromName: func(selection string) int {
+			for i, v := range data.ColorThemes {
+				if v.Name == selection {
+					return i
+				}
+			}
+
+			return 0
 		},
 	}
 
@@ -112,15 +140,24 @@ func DefineVisualSettingsOptions(
 		themes.Previews = append(themes.Previews, preview)
 	}
 
-	tunings := SettingsOptions{
+	tunings := Setting{
 		Name:        "Displayed Tuning",
 		Description: "A tuning that will be displayed along the ascii art. Mostly there for aesthetical reasons but also quite handy if you don't have them memorized exactly.",
 		Options:     make([]string, 0),
 		Previews:    make([]string, 0),
 		Selected:    currentSettings.Tuning,
-		Apply: func(val int, s SettingsSelections) SettingsSelections {
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
 			s.Tuning = val
 			return s
+		},
+		GetIdxFromName: func(selection string) int {
+			for i, v := range data.Tunings {
+				if v.Name == selection {
+					return i
+				}
+			}
+
+			return 0
 		},
 	}
 
@@ -135,7 +172,7 @@ func DefineVisualSettingsOptions(
 		tunings.Previews = append(tunings.Previews, builder.String())
 	}
 
-	return []SettingsOptions{ascii_art, borders, themes, tunings}
+	return []Setting{ascii_art, borders, themes, tunings}
 }
 
 func LoadOrWriteConfigFile(config_file_name string) ([]byte, error) {
@@ -179,7 +216,7 @@ func LoadOrWriteConfigFile(config_file_name string) ([]byte, error) {
 func LoadSettingsData() SettingsData {
 	var res SettingsData
 
-	// Load user settings
+	// Load users options
 	user_options_filename := "custom_options.json"
 	data, err := LoadOrWriteConfigFile(user_options_filename)
 	if err != nil {
@@ -264,20 +301,42 @@ func LoadAsciiArt() []AsciiArt {
 	return ascii_art
 }
 
-func LoadSettingsSelections(config_file_name string) SettingsSelections {
-
-	data, err := LoadOrWriteConfigFile(config_file_name)
+func LoadSettingsSelections(config_file_name string, data SettingsData) SettingsSelections {
+	raw, err := LoadOrWriteConfigFile(config_file_name)
 	if err != nil {
 		return SettingsSelections{}
 	}
 
 	var settings SettingsSelections
-	err = json.Unmarshal(data, &settings)
-	if err != nil {
-		log.Println("Error parsing json data")
-		panic(err)
+	if err := json.Unmarshal(raw, &settings); err == nil {
+		return settings
 	}
 
+	// Attempt to migrate from legacy format where selections were stored as indices
+	var legacy struct {
+		AsciiArt    int `json:"ascii_art_filename"`
+		Tuning      int `json:"selected_tuning"`
+		BorderStyle int `json:"border_style"`
+		ColorTheme  int `json:"selected_theme"`
+	}
+	if err := json.Unmarshal(raw, &legacy); err != nil {
+		log.Println("Error parsing settings json, resetting to defaults")
+		return SettingsSelections{}
+	}
+	log.Println("Migrating settings from legacy index format to string format")
+	if legacy.AsciiArt < len(data.AsciiArt) {
+		settings.AsciiArt = data.AsciiArt[legacy.AsciiArt].FileName
+	}
+	if legacy.Tuning < len(data.Tunings) {
+		settings.Tuning = data.Tunings[legacy.Tuning].Name
+	}
+	if legacy.BorderStyle < len(data.BorderStyles) {
+		settings.BorderStyle = data.BorderStyles[legacy.BorderStyle]
+	}
+	if legacy.ColorTheme < len(data.ColorThemes) {
+		settings.ColorTheme = data.ColorThemes[legacy.ColorTheme].Name
+	}
+	StoreSettings(settings, config_file_name)
 	return settings
 }
 
