@@ -6,7 +6,7 @@ import (
 	"ttune/tuning"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/lipgloss/v2"
+	"charm.land/lipgloss/v2"
 )
 
 const TITLE_HEIGHT = 3
@@ -200,7 +200,7 @@ func createSettingsContents(m Model) string {
 		if selected_idx == i {
 			prefix = "[o] "
 		}
-		line := prefix + option_name
+		line := prefix + option_name.Render()
 
 		// Is the user currently hovering over this setting?
 		if m.SelectedOptionValue == i && m.SelectingValues {
