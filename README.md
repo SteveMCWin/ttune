@@ -4,6 +4,7 @@
 
 tTune is a stylized, extendable, keyboard oriented guitar tuning app right in your terminal!
 
+> **Note:** tTune is still actively developed. Future releases may be incompatible with previous ones due to my lack of foresight. If you cannot run the program after updating, please back up your configuration, delete your ~/.config/ttune directory and try running tTune again.
 ---
 
 ## Showcase
