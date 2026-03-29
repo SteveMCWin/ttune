@@ -9,24 +9,22 @@ import (
 	"github.com/gordonklaus/portaudio"
 )
 
-const BL = 4096 * 2       // NOTE: should be loaded through settings
-const SAMPLE_RATE = 44100 // NOTE: should be loaded through settings
+var BL = 4096 * 2       // NOTE: should be loaded through settings
+var SAMPLE_RATE = 44100 // NOTE: should be loaded through settings
 
-const MIN_FREQUENCY = 70
-const MAX_FREQUENCY = 1500
+var MIN_FREQUENCY = 70
+var MAX_FREQUENCY = 1500
 
-const MIN_AMPLITUDE_THRESHOLD = 0.01
-const YIN_THRESHOLD = 0.10 // Lower = stricter detection, reduces harmonic errors
+var MIN_AMPLITUDE_THRESHOLD = 0.01
+var YIN_CANDIDATE_THRESHOLD = 0.10 // Lower = stricter detection, reduces harmonic errors
+var YIN_VALIDITY_CEILING = 0.85 // YIN power threshold - helps filter weak detections
 
-// YIN power threshold - helps filter weak detections
-const YIN_POWER_THRESHOLD = 0.85
-
-const MIN_BIN = MIN_FREQUENCY * BL / SAMPLE_RATE
-const MAX_BIN = MAX_FREQUENCY * BL / SAMPLE_RATE
+var MIN_BIN = MIN_FREQUENCY * BL / SAMPLE_RATE
+var MAX_BIN = MAX_FREQUENCY * BL / SAMPLE_RATE
 
 var frequencyHistory []float64
 
-const HISTORY_SIZE = 5 // Increased for better smoothing
+var HISTORY_SIZE = 5 // Increased for better smoothing
 
 var AudioStream *portaudio.Stream
 var Buffer []float32
@@ -53,7 +51,7 @@ func initAutioStream() tea.Cmd {
 		Buffer64 = make([]float64, BL)
 
 		var err error
-		AudioStream, err = portaudio.OpenDefaultStream(1, 0, SAMPLE_RATE, BL, Buffer)
+		AudioStream, err = portaudio.OpenDefaultStream(1, 0, float64(SAMPLE_RATE), BL, Buffer)
 		if err != nil {
 			log.Println("ERROR opening audio stream")
 		}
@@ -146,7 +144,7 @@ func yinAbsoluteThreshold(cmndf []float64, threshold float64, tauMin int) int {
 
 			// Additional check: verify this is a strong period
 			// by checking the power at this tau
-			if cmndf[tau] < YIN_POWER_THRESHOLD {
+			if cmndf[tau] < YIN_VALIDITY_CEILING {
 				return tau
 			}
 		}
@@ -183,8 +181,8 @@ func yinParabolicInterpolation(cmndf []float64, tau int) float64 {
 
 func calculateFrequencyYIN() (float64, bool) {
 	// Calculate tau range based on frequency range
-	tauMin := int(math.Round(float64(SAMPLE_RATE) / MAX_FREQUENCY))
-	tauMax := int(math.Round(float64(SAMPLE_RATE) / MIN_FREQUENCY))
+	tauMin := int(math.Round(float64(SAMPLE_RATE) / float64(MAX_FREQUENCY)))
+	tauMax := int(math.Round(float64(SAMPLE_RATE) / float64(MIN_FREQUENCY)))
 
 	tauMax = min(tauMax, len(Buffer64))
 
@@ -195,7 +193,7 @@ func calculateFrequencyYIN() (float64, bool) {
 	cmndf := yinCumulativeMeanNormalizedDifference(diff)
 
 	// Step 3: Absolute threshold
-	tau := yinAbsoluteThreshold(cmndf, YIN_THRESHOLD, tauMin)
+	tau := yinAbsoluteThreshold(cmndf, YIN_CANDIDATE_THRESHOLD, tauMin)
 
 	// Check if we found a valid period
 	if tau == 0 || cmndf[tau] >= 1.0 {
@@ -269,7 +267,7 @@ func smoothFrequency(freq float64) float64 {
 
 func FrequencyToNote(freq float64) Note {
 	res := Note{}
-	if freq < MIN_FREQUENCY {
+	if freq < float64(MIN_FREQUENCY) {
 		return res
 	}
 
@@ -288,6 +286,9 @@ func FrequencyToNote(freq float64) Note {
 	res.Octave = octave
 
 	return res
+}
+
+func SetPitchDetectionParameters()  {
 }
 
 func CalculateNote() tea.Cmd {

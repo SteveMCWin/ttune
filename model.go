@@ -181,10 +181,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.CurrentState == Settings && m.SelectingValues {
 				option_selected := m.VisualOptions[m.SelectedOption].Options[m.SelectedOptionValue]
 				m.SettingsSelected = m.VisualOptions[m.SelectedOption].Apply(
-					option_selected,
+					option_selected.GetValue(),
 					m.SettingsSelected,
 				)
-				m.VisualOptions[m.SelectedOption].Selected = option_selected
+				m.VisualOptions[m.SelectedOption].Selected = option_selected.GetValue()
 
 				cmds = append(cmds, ReRender)
 			}

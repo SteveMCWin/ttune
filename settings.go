@@ -9,14 +9,31 @@ import (
 	"strings"
 	"ttune/tuning"
 
-	"embed"
-	"charm.land/lipgloss/v2"
 	"charm.land/bubbles/v2/textinput"
+	"charm.land/lipgloss/v2"
+	"embed"
 )
 
 //go:embed config
 var configFS embed.FS
 
+type SettingsSelections struct {
+	AsciiArt    string `json:"ascii_art_filename"`
+	Tuning      string `json:"selected_tuning"`
+	BorderStyle string `json:"border_style"`
+	ColorTheme  string `json:"selected_theme"`
+
+	BufferLength   int     `json:"buffer_length"`
+	SampleRate     int     `json:"sample_rate"`
+	MinFrequency   int     `json:"min_frequency"`
+	MaxFrequency   int     `json:"max_frequency"`
+	AmplTreshold   float32 `json:"amplitude_treshold"`
+	YinMinTreshold float32 `json:"yin_min_treshold"`
+	YinMaxTreshold float32 `json:"yin_max_treshold"`
+	HistorySize    int     `json:"history_size"`
+}
+
+// Data that is meant to be configured in json files
 type SettingsData struct {
 	Tunings      []tuning.Tuning `json:"tunings"`
 	ColorThemes  []ColorTheme    `json:"color_themes"`
@@ -27,7 +44,7 @@ type SettingsData struct {
 type Setting struct {
 	Name           string
 	Description    string
-	Options     []Option
+	Options        []Option
 	Previews       []string
 	Selected       string
 	Apply          func(selection string, current SettingsSelections) SettingsSelections
@@ -38,6 +55,7 @@ func (s Setting) SelectedIdx() int {
 	return s.GetIdxFromName(s.Selected)
 }
 
+// Since an option can be an input field and a multi-choice selection, I made it an interface you interract through these functions
 type Option interface {
 	GetValue() string
 	HanldeSelect() string
@@ -78,13 +96,6 @@ func (o InputFieldOption) HanldeSelect() string {
 
 func (o InputFieldOption) Render() string {
 	return o.Input.View()
-}
-
-type SettingsSelections struct {
-	AsciiArt    string `json:"ascii_art_filename"`
-	Tuning      string `json:"selected_tuning"`
-	BorderStyle string `json:"border_style"`
-	ColorTheme  string `json:"selected_theme"`
 }
 
 func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSelections) []Setting {
@@ -214,6 +225,16 @@ func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSele
 		tunings.Previews = append(tunings.Previews, builder.String())
 	}
 
+	// functional := SettingsOptions{
+	// 	Name: "Functional Settings",
+	// 	Description: "Settings that affect the pitch detection algorithm. Mess around with these to get the optimal tuning for your setup!",
+	// 	Options: make([]Option, 0),
+	// 	Previews: make([]string, 0),
+	// 	Selected: 0,
+	// 	Apply: func(val int, s SettingsSelections) SettingsSelections {
+	//
+	// 	}
+	// }
 	return []Setting{ascii_art, borders, themes, tunings}
 }
 
