@@ -49,8 +49,8 @@ type Model struct {
 	AsciiArt       string
 	SelectedTuning tuning.Tuning
 
-	VisualOptions     []Setting
-	FunctionalOptions []Setting // TODO
+	Settings     []Setting
+	// FunctionalOptions []Setting // TODO
 	SettingsData      SettingsData
 	UserSettingsData  SettingsData
 	SettingsSelected  SettingsSelections
@@ -74,21 +74,20 @@ func NewModel() Model {
 		HelpItems:        InitHelpItems(),
 	}
 
-	m.VisualOptions = DefineVisualSettingsOptions(m.SettingsData, m.SettingsSelected)
-	// m.FunctionalOptions = DefineFunctionalSettingsOptions(m.SettingsData, m.SettingsSelected) // TODO
+	m.Settings = DefineAllSettingsOptions(m.SettingsData, m.SettingsSelected)
 	m.ApplySettings()
 
 	// Force the tui to render the selected preview on startup
-	m.SelectedOptionValue = m.VisualOptions[0].SelectedIdx()
+	m.SelectedOptionValue = m.Settings[0].SelectedIdx()
 
 	return m
 }
 
 func (m *Model) ApplySettings() {
-	m.AsciiArt = m.SettingsData.AsciiArt[m.VisualOptions[0].SelectedIdx()].FileContents
-	SetBorderStyle(m.SettingsData.BorderStyles[m.VisualOptions[1].SelectedIdx()])
-	m.SelectedTuning = m.SettingsData.Tunings[m.VisualOptions[2].SelectedIdx()]
-	m.Theme = m.SettingsData.ColorThemes[m.VisualOptions[3].SelectedIdx()]
+	m.AsciiArt = m.SettingsData.AsciiArt[m.Settings[0].SelectedIdx()].FileContents
+	SetBorderStyle(m.SettingsData.BorderStyles[m.Settings[1].SelectedIdx()])
+	m.Theme = m.SettingsData.ColorThemes[m.Settings[2].SelectedIdx()]
+	m.SelectedTuning = m.SettingsData.Tunings[m.Settings[3].SelectedIdx()]
 	m.Theme.SetToCurrent()
 
 	// Store settings to json file
@@ -119,6 +118,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case tea.KeyMsg:
+		// When a text input is focused, route all keys to it instead of normal navigation
+		if m.CurrentState == Settings && m.SelectingValues {
+			opt := m.Settings[m.SelectedOption].Options[m.SelectedOptionValue]
+			if opt.IsFocused() {
+				switch message.String() {
+				case "esc":
+					opt.HanldeSelect()
+				case "enter":
+					m.SettingsSelected = m.Settings[m.SelectedOption].Apply(opt.GetValue(), m.SettingsSelected)
+					m.Settings[m.SelectedOption].Selected = opt.GetValue()
+					opt.HanldeSelect()
+					cmds = append(cmds, ReRender)
+				default:
+					if cmd := opt.Update(message); cmd != nil {
+						cmds = append(cmds, cmd)
+					}
+				}
+				return m, tea.Batch(cmds...)
+			}
+		}
+
 		switch message.String() {
 		case "ctrl+c", "q":
 			seq := tea.Sequence(closeAudioStream(), tea.Quit)
@@ -147,12 +167,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			switch m.CurrentState {
 			case Settings:
 				if !m.SelectingValues {
-					m.SelectedOption = min(m.SelectedOption+1, len(m.VisualOptions)-1)
-					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].SelectedIdx()
+					m.SelectedOption = min(m.SelectedOption+1, len(m.Settings)-1)
+					m.SelectedOptionValue = m.Settings[m.SelectedOption].SelectedIdx()
 				} else {
 					m.SelectedOptionValue = min(
 						m.SelectedOptionValue+1,
-						len(m.VisualOptions[m.SelectedOption].Options)-1,
+						len(m.Settings[m.SelectedOption].Options)-1,
 					)
 				}
 			case Help:
@@ -164,7 +184,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case Settings:
 				if !m.SelectingValues {
 					m.SelectedOption = max(m.SelectedOption-1, 0)
-					m.SelectedOptionValue = m.VisualOptions[m.SelectedOption].SelectedIdx()
+					m.SelectedOptionValue = m.Settings[m.SelectedOption].SelectedIdx()
 				} else {
 					m.SelectedOptionValue = max(m.SelectedOptionValue-1, 0)
 				}
@@ -179,14 +199,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "enter", "space":
 			if m.CurrentState == Settings && m.SelectingValues {
-				option_selected := m.VisualOptions[m.SelectedOption].Options[m.SelectedOptionValue]
-				m.SettingsSelected = m.VisualOptions[m.SelectedOption].Apply(
-					option_selected.GetValue(),
-					m.SettingsSelected,
-				)
-				m.VisualOptions[m.SelectedOption].Selected = option_selected.GetValue()
-
-				cmds = append(cmds, ReRender)
+				option_selected := m.Settings[m.SelectedOption].Options[m.SelectedOptionValue]
+				option_selected.HanldeSelect()
+				if !option_selected.IsFocused() {
+					// MultiChoiceOption: not focusable, apply the selection immediately
+					m.SettingsSelected = m.Settings[m.SelectedOption].Apply(
+						option_selected.GetValue(),
+						m.SettingsSelected,
+					)
+					m.Settings[m.SelectedOption].Selected = option_selected.GetValue()
+					cmds = append(cmds, ReRender)
+				}
+				// InputFieldOption: HanldeSelect just focused it — wait for next Enter to apply
 			}
 		}
 

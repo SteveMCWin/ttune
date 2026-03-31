@@ -6,14 +6,19 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"ttune/tuning"
 
 	"embed"
 
+	tea "charm.land/bubbletea/v2"
 	"charm.land/bubbles/v2/textinput"
 	"charm.land/lipgloss/v2"
 )
+
+const MIN_BUFFER_LEN = 4096
+const MAX_BUFFER_LEN = 4096 * 8
 
 //go:embed config
 var configFS embed.FS
@@ -61,6 +66,8 @@ type Option interface {
 	GetValue() string
 	HanldeSelect() string
 	Render() string
+	Update(tea.Msg) tea.Cmd
+	IsFocused() bool
 }
 
 type MultiChoiceOption string
@@ -77,29 +84,190 @@ func (o MultiChoiceOption) Render() string {
 	return o.GetValue()
 }
 
+func (o MultiChoiceOption) Update(_ tea.Msg) tea.Cmd { return nil }
+func (o MultiChoiceOption) IsFocused() bool          { return false }
+
 type InputFieldOption struct {
 	Input textinput.Model
 }
 
-func (o InputFieldOption) GetValue() string {
+func (o *InputFieldOption) GetValue() string {
 	return o.Input.Value()
 }
 
-func (o InputFieldOption) HanldeSelect() string {
+func (o *InputFieldOption) HanldeSelect() string {
 	if o.Input.Focused() {
 		o.Input.Blur()
 	} else {
 		o.Input.Focus()
 	}
-
 	return o.GetValue()
 }
 
-func (o InputFieldOption) Render() string {
+func (o *InputFieldOption) Render() string {
 	return o.Input.View()
 }
 
-func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSelections) []Setting {
+func (o *InputFieldOption) Update(msg tea.Msg) tea.Cmd {
+	var cmd tea.Cmd
+	o.Input, cmd = o.Input.Update(msg)
+	return cmd
+}
+
+func (o *InputFieldOption) IsFocused() bool {
+	return o.Input.Focused()
+}
+
+func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelections) []Setting {
+
+	makeIntInput := func(current int) textinput.Model {
+		input := textinput.New()
+		input.SetValue(strconv.Itoa(current))
+		return input
+	}
+
+	makeFloatInput := func(current float32) textinput.Model {
+		input := textinput.New()
+		input.SetValue(strconv.FormatFloat(float64(current), 'f', -1, 32))
+		return input
+	}
+
+	buffer_len := Setting{
+		Name:        "Buffer Length",
+		Description: "Number of audio samples processed per block. Larger values improve low-frequency detection accuracy but increase latency. Must be between 4096 and 32768.",
+		Options:     []Option{&InputFieldOption{Input: makeIntInput(currentSettings.BufferLength)}},
+		Previews:    []string{""},
+		Selected:    strconv.Itoa(currentSettings.BufferLength),
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
+			buff_len, err := strconv.Atoi(val)
+			if err != nil {
+				panic(err)
+			}
+			s.BufferLength = min(MAX_BUFFER_LEN, max(MIN_BUFFER_LEN, buff_len))
+			return s
+		},
+		GetIdxFromName: func(selection string) int { return 0 },
+	}
+
+	sample_rate := Setting{
+		Name:        "Sample Rate",
+		Description: "Audio sample rate in Hz. Higher values capture more detail but require more processing power. 44100 Hz is the standard CD-quality rate.",
+		Options:     []Option{&InputFieldOption{Input: makeIntInput(currentSettings.SampleRate)}},
+		Previews:    []string{""},
+		Selected:    strconv.Itoa(currentSettings.SampleRate),
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
+			rate, err := strconv.Atoi(val)
+			if err != nil {
+				panic(err)
+			}
+			s.SampleRate = rate
+			return s
+		},
+		GetIdxFromName: func(selection string) int { return 0 },
+	}
+
+	min_frequency := Setting{
+		Name:        "Min Frequency",
+		Description: "Lowest frequency in Hz the tuner will attempt to detect. Lower values let you tune bass instruments but may introduce false readings. Default is 70 Hz.",
+		Options:     []Option{&InputFieldOption{Input: makeIntInput(currentSettings.MinFrequency)}},
+		Previews:    []string{""},
+		Selected:    strconv.Itoa(currentSettings.MinFrequency),
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
+			freq, err := strconv.Atoi(val)
+			if err != nil {
+				panic(err)
+			}
+			s.MinFrequency = freq
+			return s
+		},
+		GetIdxFromName: func(selection string) int { return 0 },
+	}
+
+	max_frequency := Setting{
+		Name:        "Max Frequency",
+		Description: "Highest frequency in Hz the tuner will attempt to detect. Higher values cover more of the upper register. Default is 1500 Hz.",
+		Options:     []Option{&InputFieldOption{Input: makeIntInput(currentSettings.MaxFrequency)}},
+		Previews:    []string{""},
+		Selected:    strconv.Itoa(currentSettings.MaxFrequency),
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
+			freq, err := strconv.Atoi(val)
+			if err != nil {
+				panic(err)
+			}
+			s.MaxFrequency = freq
+			return s
+		},
+		GetIdxFromName: func(selection string) int { return 0 },
+	}
+
+	ampl_threshold := Setting{
+		Name:        "Amplitude Threshold",
+		Description: "Minimum RMS signal level required before pitch detection runs. Raise this if background noise is triggering false readings. Default is 0.01.",
+		Options:     []Option{&InputFieldOption{Input: makeFloatInput(currentSettings.AmplTreshold)}},
+		Previews:    []string{""},
+		Selected:    strconv.FormatFloat(float64(currentSettings.AmplTreshold), 'f', -1, 32),
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
+			threshold, err := strconv.ParseFloat(val, 32)
+			if err != nil {
+				panic(err)
+			}
+			s.AmplTreshold = float32(threshold)
+			return s
+		},
+		GetIdxFromName: func(selection string) int { return 0 },
+	}
+
+	yin_min_threshold := Setting{
+		Name:        "YIN Min Threshold",
+		Description: "YIN candidate threshold for pitch detection. Lower values are stricter and reduce harmonic errors but may miss weak signals. Default is 0.10.",
+		Options:     []Option{&InputFieldOption{Input: makeFloatInput(currentSettings.YinMinTreshold)}},
+		Previews:    []string{""},
+		Selected:    strconv.FormatFloat(float64(currentSettings.YinMinTreshold), 'f', -1, 32),
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
+			threshold, err := strconv.ParseFloat(val, 32)
+			if err != nil {
+				panic(err)
+			}
+			s.YinMinTreshold = float32(threshold)
+			return s
+		},
+		GetIdxFromName: func(selection string) int { return 0 },
+	}
+
+	yin_max_threshold := Setting{
+		Name:        "YIN Max Threshold",
+		Description: "YIN validity ceiling — readings above this power threshold are discarded as weak detections. Raise to accept more readings, lower to filter noise. Default is 0.85.",
+		Options:     []Option{&InputFieldOption{Input: makeFloatInput(currentSettings.YinMaxTreshold)}},
+		Previews:    []string{""},
+		Selected:    strconv.FormatFloat(float64(currentSettings.YinMaxTreshold), 'f', -1, 32),
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
+			threshold, err := strconv.ParseFloat(val, 32)
+			if err != nil {
+				panic(err)
+			}
+			s.YinMaxTreshold = float32(threshold)
+			return s
+		},
+		GetIdxFromName: func(selection string) int { return 0 },
+	}
+
+	history_size := Setting{
+		Name:        "History Size",
+		Description: "Number of recent frequency readings used by the median filter for smoothing. Larger values stabilise the display but slow response to pitch changes. Default is 5.",
+		Options:     []Option{&InputFieldOption{Input: makeIntInput(currentSettings.HistorySize)}},
+		Previews:    []string{""},
+		Selected:    strconv.Itoa(currentSettings.HistorySize),
+		Apply: func(val string, s SettingsSelections) SettingsSelections {
+			size, err := strconv.Atoi(val)
+			if err != nil {
+				panic(err)
+			}
+			s.HistorySize = size
+			return s
+		},
+		GetIdxFromName: func(selection string) int { return 0 },
+	}
+
 	ascii_art := Setting{
 		Name:        "Ascii Art",
 		Description: "The character art displayed on the left side of the terminal when tuning is in progress. Purely for aesthetical purposes, but I spent a lot of time drawing it :^)",
@@ -226,17 +394,7 @@ func DefineVisualSettingsOptions(data SettingsData, currentSettings SettingsSele
 		tunings.Previews = append(tunings.Previews, builder.String())
 	}
 
-	// functional := SettingsOptions{
-	// 	Name: "Functional Settings",
-	// 	Description: "Settings that affect the pitch detection algorithm. Mess around with these to get the optimal tuning for your setup!",
-	// 	Options: make([]Option, 0),
-	// 	Previews: make([]string, 0),
-	// 	Selected: 0,
-	// 	Apply: func(val int, s SettingsSelections) SettingsSelections {
-	//
-	// 	}
-	// }
-	return []Setting{ascii_art, borders, themes, tunings}
+	return []Setting{ascii_art, borders, themes, tunings, buffer_len, sample_rate, min_frequency, max_frequency, ampl_threshold, yin_min_threshold, yin_max_threshold, history_size}
 }
 
 func LoadOrWriteConfigFile(config_file_name string) ([]byte, error) {

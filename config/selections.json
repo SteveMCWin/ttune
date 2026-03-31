@@ -2,5 +2,13 @@
   "ascii_art_filename": "electric_utf8",
   "selected_tuning": "Standard",
   "border_style": "Double",
-  "selected_theme": "Nord"
+  "selected_theme": "Nord",
+  "buffer_length": 8192,
+  "sample_rate": 44100,
+  "min_frequency": 70,
+  "max_frequency": 1500,
+  "amplitude_treshold": 0.01,
+  "yin_min_treshold": 0.10,
+  "yin_max_treshold": 0.85,
+  "history_size": 5
 }
