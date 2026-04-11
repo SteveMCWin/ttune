@@ -8,12 +8,13 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 	"ttune/tuning"
 
 	"embed"
 
-	tea "charm.land/bubbletea/v2"
 	"charm.land/bubbles/v2/textinput"
+	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 )
 
@@ -55,6 +56,31 @@ type Setting struct {
 	Selected       string
 	Apply          func(selection string, current SettingsSelections) SettingsSelections
 	GetIdxFromName func(selection string) int
+	Clamp          func(string) string
+}
+
+func validateInt(s string) error {
+	for _, r := range s {
+		if r < '0' || r > '9' {
+			return errors.New("only digits allowed")
+		}
+	}
+	return nil
+}
+
+func validateFloat(s string) error {
+	dots := 0
+	for _, r := range s {
+		if r == '.' {
+			dots++
+			if dots > 1 {
+				return errors.New("only one decimal point allowed")
+			}
+		} else if r < '0' || r > '9' {
+			return errors.New("only digits and one decimal point allowed")
+		}
+	}
+	return nil
 }
 
 func (s Setting) SelectedIdx() int {
@@ -64,53 +90,130 @@ func (s Setting) SelectedIdx() int {
 // Since an option can be an input field and a multi-choice selection, I made it an interface you interract through these functions
 type Option interface {
 	GetValue() string
-	HanldeSelect() string
-	Render() string
+	HanldeSelect() tea.Cmd
+	Render(selected bool) string
 	Update(tea.Msg) tea.Cmd
 	IsFocused() bool
+	SetTheme(t ColorTheme)
 }
 
-type MultiChoiceOption string
-
-func (o MultiChoiceOption) GetValue() string {
-	return string(o)
+type MultiChoiceOption struct {
+	value string
+	theme ColorTheme
 }
 
-func (o MultiChoiceOption) HanldeSelect() string {
-	return o.GetValue()
+func (o *MultiChoiceOption) GetValue() string {
+	return string(o.value)
 }
 
-func (o MultiChoiceOption) Render() string {
-	return o.GetValue()
+func (o *MultiChoiceOption) HanldeSelect() tea.Cmd {
+	return nil
 }
 
-func (o MultiChoiceOption) Update(_ tea.Msg) tea.Cmd { return nil }
-func (o MultiChoiceOption) IsFocused() bool          { return false }
+func (o *MultiChoiceOption) Render(selected bool) string {
+	if selected {
+		return lipgloss.NewStyle().Foreground(lipgloss.Color(o.theme.Tertiary)).Render(o.value)
+	}
+
+	return lipgloss.NewStyle().Foreground(lipgloss.Color(o.theme.Secondary)).Render(o.value)
+}
+
+func (o *MultiChoiceOption) SetTheme(t ColorTheme) {
+	o.theme = t
+}
+
+func (o *MultiChoiceOption) Update(_ tea.Msg) tea.Cmd { return nil }
+func (o *MultiChoiceOption) IsFocused() bool          { return false }
 
 type InputFieldOption struct {
-	Input textinput.Model
+	Input         textinput.Model
+	hoveredStyles textinput.Styles
 }
 
 func (o *InputFieldOption) GetValue() string {
 	return o.Input.Value()
 }
 
-func (o *InputFieldOption) HanldeSelect() string {
+func (o *InputFieldOption) HanldeSelect() tea.Cmd {
 	if o.Input.Focused() {
 		o.Input.Blur()
-	} else {
-		o.Input.Focus()
+		return nil
 	}
-	return o.GetValue()
+	return o.Input.Focus()
 }
 
-func (o *InputFieldOption) Render() string {
+func (o *InputFieldOption) Render(selected bool) string {
+	prompt := "- "
+	if o.IsFocused() {
+		prompt = "> "
+	}
+
+	o.Input.Prompt = prompt
+
+	if selected && !o.Input.Focused() {
+		tmp := o.Input
+		tmp.SetStyles(o.hoveredStyles)
+		return tmp.View()
+	}
 	return o.Input.View()
 }
 
+func (o *InputFieldOption) SetTheme(t ColorTheme) {
+	// pri_style := lipgloss.NewStyle().Foreground(lipgloss.Color(t.Primary))
+	sec_style := lipgloss.NewStyle().Foreground(lipgloss.Color(t.Secondary))
+	ter_style := lipgloss.NewStyle().Foreground(lipgloss.Color(t.Tertiary))
+
+	// primaryState := textinput.StyleState{
+	// 	Placeholder: pri_style,
+	// 	Suggestion:  pri_style,
+	// 	Prompt:      pri_style,
+	// 	Text:        pri_style,
+	// }
+
+	secondaryState := textinput.StyleState{
+		Placeholder: sec_style,
+		Suggestion:  sec_style,
+		Prompt:      sec_style,
+		Text:        sec_style,
+	}
+
+	tertiaryState := textinput.StyleState{
+		Placeholder: ter_style,
+		Suggestion:  ter_style,
+		Prompt:      ter_style,
+		Text:        ter_style,
+	}
+
+	cursor := textinput.CursorStyle{
+		Color: lipgloss.Color(t.Tertiary),
+		Shape: tea.CursorBlock,
+		Blink: true,
+		BlinkSpeed: time.Millisecond * 500,
+	}
+
+	textinput_style = textinput.Styles{
+		Blurred: secondaryState,
+		Focused: tertiaryState,
+		Cursor:  cursor,
+	}
+
+	o.hoveredStyles = textinput.Styles{
+		Blurred: tertiaryState,
+		Focused: tertiaryState,
+		Cursor:  cursor,
+	}
+
+	o.Input.SetStyles(textinput_style)
+}
+
 func (o *InputFieldOption) Update(msg tea.Msg) tea.Cmd {
+	prev := o.Input.Value()
 	var cmd tea.Cmd
 	o.Input, cmd = o.Input.Update(msg)
+	if o.Input.Err != nil {
+		o.Input.SetValue(prev)
+		o.Input.Err = nil
+	}
 	return cmd
 }
 
@@ -123,12 +226,14 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 	makeIntInput := func(current int) textinput.Model {
 		input := textinput.New()
 		input.SetValue(strconv.Itoa(current))
+		input.Validate = validateInt
 		return input
 	}
 
 	makeFloatInput := func(current float32) textinput.Model {
 		input := textinput.New()
 		input.SetValue(strconv.FormatFloat(float64(current), 'f', -1, 32))
+		input.Validate = validateFloat
 		return input
 	}
 
@@ -139,14 +244,25 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 		Previews:    []string{""},
 		Selected:    strconv.Itoa(currentSettings.BufferLength),
 		Apply: func(val string, s SettingsSelections) SettingsSelections {
-			buff_len, err := strconv.Atoi(val)
+			n, err := strconv.Atoi(val)
 			if err != nil {
-				panic(err)
+				log.Println("buffer_len: invalid value:", val)
+				return s
 			}
-			s.BufferLength = min(MAX_BUFFER_LEN, max(MIN_BUFFER_LEN, buff_len))
+			s.BufferLength = n
 			return s
 		},
 		GetIdxFromName: func(selection string) int { return 0 },
+		Clamp: func(val string) string {
+			if val == "" {
+				return strconv.Itoa(MIN_BUFFER_LEN)
+			}
+			n, err := strconv.Atoi(val)
+			if err != nil {
+				return strconv.Itoa(MIN_BUFFER_LEN)
+			}
+			return strconv.Itoa(min(MAX_BUFFER_LEN, max(MIN_BUFFER_LEN, n)))
+		},
 	}
 
 	sample_rate := Setting{
@@ -156,14 +272,25 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 		Previews:    []string{""},
 		Selected:    strconv.Itoa(currentSettings.SampleRate),
 		Apply: func(val string, s SettingsSelections) SettingsSelections {
-			rate, err := strconv.Atoi(val)
+			n, err := strconv.Atoi(val)
 			if err != nil {
-				panic(err)
+				log.Println("sample_rate: invalid value:", val)
+				return s
 			}
-			s.SampleRate = rate
+			s.SampleRate = n
 			return s
 		},
 		GetIdxFromName: func(selection string) int { return 0 },
+		Clamp: func(val string) string {
+			if val == "" {
+				return "44100"
+			}
+			n, err := strconv.Atoi(val)
+			if err != nil {
+				return "44100"
+			}
+			return strconv.Itoa(min(192000, max(8000, n)))
+		},
 	}
 
 	min_frequency := Setting{
@@ -173,14 +300,25 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 		Previews:    []string{""},
 		Selected:    strconv.Itoa(currentSettings.MinFrequency),
 		Apply: func(val string, s SettingsSelections) SettingsSelections {
-			freq, err := strconv.Atoi(val)
+			n, err := strconv.Atoi(val)
 			if err != nil {
-				panic(err)
+				log.Println("min_frequency: invalid value:", val)
+				return s
 			}
-			s.MinFrequency = freq
+			s.MinFrequency = n
 			return s
 		},
 		GetIdxFromName: func(selection string) int { return 0 },
+		Clamp: func(val string) string {
+			if val == "" {
+				return "70"
+			}
+			n, err := strconv.Atoi(val)
+			if err != nil {
+				return "70"
+			}
+			return strconv.Itoa(min(5000, max(20, n)))
+		},
 	}
 
 	max_frequency := Setting{
@@ -190,14 +328,41 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 		Previews:    []string{""},
 		Selected:    strconv.Itoa(currentSettings.MaxFrequency),
 		Apply: func(val string, s SettingsSelections) SettingsSelections {
-			freq, err := strconv.Atoi(val)
+			n, err := strconv.Atoi(val)
 			if err != nil {
-				panic(err)
+				log.Println("max_frequency: invalid value:", val)
+				return s
 			}
-			s.MaxFrequency = freq
+			s.MaxFrequency = n
 			return s
 		},
 		GetIdxFromName: func(selection string) int { return 0 },
+		Clamp: func(val string) string {
+			if val == "" {
+				return "1500"
+			}
+			n, err := strconv.Atoi(val)
+			if err != nil {
+				return "1500"
+			}
+			return strconv.Itoa(min(20000, max(100, n)))
+		},
+	}
+
+	clampFloat01 := func(val, fallback string) string {
+		if val == "" || val == "." {
+			return fallback
+		}
+		f, err := strconv.ParseFloat(val, 32)
+		if err != nil {
+			return fallback
+		}
+		if f < 0 {
+			f = 0
+		} else if f > 1 {
+			f = 1
+		}
+		return strconv.FormatFloat(f, 'f', -1, 32)
 	}
 
 	ampl_threshold := Setting{
@@ -207,14 +372,16 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 		Previews:    []string{""},
 		Selected:    strconv.FormatFloat(float64(currentSettings.AmplTreshold), 'f', -1, 32),
 		Apply: func(val string, s SettingsSelections) SettingsSelections {
-			threshold, err := strconv.ParseFloat(val, 32)
+			f, err := strconv.ParseFloat(val, 32)
 			if err != nil {
-				panic(err)
+				log.Println("ampl_threshold: invalid value:", val)
+				return s
 			}
-			s.AmplTreshold = float32(threshold)
+			s.AmplTreshold = float32(f)
 			return s
 		},
 		GetIdxFromName: func(selection string) int { return 0 },
+		Clamp:          func(val string) string { return clampFloat01(val, "0.01") },
 	}
 
 	yin_min_threshold := Setting{
@@ -224,14 +391,16 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 		Previews:    []string{""},
 		Selected:    strconv.FormatFloat(float64(currentSettings.YinMinTreshold), 'f', -1, 32),
 		Apply: func(val string, s SettingsSelections) SettingsSelections {
-			threshold, err := strconv.ParseFloat(val, 32)
+			f, err := strconv.ParseFloat(val, 32)
 			if err != nil {
-				panic(err)
+				log.Println("yin_min_threshold: invalid value:", val)
+				return s
 			}
-			s.YinMinTreshold = float32(threshold)
+			s.YinMinTreshold = float32(f)
 			return s
 		},
 		GetIdxFromName: func(selection string) int { return 0 },
+		Clamp:          func(val string) string { return clampFloat01(val, "0.1") },
 	}
 
 	yin_max_threshold := Setting{
@@ -241,14 +410,16 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 		Previews:    []string{""},
 		Selected:    strconv.FormatFloat(float64(currentSettings.YinMaxTreshold), 'f', -1, 32),
 		Apply: func(val string, s SettingsSelections) SettingsSelections {
-			threshold, err := strconv.ParseFloat(val, 32)
+			f, err := strconv.ParseFloat(val, 32)
 			if err != nil {
-				panic(err)
+				log.Println("yin_max_threshold: invalid value:", val)
+				return s
 			}
-			s.YinMaxTreshold = float32(threshold)
+			s.YinMaxTreshold = float32(f)
 			return s
 		},
 		GetIdxFromName: func(selection string) int { return 0 },
+		Clamp:          func(val string) string { return clampFloat01(val, "0.85") },
 	}
 
 	history_size := Setting{
@@ -258,14 +429,25 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 		Previews:    []string{""},
 		Selected:    strconv.Itoa(currentSettings.HistorySize),
 		Apply: func(val string, s SettingsSelections) SettingsSelections {
-			size, err := strconv.Atoi(val)
+			n, err := strconv.Atoi(val)
 			if err != nil {
-				panic(err)
+				log.Println("history_size: invalid value:", val)
+				return s
 			}
-			s.HistorySize = size
+			s.HistorySize = n
 			return s
 		},
 		GetIdxFromName: func(selection string) int { return 0 },
+		Clamp: func(val string) string {
+			if val == "" {
+				return "5"
+			}
+			n, err := strconv.Atoi(val)
+			if err != nil {
+				return "5"
+			}
+			return strconv.Itoa(min(50, max(1, n)))
+		},
 	}
 
 	ascii_art := Setting{
@@ -289,7 +471,7 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 	}
 
 	for _, v := range data.AsciiArt {
-		ascii_art.Options = append(ascii_art.Options, MultiChoiceOption(v.FileName))
+		ascii_art.Options = append(ascii_art.Options, &MultiChoiceOption{value: v.FileName})
 		// Note: JoinHorizontal is needed for some reason so the rows don't auto align for some reason
 		ascii_art.Previews = append(
 			ascii_art.Previews,
@@ -319,7 +501,7 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 	}
 
 	for _, v := range data.BorderStyles {
-		borders.Options = append(borders.Options, MultiChoiceOption(v))
+		borders.Options = append(borders.Options, &MultiChoiceOption{value: v})
 
 		borders.Previews = append(
 			borders.Previews,
@@ -349,7 +531,7 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 	}
 
 	for _, v := range data.ColorThemes {
-		themes.Options = append(themes.Options, MultiChoiceOption(v.Name))
+		themes.Options = append(themes.Options, &MultiChoiceOption{value: v.Name})
 		blocks := `
 ███████
 ███████
@@ -384,7 +566,7 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 	}
 
 	for _, v := range data.Tunings {
-		tunings.Options = append(tunings.Options, MultiChoiceOption(v.Name))
+		tunings.Options = append(tunings.Options, &MultiChoiceOption{value: v.Name})
 		var builder strings.Builder
 		builder.WriteByte('\n')
 		for _, note := range v.Notes {

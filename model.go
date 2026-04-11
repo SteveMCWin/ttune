@@ -89,6 +89,11 @@ func (m *Model) ApplySettings() {
 	m.Theme = m.SettingsData.ColorThemes[m.Settings[2].SelectedIdx()]
 	m.SelectedTuning = m.SettingsData.Tunings[m.Settings[3].SelectedIdx()]
 	m.Theme.SetToCurrent()
+	for _, s := range m.Settings {
+		for _, o := range s.Options {
+			o.SetTheme(m.Theme)
+		}
+	}
 
 	// Store settings to json file
 	StoreSettings(m.SettingsSelected, "selections.json")
@@ -124,11 +129,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if opt.IsFocused() {
 				switch message.String() {
 				case "esc":
-					opt.HanldeSelect()
+					cmds = append(cmds, opt.HanldeSelect())
 				case "enter":
-					m.SettingsSelected = m.Settings[m.SelectedOption].Apply(opt.GetValue(), m.SettingsSelected)
-					m.Settings[m.SelectedOption].Selected = opt.GetValue()
-					opt.HanldeSelect()
+					val := opt.GetValue()
+					if clamp := m.Settings[m.SelectedOption].Clamp; clamp != nil {
+						val = clamp(val)
+						if input, ok := opt.(*InputFieldOption); ok {
+							input.Input.SetValue(val)
+						}
+					}
+					m.SettingsSelected = m.Settings[m.SelectedOption].Apply(val, m.SettingsSelected)
+					m.Settings[m.SelectedOption].Selected = val
+					cmds = append(cmds, opt.HanldeSelect())
 					cmds = append(cmds, ReRender)
 				default:
 					if cmd := opt.Update(message); cmd != nil {
@@ -200,7 +212,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter", "space":
 			if m.CurrentState == Settings && m.SelectingValues {
 				option_selected := m.Settings[m.SelectedOption].Options[m.SelectedOptionValue]
-				option_selected.HanldeSelect()
+				cmds = append(cmds, option_selected.HanldeSelect())
 				if !option_selected.IsFocused() {
 					// MultiChoiceOption: not focusable, apply the selection immediately
 					m.SettingsSelected = m.Settings[m.SelectedOption].Apply(
@@ -224,6 +236,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, CalculateNote())
 
 	default:
+		// Forward all other messages (cursor blink ticks, etc.) to a focused input
+		if m.CurrentState == Settings && m.SelectingValues {
+			opt := m.Settings[m.SelectedOption].Options[m.SelectedOptionValue]
+			if opt.IsFocused() {
+				if cmd := opt.Update(msg); cmd != nil {
+					cmds = append(cmds, cmd)
+				}
+			}
+		}
 	}
 
 	return m, tea.Batch(cmds...)

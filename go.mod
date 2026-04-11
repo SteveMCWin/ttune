@@ -5,13 +5,12 @@ go 1.25.5
 require (
 	charm.land/bubbletea/v2 v2.0.0
 	charm.land/lipgloss/v2 v2.0.0
-	github.com/gordonklaus/portaudio v0.0.0-20250206071425-98a94950218b
+	github.com/gordonklaus/portaudio v0.0.0-20260203164431-765aa7dfa631
 	github.com/mjibson/go-dsp v0.0.0-20180508042940-11479a337f12
 )
 
 require (
 	charm.land/bubbles/v2 v2.0.0 // indirect
-	charm.land/lipgloss/v2 v2.0.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/charmbracelet/colorprofile v0.4.2 // indirect
 	github.com/charmbracelet/ultraviolet v0.0.0-20260205113103-524a6607adb8 // indirect

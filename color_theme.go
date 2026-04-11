@@ -4,6 +4,7 @@ import (
 	"log"
 
 	// tea "charm.land/bubbletea/v2"
+	"charm.land/bubbles/v2/textinput"
 	"charm.land/lipgloss/v2"
 )
 
@@ -20,21 +21,12 @@ type AsciiArt struct {
 }
 
 var (
-	boxStyle = lipgloss.NewStyle().
-			Padding(1).
-			Margin(0, 1).
-			Align(lipgloss.Center, lipgloss.Center).
-			Border(lipgloss.NormalBorder())
-	// settingsBoxStyle   = lipgloss.NewStyle().Border(lipgloss.HiddenBorder())
-	// settingsBoxStyle   = lipgloss.NewStyle().Border(lipgloss.BlockBorder())
+	boxStyle = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
 	settingsBoxStyle  = lipgloss.NewStyle().Padding(1).Border(lipgloss.DoubleBorder())
 	selectedStyle     = lipgloss.NewStyle()
-	instructionsStyle = lipgloss.NewStyle().
-				Faint(true).
-				Align(lipgloss.Center, lipgloss.Top).
-				Margin(0, 0)
+	instructionsStyle = lipgloss.NewStyle().Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0)
 	arrow_style = lipgloss.NewStyle().Faint(false)
-	// asciiArtStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff"))
+	textinput_style textinput.Styles
 	ColorThemes map[string]ColorTheme
 )
 
@@ -46,6 +38,7 @@ func (t ColorTheme) SetToCurrent() {
 	selectedStyle = selectedStyle.Foreground(lipgloss.Color(t.Tertiary))
 	instructionsStyle = instructionsStyle.Foreground(lipgloss.Color(t.Tertiary))
 	arrow_style = arrow_style.Foreground(lipgloss.Color(t.Tertiary))
+
 	// asciiArtStyle = asciiArtStyle.Foreground(lightDark())
 }
 

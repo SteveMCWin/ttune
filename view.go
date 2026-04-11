@@ -194,7 +194,7 @@ func createSettingsContents(m Model) string {
 
 	selected_idx := m.Settings[m.SelectedOption].SelectedIdx()
 	for i := start_idx; i < end_idx; i++ {
-		option_name := m.Settings[m.SelectedOption].Options[i]
+		curr_option := m.Settings[m.SelectedOption].Options[i]
 
 		prefix := "[ ] "
 		if len(m.Settings[m.SelectedOption].Options) == 1 {
@@ -202,10 +202,14 @@ func createSettingsContents(m Model) string {
 		} else if selected_idx == i {
 			prefix = "[o] "
 		}
-		line := prefix + option_name.Render()
+		isSelected := m.SelectedOptionValue == i && m.SelectingValues
+		line := prefix + curr_option.Render(isSelected)
 
 		// Is the user currently hovering over this setting?
-		if m.SelectedOptionValue == i && m.SelectingValues {
+		// For MultiChoiceOption, selectedStyle colors the whole line (plain text, no inner ANSI codes).
+		// For InputFieldOption, Render() already applied hover styles internally, but wrapping is harmless
+		// since prefix is always "" for single-option input settings.
+		if isSelected {
 			line = selectedStyle.Render(line)
 		}
 

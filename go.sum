@@ -42,6 +42,8 @@ github.com/clipperhouse/uax29/v2 v2.7.0 h1:+gs4oBZ2gPfVrKPthwbMzWZDaAFPGYK72F0NJ
 github.com/clipperhouse/uax29/v2 v2.7.0/go.mod h1:EFJ2TJMRUaplDxHKj1qAEhCtQPW2tJSwu5BF98AuoVM=
 github.com/gordonklaus/portaudio v0.0.0-20250206071425-98a94950218b h1:WEuQWBxelOGHA6z9lABqaMLMrfwVyMdN3UgRLT+YUPo=
 github.com/gordonklaus/portaudio v0.0.0-20250206071425-98a94950218b/go.mod h1:esZFQEUwqC+l76f2R8bIWSwXMaPbp79PppwZ1eJhFco=
+github.com/gordonklaus/portaudio v0.0.0-20260203164431-765aa7dfa631 h1:8TBHztmhDfAAg34yddptshinXBtDQwgKGlMfdtSFETw=
+github.com/gordonklaus/portaudio v0.0.0-20260203164431-765aa7dfa631/go.mod h1:esZFQEUwqC+l76f2R8bIWSwXMaPbp79PppwZ1eJhFco=
 github.com/lucasb-eyer/go-colorful v1.3.0 h1:2/yBRLdWBZKrf7gB40FoiKfAWYQ0lqNcbuQwVHXptag=
 github.com/lucasb-eyer/go-colorful v1.3.0/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
 github.com/mattn/go-runewidth v0.0.19 h1:v++JhqYnZuu5jSKrk9RbgF5v4CGUjqRfBm05byFGLdw=
