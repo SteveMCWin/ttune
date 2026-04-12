@@ -2,15 +2,14 @@ package main
 
 import (
 	"log"
+	"strconv"
 
 	"ttune/tuning"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/gordonklaus/portaudio"
+	// "github.com/gordonklaus/portaudio"
 )
 
-type OpenStreamMsg *portaudio.Stream
-type NoteReadingMsg Note
 type State string
 
 type ReRenderMsg struct{}
@@ -22,12 +21,6 @@ const (
 	Help         State = "Help"
 )
 
-type Note struct {
-	Index    int
-	Octave   int
-	CentsOff int
-}
-
 func ReRender() tea.Msg {
 	return ReRenderMsg{}
 }
@@ -36,7 +29,9 @@ type Model struct {
 	WindowWidth  int
 	WindowHeight int
 
-	Note        Note
+	PitchDetector *tuning.PitchDetector
+
+	Note        tuning.NoteReading
 	CentsOff    float64
 	Frequency   float64
 	BlockLength int
@@ -49,11 +44,10 @@ type Model struct {
 	AsciiArt       string
 	SelectedTuning tuning.Tuning
 
-	Settings     []Setting
-	// FunctionalOptions []Setting // TODO
-	SettingsData      SettingsData
-	UserSettingsData  SettingsData
-	SettingsSelected  SettingsSelections
+	Settings []Setting
+	SettingsData     SettingsData
+	UserSettingsData SettingsData
+	SettingsSelected SettingsSelections
 
 	SelectedOption      int
 	SelectedOptionValue int
@@ -67,7 +61,7 @@ type Model struct {
 func NewModel() Model {
 	settingsData := LoadSettingsData()
 	m := Model{
-		BlockLength:      BL,
+		PitchDetector:    &tuning.PitchDetector{},
 		CurrentState:     Initializing,
 		SettingsData:     settingsData,
 		SettingsSelected: LoadSettingsSelections("selections.json", settingsData),
@@ -84,10 +78,10 @@ func NewModel() Model {
 }
 
 func (m *Model) ApplySettings() {
-	m.AsciiArt = m.SettingsData.AsciiArt[m.Settings[0].SelectedIdx()].FileContents
-	SetBorderStyle(m.SettingsData.BorderStyles[m.Settings[1].SelectedIdx()])
-	m.Theme = m.SettingsData.ColorThemes[m.Settings[2].SelectedIdx()]
-	m.SelectedTuning = m.SettingsData.Tunings[m.Settings[3].SelectedIdx()]
+	m.AsciiArt = m.SettingsData.AsciiArt[m.Settings[AsciiArtSetting].SelectedIdx()].FileContents
+	SetBorderStyle(m.SettingsData.BorderStyles[m.Settings[BorderStyleSetting].SelectedIdx()])
+	m.Theme = m.SettingsData.ColorThemes[m.Settings[ColorThemeSetting].SelectedIdx()]
+	m.SelectedTuning = m.SettingsData.Tunings[m.Settings[TuningSetting].SelectedIdx()]
 	m.Theme.SetToCurrent()
 	for _, s := range m.Settings {
 		for _, o := range s.Options {
@@ -95,13 +89,53 @@ func (m *Model) ApplySettings() {
 		}
 	}
 
+	var err error
+	m.PitchDetector.BufferLength, err = strconv.Atoi(m.Settings[BufferLengthSetting].Selected)
+	if err != nil {
+		panic(err)
+	}
+
+	m.PitchDetector.SampleRate, err = strconv.Atoi(m.Settings[SampleRateSetting].Selected)
+	if err != nil {
+		panic(err)
+	}
+
+	m.PitchDetector.MinFrequency, err = strconv.Atoi(m.Settings[MinFrequencySetting].Selected)
+	if err != nil {
+		panic(err)
+	}
+
+	m.PitchDetector.MaxFrequency, err = strconv.Atoi(m.Settings[MaxFrequencySetting].Selected)
+	if err != nil {
+		panic(err)
+	}
+
+	m.PitchDetector.MinAmplitudeThreshold, err = strconv.ParseFloat(m.Settings[AmplTresholdSetting].Selected, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	m.PitchDetector.YinCandidateThreshold, err = strconv.ParseFloat(m.Settings[YinMinTresholdSetting].Selected, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	m.PitchDetector.YinValidityCeiling, err = strconv.ParseFloat(m.Settings[YinMaxTresholdSetting].Selected, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	m.PitchDetector.HistorySize, err = strconv.Atoi(m.Settings[HistorySizeSetting].Selected)
+	if err != nil {
+		panic(err)
+	}
 	// Store settings to json file
 	StoreSettings(m.SettingsSelected, "selections.json")
 }
 
 func (m Model) Init() tea.Cmd {
 	cmds := []tea.Cmd{
-		initAutioStream(),
+		m.PitchDetector.InitAudioStream(),
 		ReRender,
 	}
 
@@ -112,11 +146,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	cmds := make([]tea.Cmd, 0)
 
 	switch message := msg.(type) {
-	case NoteReadingMsg:
-		new_note := Note(message)
+	case tuning.NoteReadingMsg:
+		new_note := tuning.NoteReading(message)
 		m.Note = new_note
 		if m.CurrentState == Listening {
-			cmds = append(cmds, CalculateNote())
+			cmds = append(cmds, m.PitchDetector.CalculateNote())
 		}
 	case ReRenderMsg:
 		m.ApplySettings()
@@ -153,7 +187,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		switch message.String() {
 		case "ctrl+c", "q":
-			seq := tea.Sequence(closeAudioStream(), tea.Quit)
+			seq := tea.Sequence(m.PitchDetector.CloseAudioStream(), tea.Quit)
 			cmds = append(cmds, seq)
 
 		case "?":
@@ -164,7 +198,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.CurrentState != Listening {
 				m.CurrentState = Listening
 				m.SelectingValues = false
-				cmds = append(cmds, CalculateNote())
+				cmds = append(cmds, m.PitchDetector.CalculateNote())
 			}
 
 		case "s":
@@ -230,10 +264,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.WindowWidth = message.Width
 		m.WindowHeight = message.Height
 
-	case OpenStreamMsg:
+	case tuning.OpenStreamMsg:
 		log.Println("Opened stream")
 		m.CurrentState = Listening
-		cmds = append(cmds, CalculateNote())
+		cmds = append(cmds, m.PitchDetector.CalculateNote())
 
 	default:
 		// Forward all other messages (cursor blink ticks, etc.) to a focused input

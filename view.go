@@ -73,8 +73,8 @@ func createListeningContents(m Model) string {
 		meter_notes_arr[i] = ' '
 	}
 
-	prev_note := prevNote(m.Note)
-	next_note := nextNote(m.Note)
+	prev_note := tuning.PrevNote(m.Note)
+	next_note := tuning.NextNote(m.Note)
 
 	var curr_full_note []byte
 	var prev_full_note []byte

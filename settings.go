@@ -40,6 +40,26 @@ type SettingsSelections struct {
 	HistorySize    int     `json:"history_size"`
 }
 
+const (
+	AsciiArtSetting = int(iota)
+	BorderStyleSetting
+	ColorThemeSetting
+	TuningSetting
+
+	BufferLengthSetting
+	SampleRateSetting
+	MinFrequencySetting
+	MaxFrequencySetting
+	AmplTresholdSetting
+	YinMinTresholdSetting
+	YinMaxTresholdSetting
+	HistorySizeSetting
+
+	NumSettings
+)
+
+// return []Setting{ascii_art, borders, themes, tunings, buffer_len, sample_rate, min_frequency, max_frequency, ampl_threshold, yin_min_threshold, yin_max_threshold, history_size}
+
 // Data that is meant to be configured in json files
 type SettingsData struct {
 	Tunings      []tuning.Tuning `json:"tunings"`
@@ -185,9 +205,9 @@ func (o *InputFieldOption) SetTheme(t ColorTheme) {
 	}
 
 	cursor := textinput.CursorStyle{
-		Color: lipgloss.Color(t.Tertiary),
-		Shape: tea.CursorBlock,
-		Blink: true,
+		Color:      lipgloss.Color(t.Tertiary),
+		Shape:      tea.CursorBlock,
+		Blink:      true,
 		BlinkSpeed: time.Millisecond * 500,
 	}
 
@@ -576,7 +596,23 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 		tunings.Previews = append(tunings.Previews, builder.String())
 	}
 
-	return []Setting{ascii_art, borders, themes, tunings, buffer_len, sample_rate, min_frequency, max_frequency, ampl_threshold, yin_min_threshold, yin_max_threshold, history_size}
+	res := make([]Setting, NumSettings)
+
+	res[AsciiArtSetting] = ascii_art
+	res[BorderStyleSetting] = borders
+	res[ColorThemeSetting] = themes
+	res[TuningSetting] = tunings
+	res[BufferLengthSetting] = buffer_len
+	res[SampleRateSetting] = sample_rate
+	res[SampleRateSetting] = sample_rate
+	res[MinFrequencySetting] = min_frequency
+	res[MaxFrequencySetting] = max_frequency
+	res[AmplTresholdSetting] = ampl_threshold
+	res[YinMinTresholdSetting] = yin_min_threshold
+	res[YinMaxTresholdSetting] = yin_max_threshold
+	res[HistorySizeSetting] = history_size
+
+	return res
 }
 
 func LoadOrWriteConfigFile(config_file_name string) ([]byte, error) {
