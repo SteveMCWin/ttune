@@ -4,7 +4,7 @@
 
 tTune is a stylized, extendable, keyboard oriented guitar tuning app right in your terminal!
 
-> **Note:** tTune is still actively developed. Future releases may be incompatible with previous ones due to my lack of foresight. If you cannot run the program after updating, please back up your configuration, delete your ~/.config/ttune directory and try running tTune again.
+> **Note:** tTune is still actively developed. Future releases may be incompatible with configurations of previous versions due to my lack of foresight and poor system design skills. If you cannot run the program after updating, please back up and delete your ~/.config/ttune directory and try running tTune again.
 ---
 
 ## Showcase
@@ -71,7 +71,7 @@ go build
 
 ## Customization
 
-You can add your own options to `custom_options.json` as long as you follow the existing format.
+You can add your own options to `custom_options.json` as long as you follow the existing format. You can also override existing options by defining a custom option with the same name (the border styles cannot be overriden).
 
 > **Note:** If something breaks, back up and delete the edited files or the entire `~/.config/ttune/` directory - the defaults will be regenerated on the next run.
 
