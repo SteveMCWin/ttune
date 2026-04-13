@@ -44,7 +44,7 @@ type Model struct {
 	AsciiArt       string
 	SelectedTuning tuning.Tuning
 
-	Settings []Setting
+	Settings         []Setting
 	SettingsData     SettingsData
 	UserSettingsData SettingsData
 	SettingsSelected SettingsSelections

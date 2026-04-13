@@ -79,7 +79,7 @@ You can add your own options to `custom_options.json` as long as you follow the 
 
 ### Ascii Art
 
-Place your own ASCII art files in `~/.config/ttune/art/`. To display a tuning alongside your art, insert `%%%` where you'd like the notes to appear (see `~/.config/ttune/art/utf_guitar` for reference).
+Place your own ASCII art files in `~/.config/ttune/art/`. To display a tuning alongside your art, insert `%n%` where you'd like the n-th note to appear ((see `~/.config/ttune/art/utf_guitar` for reference)).
 
 > **Recommended size:** no wider than **24 characters** and no taller than **20 lines**. Oversized art will not render properly.
 

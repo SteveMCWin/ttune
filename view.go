@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"ttune/tuning"
 
@@ -53,8 +54,9 @@ func createListeningContents(m Model) string {
 	var tuning_contents string
 	if m.AsciiArt != "" {
 		ascii_art := m.AsciiArt
-		for i := len(m.SelectedTuning.Notes) - 1; i >= 0; i-- {
-			ascii_art = strings.Replace(ascii_art, "%%%", m.SelectedTuning.Notes[i], 1)
+		for i := range m.SelectedTuning.Notes {
+			replace_str := "%" + strconv.Itoa(i+1) + "%"
+			ascii_art = strings.Replace(ascii_art, replace_str, m.SelectedTuning.Notes[i], 1)
 		}
 		tuning_contents = lipgloss.JoinVertical(lipgloss.Center, tuning_name, lipgloss.JoinHorizontal(lipgloss.Top, "", ascii_art))
 	} else {

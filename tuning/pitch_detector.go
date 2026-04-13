@@ -8,7 +8,6 @@ import (
 	"github.com/gordonklaus/portaudio"
 )
 
-
 type NoteReading struct {
 	Index    int
 	Octave   int
@@ -20,25 +19,25 @@ type OpenStreamMsg *portaudio.Stream
 
 type PitchDetector struct {
 	BufferLength int
-	SampleRate int
+	SampleRate   int
 
 	MinFrequency int
 	MaxFrequency int
 
 	MinAmplitudeThreshold float64
 	YinCandidateThreshold float64
-	YinValidityCeiling float64
+	YinValidityCeiling    float64
 
 	HistorySize int
 
 	AudioStream *portaudio.Stream
 
-    Buffer []float32
-    Buffer64 []float64
+	Buffer   []float32
+	Buffer64 []float64
 
 	frequencyHistory []float64
-	minBin float64
-	maxBin float64
+	minBin           float64
+	maxBin           float64
 }
 
 // var BL = 4096 * 2       // NOTE: should be loaded through settings
@@ -320,7 +319,7 @@ func (pd *PitchDetector) FrequencyToNote(freq float64) NoteReading {
 	return res
 }
 
-func SetPitchDetectionParameters()  {
+func SetPitchDetectionParameters() {
 }
 
 func (pd *PitchDetector) CalculateNote() tea.Cmd {

@@ -21,13 +21,13 @@ type AsciiArt struct {
 }
 
 var (
-	boxStyle = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
+	boxStyle          = lipgloss.NewStyle().Padding(1).Margin(0, 1).Align(lipgloss.Center, lipgloss.Center).Border(lipgloss.NormalBorder())
 	settingsBoxStyle  = lipgloss.NewStyle().Padding(1).Border(lipgloss.DoubleBorder())
 	selectedStyle     = lipgloss.NewStyle()
 	instructionsStyle = lipgloss.NewStyle().Faint(true).Align(lipgloss.Center, lipgloss.Top).Margin(0, 0)
-	arrow_style = lipgloss.NewStyle().Faint(false)
-	textinput_style textinput.Styles
-	ColorThemes map[string]ColorTheme
+	arrow_style       = lipgloss.NewStyle().Faint(false)
+	textinput_style   textinput.Styles
+	ColorThemes       map[string]ColorTheme
 )
 
 func (t ColorTheme) SetToCurrent() {
