@@ -220,22 +220,6 @@ func createSettingsContents(m Model) string {
 
 	options_names = append(options_names, settings_options_down_arrow)
 
-	// for i, o := range m.VisualOptions[m.SelectedOption].Options {
-	//
-	// 	prefix := "[ ] "
-	// 	if m.VisualOptions[m.SelectedOption].Selected == i {
-	// 		prefix = "[o] "
-	// 	}
-	// 	line := prefix + o
-	//
-	// 	// Is the user currently hovering over this setting?
-	// 	if m.SelectedOptionValue == i && m.SelectingValues {
-	// 		line = selectedStyle.Render(line)
-	// 	}
-	//
-	// 	options_names = append(options_names, line)
-	// }
-
 	available_options := lipgloss.JoinVertical(lipgloss.Left, options_names...)
 	box_available_options := settingsBoxStyle.Align(lipgloss.Left, lipgloss.Top).PaddingLeft(2).Width(available_options_widht).Height(available_options_height).Render(available_options)
 

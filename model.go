@@ -38,15 +38,13 @@ type Model struct {
 
 	CurrentState State
 
-	// perhaps these should be maps
-	// make the map while reading the data so it points the name to the index while reading
 	Theme          ColorTheme
 	AsciiArt       string
 	SelectedTuning tuning.Tuning
 
 	Settings         []Setting
 	SettingsData     SettingsData
-	UserSettingsData SettingsData
+	// UserSettingsData SettingsData
 	SettingsSelected SettingsSelections
 
 	SelectedOption      int

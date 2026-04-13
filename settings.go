@@ -682,9 +682,35 @@ func LoadSettingsData() SettingsData {
 		log.Println("Error unmarshaling default settings data")
 		panic(err)
 	}
-	res.BorderStyles = append(res.BorderStyles, defaults.BorderStyles...)
-	res.ColorThemes = append(res.ColorThemes, defaults.ColorThemes...)
-	res.Tunings = append(res.Tunings, defaults.Tunings...)
+	existingThemes := make(map[string]bool, len(res.ColorThemes))
+	for _, t := range res.ColorThemes {
+		existingThemes[t.Name] = true
+	}
+	for _, t := range defaults.ColorThemes {
+		if !existingThemes[t.Name] {
+			res.ColorThemes = append(res.ColorThemes, t)
+		}
+	}
+
+	existingTunings := make(map[string]bool, len(res.Tunings))
+	for _, t := range res.Tunings {
+		existingTunings[t.Name] = true
+	}
+	for _, t := range defaults.Tunings {
+		if !existingTunings[t.Name] {
+			res.Tunings = append(res.Tunings, t)
+		}
+	}
+
+	existingBorders := make(map[string]bool, len(res.BorderStyles))
+	for _, b := range res.BorderStyles {
+		existingBorders[b] = true
+	}
+	for _, b := range defaults.BorderStyles {
+		if !existingBorders[b] {
+			res.BorderStyles = append(res.BorderStyles, b)
+		}
+	}
 
 	res.AsciiArt = LoadAsciiArt()
 	return res
