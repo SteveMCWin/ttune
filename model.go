@@ -44,7 +44,6 @@ type Model struct {
 
 	Settings         []Setting
 	SettingsData     SettingsData
-	// UserSettingsData SettingsData
 	SettingsSelected SettingsSelections
 
 	SelectedOption      int
@@ -88,43 +87,35 @@ func (m *Model) ApplySettings() {
 	}
 
 	var err error
-	m.PitchDetector.BufferLength, err = strconv.Atoi(m.Settings[BufferLengthSetting].Selected)
-	if err != nil {
+	if m.PitchDetector.BufferLength, err = strconv.Atoi(m.Settings[BufferLengthSetting].Selected); err != nil {
 		panic(err)
 	}
 
-	m.PitchDetector.SampleRate, err = strconv.Atoi(m.Settings[SampleRateSetting].Selected)
-	if err != nil {
+	if m.PitchDetector.SampleRate, err = strconv.Atoi(m.Settings[SampleRateSetting].Selected); err != nil {
 		panic(err)
 	}
 
-	m.PitchDetector.MinFrequency, err = strconv.Atoi(m.Settings[MinFrequencySetting].Selected)
-	if err != nil {
+	if m.PitchDetector.MinFrequency, err = strconv.Atoi(m.Settings[MinFrequencySetting].Selected); err != nil {
 		panic(err)
 	}
 
-	m.PitchDetector.MaxFrequency, err = strconv.Atoi(m.Settings[MaxFrequencySetting].Selected)
-	if err != nil {
+	if m.PitchDetector.MaxFrequency, err = strconv.Atoi(m.Settings[MaxFrequencySetting].Selected); err != nil {
 		panic(err)
 	}
 
-	m.PitchDetector.MinAmplitudeThreshold, err = strconv.ParseFloat(m.Settings[AmplTresholdSetting].Selected, 64)
-	if err != nil {
+	if m.PitchDetector.MinAmplitudeThreshold, err = strconv.ParseFloat(m.Settings[AmplTresholdSetting].Selected, 64); err != nil {
 		panic(err)
 	}
 
-	m.PitchDetector.YinCandidateThreshold, err = strconv.ParseFloat(m.Settings[YinMinTresholdSetting].Selected, 64)
-	if err != nil {
+	if m.PitchDetector.YinCandidateThreshold, err = strconv.ParseFloat(m.Settings[YinMinTresholdSetting].Selected, 64); err != nil {
 		panic(err)
 	}
 
-	m.PitchDetector.YinValidityCeiling, err = strconv.ParseFloat(m.Settings[YinMaxTresholdSetting].Selected, 64)
-	if err != nil {
+	if m.PitchDetector.YinValidityCeiling, err = strconv.ParseFloat(m.Settings[YinMaxTresholdSetting].Selected, 64); err != nil {
 		panic(err)
 	}
 
-	m.PitchDetector.HistorySize, err = strconv.Atoi(m.Settings[HistorySizeSetting].Selected)
-	if err != nil {
+	if m.PitchDetector.HistorySize, err = strconv.Atoi(m.Settings[HistorySizeSetting].Selected); err != nil {
 		panic(err)
 	}
 	// Store settings to json file

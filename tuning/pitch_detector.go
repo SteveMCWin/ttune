@@ -36,30 +36,7 @@ type PitchDetector struct {
 	Buffer64 []float64
 
 	frequencyHistory []float64
-	minBin           float64
-	maxBin           float64
 }
-
-// var BL = 4096 * 2       // NOTE: should be loaded through settings
-// var SAMPLE_RATE = 44100 // NOTE: should be loaded through settings
-//
-// var MIN_FREQUENCY = 70
-// var MAX_FREQUENCY = 1500
-//
-// var MIN_AMPLITUDE_THRESHOLD = 0.01
-// var YIN_CANDIDATE_THRESHOLD = 0.10 // Lower = stricter detection, reduces harmonic errors
-// var YIN_VALIDITY_CEILING = 0.85 // YIN power threshold - helps filter weak detections
-//
-// var MIN_BIN = MIN_FREQUENCY * BL / SAMPLE_RATE
-// var MAX_BIN = MAX_FREQUENCY * BL / SAMPLE_RATE
-//
-// var frequencyHistory []float64
-//
-// var HISTORY_SIZE = 5 // Increased for better smoothing
-//
-// var AudioStream *portaudio.Stream
-// var Buffer []float32
-// var Buffer64 []float64
 
 func freq_to_octave(freq float64) int {
 	var i int
@@ -317,9 +294,6 @@ func (pd *PitchDetector) FrequencyToNote(freq float64) NoteReading {
 	res.Octave = octave
 
 	return res
-}
-
-func SetPitchDetectionParameters() {
 }
 
 func (pd *PitchDetector) CalculateNote() tea.Cmd {
