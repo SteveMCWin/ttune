@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"ttune/tuning"
 
 	tea "charm.land/bubbletea/v2"
-	"github.com/charmbracelet/lipgloss/v2"
+	"charm.land/lipgloss/v2"
 )
 
 const TITLE_HEIGHT = 3
@@ -53,8 +54,9 @@ func createListeningContents(m Model) string {
 	var tuning_contents string
 	if m.AsciiArt != "" {
 		ascii_art := m.AsciiArt
-		for i := len(m.SelectedTuning.Notes) - 1; i >= 0; i-- {
-			ascii_art = strings.Replace(ascii_art, "%%%", m.SelectedTuning.Notes[i], 1)
+		for i := range m.SelectedTuning.Notes {
+			replace_str := "%" + strconv.Itoa(i+1) + "%"
+			ascii_art = strings.Replace(ascii_art, replace_str, m.SelectedTuning.Notes[i], 1)
 		}
 		tuning_contents = lipgloss.JoinVertical(lipgloss.Center, tuning_name, lipgloss.JoinHorizontal(lipgloss.Top, "", ascii_art))
 	} else {
@@ -73,8 +75,8 @@ func createListeningContents(m Model) string {
 		meter_notes_arr[i] = ' '
 	}
 
-	prev_note := prevNote(m.Note)
-	next_note := nextNote(m.Note)
+	prev_note := tuning.PrevNote(m.Note)
+	next_note := tuning.NextNote(m.Note)
 
 	var curr_full_note []byte
 	var prev_full_note []byte
@@ -148,7 +150,7 @@ func createSettingsContents(m Model) string {
 
 	settings_box_style := boxStyle.Width(settings_width).Height(settings_height)
 	setting_names := []string{"Settings", ""}
-	for i, o := range m.VisualOptions {
+	for i, o := range m.Settings {
 		var line string
 		if m.SelectedOption != i {
 			selection_box := "[ ] "
@@ -182,7 +184,7 @@ func createSettingsContents(m Model) string {
 
 	var settings_options_down_arrow string
 	// display down arrow only if there are pages below the current one
-	if m.SelectedOptionValue/num_of_options_displayable != (len(m.VisualOptions[m.SelectedOption].Options)-1)/num_of_options_displayable {
+	if m.SelectedOptionValue/num_of_options_displayable != (len(m.Settings[m.SelectedOption].Options)-1)/num_of_options_displayable {
 		settings_options_down_arrow = arrow_style.Render(" v")
 	}
 
@@ -190,20 +192,26 @@ func createSettingsContents(m Model) string {
 
 	// dividing and multiplying by num_of_options_displayable won't just cancle out, remember integer division
 	start_idx := (m.SelectedOptionValue / num_of_options_displayable) * num_of_options_displayable
-	end_idx := min(start_idx+num_of_options_displayable, len(m.VisualOptions[m.SelectedOption].Options))
+	end_idx := min(start_idx+num_of_options_displayable, len(m.Settings[m.SelectedOption].Options))
 
-	selected_idx := m.VisualOptions[m.SelectedOption].SelectedIdx()
+	selected_idx := m.Settings[m.SelectedOption].SelectedIdx()
 	for i := start_idx; i < end_idx; i++ {
-		option_name := m.VisualOptions[m.SelectedOption].Options[i]
+		curr_option := m.Settings[m.SelectedOption].Options[i]
 
 		prefix := "[ ] "
-		if selected_idx == i {
+		if len(m.Settings[m.SelectedOption].Options) == 1 {
+			prefix = ""
+		} else if selected_idx == i {
 			prefix = "[o] "
 		}
-		line := prefix + option_name
+		isSelected := m.SelectedOptionValue == i && m.SelectingValues
+		line := prefix + curr_option.Render(isSelected)
 
 		// Is the user currently hovering over this setting?
-		if m.SelectedOptionValue == i && m.SelectingValues {
+		// For MultiChoiceOption, selectedStyle colors the whole line (plain text, no inner ANSI codes).
+		// For InputFieldOption, Render() already applied hover styles internally, but wrapping is harmless
+		// since prefix is always "" for single-option input settings.
+		if isSelected {
 			line = selectedStyle.Render(line)
 		}
 
@@ -212,35 +220,19 @@ func createSettingsContents(m Model) string {
 
 	options_names = append(options_names, settings_options_down_arrow)
 
-	// for i, o := range m.VisualOptions[m.SelectedOption].Options {
-	//
-	// 	prefix := "[ ] "
-	// 	if m.VisualOptions[m.SelectedOption].Selected == i {
-	// 		prefix = "[o] "
-	// 	}
-	// 	line := prefix + o
-	//
-	// 	// Is the user currently hovering over this setting?
-	// 	if m.SelectedOptionValue == i && m.SelectingValues {
-	// 		line = selectedStyle.Render(line)
-	// 	}
-	//
-	// 	options_names = append(options_names, line)
-	// }
-
 	available_options := lipgloss.JoinVertical(lipgloss.Left, options_names...)
 	box_available_options := settingsBoxStyle.Align(lipgloss.Left, lipgloss.Top).PaddingLeft(2).Width(available_options_widht).Height(available_options_height).Render(available_options)
 
 	options_description_width := available_options_widht
 	options_description_height := settings_height - available_options_height
 
-	option_description := lipgloss.JoinVertical(lipgloss.Left, "Description", "", m.VisualOptions[m.SelectedOption].Description)
+	option_description := lipgloss.JoinVertical(lipgloss.Left, "Description", "", m.Settings[m.SelectedOption].Description)
 	box_option_description := settingsBoxStyle.Align(lipgloss.Left, lipgloss.Top).Padding(1, 2).Width(options_description_width).Height(options_description_height).Render(option_description)
 
 	preview_width := options_box_width - available_options_widht - options_box_style.GetHorizontalFrameSize()
 	preview_height := settings_height
 
-	option_preview := lipgloss.JoinVertical(lipgloss.Center, "Preview", "", "", m.VisualOptions[m.SelectedOption].Previews[m.SelectedOptionValue])
+	option_preview := lipgloss.JoinVertical(lipgloss.Center, "Preview", "", "", m.Settings[m.SelectedOption].Previews[m.SelectedOptionValue])
 	box_option_preview := settingsBoxStyle.Align(lipgloss.Center, lipgloss.Center).MarginLeft(2).Width(preview_width - 2).Height(preview_height).Render(option_preview)
 
 	options_box := options_box_style.UnsetBorderStyle().Render(lipgloss.JoinHorizontal(lipgloss.Top, lipgloss.JoinVertical(lipgloss.Left, box_available_options, box_option_description), box_option_preview))

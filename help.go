@@ -18,10 +18,10 @@ Why a TUI? I was learning golang for backend web development and somehow stumble
 	modding := HelpItem{
 		Name: "⚙ Modding",
 		Contents: `
-The existing settings are extensible, mostly through JSON. Here's how to add more options to the settings:
+The existing settings are extensible, mostly through JSON. Defaults can be overridden by making options witht he same name and default ones. Here's how to add more options to the settings:
 
 - Ascii Art
-		In your ~/.config/ttune/art direcotry you can add your own ascii art as a file. Note that for a tuning to be displayed along your ascii art, place '%%%' where you wish the notes to appear (check out the ~/.config/ttune/art/utf_guitar file for reference). Also I recommend you keep the art no more than 24 characters wide and 20 lines tall.
+		In your ~/.config/ttune/art direcotry you can add your own ascii art as a file. Note that for a tuning to be displayed along your ascii art, place '%n%' where you wish the n-th note to appear (check out the ~/.config/ttune/art/utf_guitar file for reference). I recommend you keep the art no more than 24 characters wide and 20 lines tall.
 
 - Border Style
 		Not extensible at the moment :^/. In case you want this to be moddable, open an issue at https://github.com/SteveMCWin/ttune/issues.
