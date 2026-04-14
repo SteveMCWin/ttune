@@ -406,7 +406,7 @@ func DefineAllSettingsOptions(data SettingsData, currentSettings SettingsSelecti
 
 	yin_min_threshold := Setting{
 		Name:        "YIN Min Threshold",
-		Description: "YIN candidate threshold for pitch detection. Lower values are stricter and reduce harmonic errors but may miss weak signals. Default is 0.10.",
+		Description: "YIN candidate threshold for pitch detection. Lower values are stricter and reduce harmonic errors but may miss weak signals. Default is 0.1.",
 		Options:     []Option{&InputFieldOption{Input: makeFloatInput(currentSettings.YinMinTreshold)}},
 		Previews:    []string{""},
 		Selected:    strconv.FormatFloat(float64(currentSettings.YinMinTreshold), 'f', -1, 32),
